@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 公式计算参数工具类
@@ -49,7 +50,7 @@ public class FormulaParamUtils {
      */
     public static List<Double> parseValues(String params, JSONObject data, 
                                           Map<String, String> fieldMapping,
-                                          java.util.function.Function<String, String> fieldReplacer) {
+                                          Function<String, String> fieldReplacer) {
         List<Double> values = new ArrayList<>();
         String[] parts = splitFunctionParams(params, -1);
         
