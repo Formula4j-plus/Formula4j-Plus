@@ -1,0 +1,30 @@
+Formula4j-Plus
+Copyright 2025 WanShen
+
+This product includes software developed by the following third-party libraries:
+
+===============================================================================
+Apache License 2.0 Libraries
+===============================================================================
+
+- Alibaba Fastjson (https://github.com/alibaba/fastjson)
+  Copyright 1999-2025 Alibaba Group Holding Limited
+  Licensed under the Apache License, Version 2.0
+
+- exp4j (https://github.com/fasseg/exp4j)
+  Copyright 2013-2025 exp4j contributors
+  Licensed under the Apache License, Version 2.0
+
+===============================================================================
+Eclipse Public License 1.0 Libraries
+===============================================================================
+
+- JUnit (https://junit.org/junit4/)
+  Copyright 2000-2025 JUnit contributors
+  Licensed under the Eclipse Public License 1.0
+
+===============================================================================
+
+For the full text of these licenses, please refer to the LICENSE file or
+visit the respective project websites.
+
