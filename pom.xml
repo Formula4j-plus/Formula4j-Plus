@@ -22,11 +22,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.gitee.Fiee_Kernel</groupId>
-            <artifactId>Formula4j-Plus</artifactId>
-            <version>2.2.0</version>
-        </dependency>
         <!-- JSON处理 -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -93,6 +88,40 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Javadoc 插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <additionalOptions>
+                        <additionalOption>-Xdoclint:none</additionalOption>
+                    </additionalOptions>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 部署插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
             
             <!-- Maven Shade Plugin - 打包包含所有依赖的Fat JAR -->
@@ -222,14 +251,12 @@
         </repository>
     </repositories>
 
-    <!-- 发布配置（可选，用于GitHub/Gitee Packages） -->
-    <!--
+    <!-- 发布配置 - GitHub Packages -->
     <distributionManagement>
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/YOUR_USERNAME/formula4j-plus</url>
+            <url>https://maven.pkg.github.com/Formula4j-plus/Formula4j-Plus</url>
         </repository>
     </distributionManagement>
-    -->
 </project>
