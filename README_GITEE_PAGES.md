@@ -22,7 +22,7 @@
 git init
 
 # 添加文件
-git add index.html _config.yml README.md LICENSE NOTICE
+git add index.html _config.yml Project-Overview.md LICENSE NOTICE
 
 # 提交
 git commit -m "feat: 添加 Gitee Pages 主页"

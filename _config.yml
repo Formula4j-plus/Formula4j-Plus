@@ -15,7 +15,7 @@ plugins:
 
 # 排除文件
 exclude:
-  - README.md
+  - Project-Overview.md
   - LICENSE
   - .gitignore
   - pom.xml
