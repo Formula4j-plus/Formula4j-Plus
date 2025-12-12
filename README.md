@@ -1,4 +1,4 @@
-# Formula Calculator
+# Formula4j-Plus
 
 Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果。
 
@@ -14,6 +14,7 @@ Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算
 - ✅ 支持JSONObject数据输入
 - ✅ 支持函数嵌套和复杂表达式
 - ✅ 支持字符串拼接和混合类型运算
+- ✅ **支持Java 8-25运行时**（编译目标Java 8，运行时兼容Java 8-25）
 
 ## 快速开始
 
@@ -982,4 +983,11 @@ mvn clean install
 
 ## 许可证
 
-Apache License 2.0
+This project is licensed under the Business Source License 1.1 (BUSL-1.1) - see the [LICENSE](LICENSE) file for details.
+
+**重要说明**:
+- **非生产使用**: 可以自由用于开发、测试、评估和教育目的
+- **生产使用**: 需要获得商业许可，请联系 1498610052@qq.com
+- **变更日期**: 2029-01-01 后将自动转换为 Apache License 2.0
+
+Copyright 2025 WanShen

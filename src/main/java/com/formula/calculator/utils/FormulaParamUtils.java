@@ -11,7 +11,7 @@ import java.util.function.Function;
  * 公式计算参数工具类
  * 提供参数解析相关的辅助函数
  * 
- * @author Formula Calculator
+ * @author WanShen
  */
 public class FormulaParamUtils {
     

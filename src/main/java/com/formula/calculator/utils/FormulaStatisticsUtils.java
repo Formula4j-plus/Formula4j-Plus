@@ -8,7 +8,7 @@ import static com.formula.calculator.utils.FormulaMathUtils.*;
  * 公式计算统计工具类
  * 提供统计相关的辅助函数
  * 
- * @author Formula Calculator
+ * @author WanShen
  */
 public class FormulaStatisticsUtils {
     

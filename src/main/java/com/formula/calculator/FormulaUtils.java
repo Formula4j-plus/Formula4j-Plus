@@ -7,7 +7,7 @@ import com.formula.calculator.model.FormulaData;
  * 公式计算工具类
  * 提供便捷的静态方法
  * 
- * @author Formula Calculator
+ * @author WanShen
  * @version 2.0.0
  */
 public class FormulaUtils {

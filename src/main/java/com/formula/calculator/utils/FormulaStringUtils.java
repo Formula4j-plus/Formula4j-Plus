@@ -4,7 +4,7 @@ package com.formula.calculator.utils;
  * 公式计算字符串工具类
  * 提供字符串相关的辅助函数
  * 
- * @author Formula Calculator
+ * @author WanShen
  */
 public class FormulaStringUtils {
     

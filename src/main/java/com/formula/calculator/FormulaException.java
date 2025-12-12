@@ -3,7 +3,7 @@ package com.formula.calculator;
 /**
  * 公式计算异常
  * 
- * @author Formula Calculator
+ * @author WanShen
  * @version 1.0.0
  */
 public class FormulaException extends RuntimeException {

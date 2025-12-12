@@ -6,9 +6,6 @@ import com.formula.calculator.model.FormulaData;
 import com.formula.calculator.utils.*;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static com.formula.calculator.FunctionName.*;
 import static com.formula.calculator.utils.FormulaMathUtils.*;
 import static com.formula.calculator.utils.FormulaStatisticsUtils.*;
@@ -23,18 +20,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 /**
  * 公式计算引擎
  * 支持Formula.js语法，用于后端验证前端计算结果
  * 支持常用、逻辑、统计、数学等函数
  * 
- * @author Formula Calculator
- * @version 2.0.0
+ * @author WanShen
+ * @version 2.2.0
  */
 public class FormulaCalculator {
-    
-    private static final Logger logger = LoggerFactory.getLogger(FormulaCalculator.class);
     
     // 匹配字段引用，如 ${fieldName} 或 [fieldName] 或直接字段名
     private static final Pattern FIELD_PATTERN = Pattern.compile("\\$\\{([^}]+)\\}|\\[([^\\]]+)\\]|([a-zA-Z_][a-zA-Z0-9_\\u4e00-\\u9fa5]*)");
@@ -116,7 +113,7 @@ public class FormulaCalculator {
             // 检查是否包含字符串拼接（有字符串字面量参与+运算）
             if (containsStringConcatenation(processedFormula)) {
                 // 进行字符串拼接
-                logger.debug("检测到字符串拼接，表达式: {}", processedFormula);
+                // 检测到字符串拼接
                 return evaluateStringConcatenation(processedFormula);
             }
             
@@ -124,7 +121,8 @@ public class FormulaCalculator {
             return evaluateExpression(processedFormula);
             
         } catch (Exception e) {
-            logger.error("公式计算失败: formula={}, error={}", formula, e.getMessage(), e);
+            System.err.println("公式计算失败: formula=" + formula + ", error=" + e.getMessage());
+            e.printStackTrace();
             throw new FormulaException("公式计算失败: " + e.getMessage(), e);
         }
     }
@@ -439,7 +437,6 @@ public class FormulaCalculator {
                 long days = (cal.getTimeInMillis() - new GregorianCalendar(1900, 0, 1).getTimeInMillis()) / (1000L * 60 * 60 * 24);
                 return String.valueOf(days);
             } catch (Exception e) {
-                logger.warn("DATE函数计算失败: {}", e.getMessage());
                 return "0";
             }
         });
@@ -5192,9 +5189,8 @@ public class FormulaCalculator {
             try {
                 // 使用Nashorn引擎执行JavaScript（Java 8-14）
                 // 注意：Java 15+ 已移除Nashorn，需要使用GraalVM或其他方案
-                javax.script.ScriptEngine engine = getJavaScriptEngine();
+                ScriptEngine engine = getJavaScriptEngine();
                 if (engine == null) {
-                    logger.warn("JavaScript引擎不可用，无法执行脚本函数: {}", name);
                     return "0";
                 }
                 
@@ -5260,17 +5256,16 @@ public class FormulaCalculator {
                     return result.toString();
                 }
             } catch (Exception e) {
-                logger.error("执行JavaScript函数 {} 失败: {}", name, e.getMessage(), e);
                 return "0";
             }
         });
     }
     
     // Formula.js文件缓存（路径 -> 引擎实例）
-    private static final Map<String, javax.script.ScriptEngine> formulaJsEngines = new HashMap<>();
+    private static final Map<String, ScriptEngine> formulaJsEngines = new HashMap<>();
     
     // 全局Formula.js引擎（一次性加载，所有函数可用）
-    private static javax.script.ScriptEngine globalFormulaJsEngine = null;
+    private static ScriptEngine globalFormulaJsEngine = null;
     private static String globalFormulaJsPath = null;
     
     /**
@@ -5301,9 +5296,8 @@ public class FormulaCalculator {
         customFunctions.put(name.toUpperCase(), (params, data, fieldMapping) -> {
             try {
                 // 获取或加载Formula.js引擎
-                javax.script.ScriptEngine engine = getOrLoadFormulaJsEngine(formulaJsPath);
+                ScriptEngine engine = getOrLoadFormulaJsEngine(formulaJsPath);
                 if (engine == null) {
-                    logger.warn("无法加载Formula.js文件: {}", formulaJsPath);
                     return "0";
                 }
                 
@@ -5368,7 +5362,6 @@ public class FormulaCalculator {
                     return result.toString();
                 }
             } catch (Exception e) {
-                logger.error("执行Formula.js函数 {} 失败: {}", name, e.getMessage(), e);
                 return "0";
             }
         });
@@ -5400,7 +5393,7 @@ public class FormulaCalculator {
         
         try {
             // 获取JavaScript引擎
-            javax.script.ScriptEngine engine = getJavaScriptEngine();
+            ScriptEngine engine = getJavaScriptEngine();
             if (engine == null) {
                 throw new RuntimeException("JavaScript引擎不可用");
             }
@@ -5417,10 +5410,9 @@ public class FormulaCalculator {
             // 保存全局引擎
             globalFormulaJsEngine = engine;
             globalFormulaJsPath = formulaJsPath;
-            
-            logger.info("成功加载Formula.js库: {}", formulaJsPath);
         } catch (Exception e) {
-            logger.error("加载Formula.js库失败: {}", formulaJsPath, e);
+            System.err.println("加载Formula.js库失败: " + formulaJsPath + ", error: " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("加载Formula.js库失败: " + e.getMessage(), e);
         }
     }
@@ -5431,7 +5423,7 @@ public class FormulaCalculator {
     public static void clearFormulaJsLibrary() {
         globalFormulaJsEngine = null;
         globalFormulaJsPath = null;
-        logger.info("已清除Formula.js库");
+        // 已清除Formula.js库
     }
     
     /**
@@ -5451,7 +5443,7 @@ public class FormulaCalculator {
     /**
      * 获取或加载Formula.js引擎
      */
-    private static javax.script.ScriptEngine getOrLoadFormulaJsEngine(String formulaJsPath) {
+    private static ScriptEngine getOrLoadFormulaJsEngine(String formulaJsPath) {
         // 检查缓存
         if (formulaJsEngines.containsKey(formulaJsPath)) {
             return formulaJsEngines.get(formulaJsPath);
@@ -5459,16 +5451,14 @@ public class FormulaCalculator {
         
         try {
             // 获取JavaScript引擎
-            javax.script.ScriptEngine engine = getJavaScriptEngine();
+            ScriptEngine engine = getJavaScriptEngine();
             if (engine == null) {
-                logger.warn("JavaScript引擎不可用");
                 return null;
             }
             
             // 读取Formula.js文件内容
             String formulaJsContent = loadFormulaJsFile(formulaJsPath);
             if (formulaJsContent == null || formulaJsContent.trim().isEmpty()) {
-                logger.warn("Formula.js文件内容为空: {}", formulaJsPath);
                 return null;
             }
             
@@ -5478,10 +5468,8 @@ public class FormulaCalculator {
             // 缓存引擎
             formulaJsEngines.put(formulaJsPath, engine);
             
-            logger.info("成功加载Formula.js文件: {}", formulaJsPath);
             return engine;
         } catch (Exception e) {
-            logger.error("加载Formula.js文件失败: {}", formulaJsPath, e);
             return null;
         }
     }
@@ -5519,7 +5507,6 @@ public class FormulaCalculator {
             }
             
             if (inputStream == null) {
-                logger.warn("无法找到Formula.js文件: {}", path);
                 return null;
             }
             
@@ -5534,7 +5521,6 @@ public class FormulaCalculator {
                 return content.toString();
             }
         } catch (Exception e) {
-            logger.error("读取Formula.js文件失败: {}", path, e);
             return null;
         }
     }
@@ -5558,7 +5544,7 @@ public class FormulaCalculator {
      */
     public static void clearFormulaJsCache() {
         formulaJsEngines.clear();
-        logger.info("已清除Formula.js引擎缓存");
+        // 已清除Formula.js引擎缓存
     }
     
     /**
@@ -5566,33 +5552,124 @@ public class FormulaCalculator {
      */
     public static void clearFormulaJsCache(String formulaJsPath) {
         formulaJsEngines.remove(formulaJsPath);
-        logger.info("已清除Formula.js引擎缓存: {}", formulaJsPath);
+        // 已清除Formula.js引擎缓存: formulaJsPath
     }
     
     /**
-     * 获取JavaScript引擎（Nashorn或GraalVM）
+     * 获取JavaScript引擎（兼容Java 8-25）
+     * 
+     * Java版本兼容性：
+     * - Java 8-14: 使用Nashorn引擎（内置）
+     * - Java 15-25: Nashorn已移除，尝试使用GraalVM JavaScript引擎（需要额外依赖）
+     * 
+     * 注意：Java 15+ 如需使用JavaScript功能，需要添加GraalVM JavaScript依赖：
+     * <dependency>
+     *     <groupId>org.graalvm.js</groupId>
+     *     <artifactId>js</artifactId>
+     *     <version>23.0.0</version>
+     * </dependency>
+     * <dependency>
+     *     <groupId>org.graalvm.js</groupId>
+     *     <artifactId>js-scriptengine</artifactId>
+     *     <version>23.0.0</version>
+     * </dependency>
      */
-    private static javax.script.ScriptEngine getJavaScriptEngine() {
+    private static ScriptEngine getJavaScriptEngine() {
         try {
-            // 尝试使用Nashorn（Java 8-14）
-            javax.script.ScriptEngineManager manager = new javax.script.ScriptEngineManager();
-            javax.script.ScriptEngine engine = manager.getEngineByName("nashorn");
-            if (engine != null) {
-                return engine;
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = null;
+            
+            // 检测Java版本
+            String javaVersion = System.getProperty("java.version");
+            int majorVersion = getJavaMajorVersion(javaVersion);
+            
+            // Java 8-14: 优先使用Nashorn
+            if (majorVersion >= 8 && majorVersion <= 14) {
+                try {
+                    engine = manager.getEngineByName("nashorn");
+                    if (engine != null) {
+                        return engine;
+                    }
+                } catch (Exception e) {
+                    // Nashorn不可用，继续尝试其他引擎
+                }
             }
             
-            // 尝试使用GraalVM JavaScript引擎
-            engine = manager.getEngineByName("graal.js");
-            if (engine != null) {
-                return engine;
+            // Java 15+: 尝试使用GraalVM JavaScript引擎
+            // 注意：需要额外添加GraalVM JavaScript依赖
+            try {
+                engine = manager.getEngineByName("graal.js");
+                if (engine != null) {
+                    return engine;
+                }
+            } catch (Exception e) {
+                // GraalVM不可用，继续尝试
             }
             
-            // 尝试使用JavaScript引擎
-            engine = manager.getEngineByName("javascript");
-            return engine;
-        } catch (Exception e) {
-            logger.warn("无法获取JavaScript引擎: {}", e.getMessage());
+            // 尝试通用的JavaScript引擎名称
+            try {
+                engine = manager.getEngineByName("javascript");
+                if (engine != null) {
+                    return engine;
+                }
+            } catch (Exception e) {
+                // 继续尝试
+            }
+            
+            // 尝试js引擎名称
+            try {
+                engine = manager.getEngineByName("js");
+                if (engine != null) {
+                    return engine;
+                }
+            } catch (Exception e) {
+                // 继续尝试
+            }
+            
+            // 尝试ECMAScript引擎名称
+            try {
+                engine = manager.getEngineByName("ECMAScript");
+                if (engine != null) {
+                    return engine;
+                }
+            } catch (Exception e) {
+                // 所有尝试都失败
+            }
+            
             return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * 获取Java主版本号
+     * 兼容Java 8和Java 9+的版本号格式
+     */
+    private static int getJavaMajorVersion(String javaVersion) {
+        if (javaVersion == null || javaVersion.isEmpty()) {
+            return 8; // 默认假设Java 8
+        }
+        
+        // Java 9+ 格式: "9", "10", "11", "17", "21", "25" 等
+        // Java 8 格式: "1.8.0_xxx"
+        if (javaVersion.startsWith("1.")) {
+            // Java 8及之前版本
+            return 8;
+        }
+        
+        // 提取主版本号
+        try {
+            // 格式可能是 "9", "11.0.1", "17.0.1", "21", "25" 等
+            int dotIndex = javaVersion.indexOf('.');
+            if (dotIndex > 0) {
+                return Integer.parseInt(javaVersion.substring(0, dotIndex));
+            } else {
+                return Integer.parseInt(javaVersion);
+            }
+        } catch (NumberFormatException e) {
+            // 解析失败，默认返回8
+            return 8;
         }
     }
     
@@ -5618,7 +5695,6 @@ public class FormulaCalculator {
                 String result = processor.apply(params);
                 matcher.appendReplacement(sb, result);
             } catch (Exception e) {
-                logger.warn("函数 {} 计算失败: {}", funcName, e.getMessage());
                 matcher.appendReplacement(sb, matcher.group(0));
             }
         }
@@ -5704,7 +5780,6 @@ public class FormulaCalculator {
                     matcher.appendReplacement(sb, "\"" + concatSb.toString() + "\"");
                     changed = true;
                 } catch (Exception e) {
-                    logger.warn("CONCATENATE函数计算失败: {}", e.getMessage());
                     matcher.appendReplacement(sb, matcher.group(0));
                 }
             }
@@ -5817,7 +5892,6 @@ public class FormulaCalculator {
                 
                 matcher.appendReplacement(sb, String.valueOf(bd.doubleValue()));
             } catch (Exception e) {
-                logger.warn("ROUND函数计算失败: {}", e.getMessage());
                 matcher.appendReplacement(sb, matcher.group(0));
             }
         }
@@ -5844,7 +5918,7 @@ public class FormulaCalculator {
                 double value = Double.parseDouble(part);
                 values.add(value);
             } catch (NumberFormatException e) {
-                logger.warn("无法解析为数值: {}", part);
+                // 无法解析为数值，使用默认值
                 values.add(0.0);
             }
         }
@@ -5926,7 +6000,6 @@ public class FormulaCalculator {
                 return value != 0;
             }
         } catch (Exception e) {
-            logger.warn("条件表达式计算失败: {}, error: {}", condition, e.getMessage());
             return false;
         }
     }
@@ -5947,12 +6020,12 @@ public class FormulaCalculator {
      */
     private static String evaluateStringConcatenation(String expression) {
         try {
-            logger.debug("开始字符串拼接，表达式: {}", expression);
+            // 开始字符串拼接
             StringBuilder result = new StringBuilder();
             
             // 按+号分割，但要考虑字符串字面量中的+号
             List<String> parts = splitByPlusOperator(expression);
-            logger.debug("分割后的部分: {}", parts);
+            // 分割后的部分
             
             // 处理每个部分
             for (String part : parts) {
@@ -6009,7 +6082,8 @@ public class FormulaCalculator {
             
             return result.toString();
         } catch (Exception e) {
-            logger.error("字符串拼接失败: expression={}, error={}", expression, e.getMessage());
+            System.err.println("字符串拼接失败: expression=" + expression + ", error=" + e.getMessage());
+            e.printStackTrace();
             throw new FormulaException("字符串拼接失败: " + e.getMessage(), e);
         }
     }
@@ -6062,7 +6136,7 @@ public class FormulaCalculator {
             parts.add(part);
         }
         
-        logger.debug("splitByPlusOperator 输入: {}, 输出: {}", expression, parts);
+        // splitByPlusOperator 输入: expression, 输出: parts
         return parts;
     }
     
@@ -6087,7 +6161,8 @@ public class FormulaCalculator {
             
             return result;
         } catch (Exception e) {
-            logger.error("表达式计算失败: expression={}, error={}", expression, e.getMessage());
+            System.err.println("表达式计算失败: expression=" + expression + ", error=" + e.getMessage());
+            e.printStackTrace();
             throw new FormulaException("表达式计算失败: " + e.getMessage(), e);
         }
     }
@@ -6107,7 +6182,6 @@ public class FormulaCalculator {
         try {
             return String.valueOf(convertToDouble(value));
         } catch (Exception e) {
-            logger.warn("无法转换为数值: {}, 使用0替代", value);
             return "0";
         }
     }

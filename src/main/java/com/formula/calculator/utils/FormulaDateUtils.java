@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
  * 公式计算日期工具类
  * 提供日期相关的辅助函数
  * 
- * @author Formula Calculator
+ * @author WanShen
  */
 public class FormulaDateUtils {
     
