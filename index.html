@@ -7,6 +7,9 @@
     <meta name="keywords" content="Formula4j-Plus, Java, 公式计算, Formula.js, 计算引擎">
     <meta name="author" content="WanShen">
     <title>Formula4j-Plus - Java公式计算引擎</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
     <style>
         * {
             margin: 0;
@@ -177,10 +180,13 @@
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 0.9rem;
             line-height: 1.6;
+            white-space: pre;
         }
 
         .code-block code {
             color: #e5e7eb;
+            display: block;
+            white-space: pre;
         }
 
         .code-block .keyword {
@@ -436,7 +442,8 @@
     <span class="keyword">&lt;groupId&gt;</span>com.formula<span class="keyword">&lt;/groupId&gt;</span>
     <span class="keyword">&lt;artifactId&gt;</span>formula4j-plus<span class="keyword">&lt;/artifactId&gt;</span>
     <span class="keyword">&lt;version&gt;</span>2.2.0<span class="keyword">&lt;/version&gt;</span>
-<span class="keyword">&lt;/dependency&gt;</span></code>
+<span class="keyword">&lt;/dependency&gt;</span>
+</code>
             </div>
 
             <h3>2. 基本使用</h3>
@@ -452,7 +459,8 @@ data.put(<span class="string">"quantity"</span>, <span class="number">5</span>);
 <span class="comment">// 计算公式</span>
 String formula = <span class="string">"${price} * ${quantity}"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-System.out.println(<span class="string">"结果: "</span> + result); <span class="comment">// 输出: 500.0</span></code>
+System.out.println(<span class="string">"结果: "</span> + result); <span class="comment">// 输出: 500.0</span>
+</code>
             </div>
 
             <h3>3. 使用函数</h3>
@@ -465,7 +473,8 @@ Object result = FormulaCalculator.calculate(formula, data);
 <span class="comment">// 使用IF函数</span>
 String formula2 = <span class="string">"IF(10 > 5, 100, 0)"</span>;
 Object result2 = FormulaCalculator.calculate(formula2, data);
-<span class="comment">// 结果: 100.0</span></code>
+<span class="comment">// 结果: 100.0</span>
+</code>
             </div>
 
             <div class="button-group">
@@ -503,7 +512,8 @@ data.put(<span class="string">"discount"</span>, <span class="number">0.1</span>
 
 <span class="comment">// 计算</span>
 Object result = FormulaCalculator.calculate(formulaData, data);
-<span class="comment">// 结果: 450.0</span></code>
+<span class="comment">// 结果: 450.0</span>
+</code>
             </div>
 
             <h3>自定义函数</h3>
@@ -517,7 +527,8 @@ FormulaCalculator.registerCustomFunction(<span class="string">"DOUBLE"</span>, (
 <span class="comment">// 使用</span>
 String formula = <span class="string">"DOUBLE(10)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="comment">// 结果: 20.0</span></code>
+<span class="comment">// 结果: 20.0</span>
+</code>
             </div>
 
             <h3>一次性加载 Formula.js 库</h3>
@@ -528,7 +539,8 @@ FormulaCalculator.loadFormulaJsLibrary(<span class="string">"file:///D:/formula.
 <span class="comment">// 加载后，所有函数都可以直接使用</span>
 String formula = <span class="string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="comment">// 结果: 15.0</span></code>
+<span class="comment">// 结果: 15.0</span>
+</code>
             </div>
         </div>
     </section>
@@ -646,9 +658,9 @@ Object result = FormulaCalculator.calculate(formula, data);
             <div class="footer-links">
                 <a href="LICENSE">许可证</a>
                 <a href="NOTICE">第三方库</a>
-                <a href="markdown-viewer.html?file=README.md#版本历史">更新日志</a>
+                <a href="markdown-viewer.html?file=Project-Overview.md#版本历史">更新日志</a>
                 <a href="markdown-viewer.html?file=CONTRIBUTING.md">贡献指南</a>
-                <a href="markdown-viewer.html?file=README.md">README</a>
+                <a href="markdown-viewer.html?file=Project-Overview.md">README</a>
             </div>
             <p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">
                 Copyright © 2025 WanShen. Licensed under Business Source License 1.1 (BUSL-1.1).
