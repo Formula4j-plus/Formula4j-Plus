@@ -1,0 +1,24 @@
+# Gitee Pages 配置文件
+title: Formula4j-Plus
+description: Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果
+author: WanShen
+email: 1498610052@qq.com
+url: https://Formula4j-plus.gitee.io/formula4j-plus
+
+# 主题设置
+theme: jekyll-theme-minimal
+
+# 插件
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+
+# 排除文件
+exclude:
+  - Project-Overview.md
+  - LICENSE
+  - .gitignore
+  - pom.xml
+  - target/
+  - src/
+
