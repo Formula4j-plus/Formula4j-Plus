@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # 获取完整历史
+        # 如果连接失败，可以手动重试 workflow
       
       - name: Set up JDK 8
         uses: actions/setup-java@v4
@@ -75,6 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
+        timeout-minutes: 30  # 增加超时时间
       
       - name: Generate Javadoc
         run: mvn javadoc:javadoc
@@ -98,10 +100,29 @@ jobs:
           fi
       
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests
+        run: |
+          # 添加重试逻辑
+          max_attempts=3
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            echo "尝试发布 (第 $attempt 次/共 $max_attempts 次)..."
+            if mvn deploy -DskipTests; then
+              echo "✓ 发布成功！"
+              exit 0
+            else
+              echo "✗ 发布失败，等待 10 秒后重试..."
+              attempt=$((attempt + 1))
+              if [ $attempt -le $max_attempts ]; then
+                sleep 10
+              fi
+            fi
+          done
+          echo "✗ 发布失败，已重试 $max_attempts 次"
+          exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
+        timeout-minutes: 20  # 增加超时时间
       
       - name: Upload JAR artifacts
         uses: actions/upload-artifact@v4

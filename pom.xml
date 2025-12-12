@@ -12,6 +12,29 @@
 
     <name>Formula4j-Plus</name>
     <description>Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果</description>
+    <url>https://github.com/Formula4j-plus/Formula4j-Plus</url>
+
+    <licenses>
+        <license>
+            <name>Business Source License 1.1</name>
+            <url>https://github.com/Formula4j-plus/Formula4j-Plus/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>WanShen</name>
+            <email>1498610052@qq.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/Formula4j-plus/Formula4j-Plus.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Formula4j-plus/Formula4j-Plus.git</developerConnection>
+        <url>https://github.com/Formula4j-plus/Formula4j-Plus/tree/main</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
