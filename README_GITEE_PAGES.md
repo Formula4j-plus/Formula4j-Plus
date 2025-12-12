@@ -28,7 +28,7 @@ git add index.html _config.yml README.md LICENSE NOTICE
 git commit -m "feat: 添加 Gitee Pages 主页"
 
 # 添加远程仓库
-git remote add origin https://gitee.com/your-username/formula4j-plus.git
+git remote add origin https://gitee.com/Formula4j-plus/formula4j-plus.git
 
 # 推送到 Gitee
 git push -u origin master
@@ -46,7 +46,7 @@ git push -u origin master
 
 部署成功后，访问地址为：
 ```
-https://your-username.gitee.io/formula4j-plus
+https://Formula4j-plus.gitee.io/formula4j-plus
 ```
 
 ## 🔧 配置说明

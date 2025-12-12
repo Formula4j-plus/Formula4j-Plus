@@ -66,8 +66,8 @@
 
 ---
 
-[2.2.0]: https://github.com/your-username/formula4j-plus/compare/v2.1.0...v2.2.0
-[2.1.0]: https://github.com/your-username/formula4j-plus/compare/v2.0.0...v2.1.0
-[2.0.0]: https://github.com/your-username/formula4j-plus/compare/v1.0.0...v2.0.0
-[1.0.0]: https://github.com/your-username/formula4j-plus/releases/tag/v1.0.0
+[2.2.0]: https://github.com/Formula4j-plus/formula4j-plus/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/Formula4j-plus/formula4j-plus/compare/v2.0.0...v2.1.0
+[2.0.0]: https://github.com/Formula4j-plus/formula4j-plus/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/Formula4j-plus/formula4j-plus/releases/tag/v1.0.0
 

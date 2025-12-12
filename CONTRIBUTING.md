@@ -8,7 +8,7 @@
 
 如果您发现了bug或有功能建议，请通过以下方式提交：
 
-1. **GitHub Issues**: 在 [Issues](https://github.com/your-username/formula4j-plus/issues) 页面创建新issue
+1. **GitHub Issues**: 在 [Issues](https://github.com/Formula4j-plus/formula4j-plus/issues) 页面创建新issue
 2. **Bug报告**: 请包含以下信息：
    - 问题描述
    - 复现步骤
@@ -71,7 +71,7 @@ docs: 更新README中的使用示例
 
 1. **克隆项目**:
    ```bash
-   git clone https://github.com/your-username/formula4j-plus.git
+   git clone https://github.com/Formula4j-plus/formula4j-plus.git
    cd formula4j-plus
    ```
 
