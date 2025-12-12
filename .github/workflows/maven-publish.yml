@@ -30,20 +30,37 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
-          # 自动配置 GitHub Packages 认证
-          server-id: github
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
-          # 如果需要 GPG 签名，取消下面的注释并配置 secrets
-          # gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          # gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          # 只缓存仓库，不缓存 settings.xml
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-repo-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-repo-
+      
+      - name: Configure Maven for GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                    http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+          echo "Maven settings.xml 已创建"
+          # 验证配置（不显示敏感信息）
+          if [ -f ~/.m2/settings.xml ]; then
+            echo "✓ settings.xml 文件存在"
+          fi
       
       - name: Build with Maven
         run: |
@@ -63,6 +80,23 @@ jobs:
         run: mvn javadoc:javadoc
         continue-on-error: true  # Javadoc 失败不影响发布
         
+      - name: Verify Maven settings
+        run: |
+          echo "验证 Maven settings.xml 配置..."
+          if [ -f ~/.m2/settings.xml ]; then
+            echo "✓ settings.xml 存在"
+            # 检查是否包含 github server 配置（不显示敏感信息）
+            if grep -q '<id>github</id>' ~/.m2/settings.xml; then
+              echo "✓ GitHub server 配置已找到"
+            else
+              echo "✗ 未找到 GitHub server 配置"
+              exit 1
+            fi
+          else
+            echo "✗ settings.xml 不存在"
+            exit 1
+          fi
+      
       - name: Publish to GitHub Packages
         run: mvn deploy -DskipTests
         env:
