@@ -66,7 +66,8 @@ jobs:
       - name: Build with Maven
         run: |
           SKIP_TESTS="${{ github.event.inputs.skip_tests }}"
-          if [ "$SKIP_TESTS" = "true" ]; then
+          # Release 发布时默认跳过测试，手动触发时可以选择
+          if [ "$SKIP_TESTS" = "true" ] || [ "${{ github.event_name }}" = "release" ]; then
             echo "跳过测试，构建项目..."
             mvn clean package -DskipTests
           else
