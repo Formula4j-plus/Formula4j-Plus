@@ -44,8 +44,8 @@
             --text-secondary: #64748B;
             --text-muted: #94A3B8;
             --border: #E2E8F0;
-            --code-bg: #1E293B;
-            --code-border: #E2E8F0;
+            --code-bg: #F8FAFC;
+            --code-border: #CBD5E1;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -397,6 +397,7 @@
 
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
         let currentTheme = localStorage.getItem('theme') || 'system';
+        const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
         function applyTranslations(lang) {
             const t = translations[lang];
@@ -409,9 +410,7 @@
 
         function applyTheme(theme) {
             if (theme === 'system') {
-                const hour = new Date().getHours();
-                const isDaytime = hour >= 6 && hour < 18;
-                document.documentElement.setAttribute('data-theme', isDaytime ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', systemThemeMedia.matches ? 'dark' : 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', theme);
             }
@@ -470,17 +469,12 @@
             });
         });
 
-        window.setInterval(() => {
+        systemThemeMedia.addEventListener('change', () => {
             if (currentTheme === 'system') {
-                const hour = new Date().getHours();
-                const isDaytime = hour >= 6 && hour < 18;
-                const currentAttr = document.documentElement.getAttribute('data-theme');
-                const expectedTheme = isDaytime ? 'light' : 'dark';
-                if (currentAttr !== expectedTheme) {
-                    applyTheme('system');
-                }
+                applyTheme('system');
+                updateThemeUI();
             }
-        }, 3600000);
+        });
 
         applyTranslations(currentLang);
         updateLangUI();

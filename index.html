@@ -53,8 +53,8 @@
             --text-secondary: #64748B;
             --text-muted: #94A3B8;
             --border: #E2E8F0;
-            --code-bg: #1E293B;
-            --code-border: #E2E8F0;
+            --code-bg: #F8FAFC;
+            --code-border: #CBD5E1;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -437,6 +437,7 @@
             text-align: center;
             transition: all 0.3s ease;
         }
+        [data-theme="light"] footer { background: #F8FAFC; }
 
         footer p { color: var(--text-secondary); margin-bottom: var(--space-3); }
         footer strong { font-size: 1.125rem; }
@@ -687,40 +688,40 @@
             
             <h3 data-i18n="s1_title">1. 添加依赖</h3>
             <div class="code-block">
-                <pre><code>&lt;dependencies&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;com.formula&lt;/groupId&gt;
-    &lt;artifactId&gt;formula4j-plus&lt;/artifactId&gt;
-    &lt;version&gt;3.0.0&lt;/version&gt;
-  &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
+                <pre><code><span class="ch-keyword">&lt;dependencies&gt;</span>
+  <span class="ch-keyword">&lt;dependency&gt;</span>
+    <span class="ch-keyword">&lt;groupId&gt;</span>com.formula<span class="ch-keyword">&lt;/groupId&gt;</span>
+    <span class="ch-keyword">&lt;artifactId&gt;</span>formula4j-plus<span class="ch-keyword">&lt;/artifactId&gt;</span>
+    <span class="ch-keyword">&lt;version&gt;</span><span class="ch-number">3.0.0</span><span class="ch-keyword">&lt;/version&gt;</span>
+  <span class="ch-keyword">&lt;/dependency&gt;</span>
+<span class="ch-keyword">&lt;/dependencies&gt;</span></code></pre>
             </div>
 
             <h3 data-i18n="s2_title">2. 基本使用</h3>
             <div class="code-block">
-                <pre><code>import com.alibaba.fastjson.JSONObject;
-import com.formula.calculator.FormulaCalculator;
+                <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
+<span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
 
-JSONObject data = new JSONObject();
-data.put("price", 100);
-data.put("quantity", 5);
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
+data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
 
-String formula = "${price} * ${quantity}";
+String formula = <span class="ch-string">"${price} * ${quantity}"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
 
-System.out.println("结果: " + result);
-// 输出: 500</code></pre>
+System.out.println(<span class="ch-string">"结果: "</span> + result);
+<span class="ch-comment">// 输出: 500</span></code></pre>
             </div>
 
             <h3 data-i18n="s3_title">3. 使用函数</h3>
             <div class="code-block">
-                <pre><code>String sumFormula = "SUM(10, 20, 30)";
+                <pre><code>String sumFormula = <span class="ch-string">"SUM(10, 20, 30)"</span>;
 Object sumResult = FormulaCalculator.calculate(sumFormula, data);
-// 结果: 60.0
+<span class="ch-comment">// 结果: 60.0</span>
 
-String ifFormula = "IF(10 &gt; 5, 100, 0)";
+String ifFormula = <span class="ch-string">"IF(10 &gt; 5, 100, 0)"</span>;
 Object ifResult = FormulaCalculator.calculate(ifFormula, data);
-// 结果: 100</code></pre>
+<span class="ch-comment">// 结果: 100</span></code></pre>
             </div>
 
             <div class="section-footer">
@@ -736,53 +737,53 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
             
             <h3 data-i18n="e1_title">使用 FormulaData 结构</h3>
             <div class="code-block">
-                <pre><code>import com.alibaba.fastjson.JSONObject;
-import com.formula.calculator.FormulaCalculator;
-import com.formula.calculator.model.FieldMark;
-import com.formula.calculator.model.FormulaData;
+                <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
+<span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
+<span class="ch-keyword">import</span> com.formula.calculator.model.FieldMark;
+<span class="ch-keyword">import</span> com.formula.calculator.model.FormulaData;
 
-import java.util.ArrayList;
-import java.util.List;
+<span class="ch-keyword">import</span> java.util.ArrayList;
+<span class="ch-keyword">import</span> java.util.List;
 
-FormulaData formulaData = new FormulaData();
-formulaData.setTxt("单价 * 数量 * (1 - 折扣率)");
+FormulaData formulaData = <span class="ch-keyword">new</span> FormulaData();
+formulaData.setTxt(<span class="ch-string">"单价 * 数量 * (1 - 折扣率)"</span>);
 
-List&lt;FieldMark&gt; marks = new ArrayList&lt;&gt;();
-marks.add(new FieldMark("price", "单价"));
-marks.add(new FieldMark("quantity", "数量"));
-marks.add(new FieldMark("discount", "折扣率"));
+List&lt;FieldMark&gt; marks = <span class="ch-keyword">new</span> ArrayList&lt;&gt;();
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"price"</span>, <span class="ch-string">"单价"</span>));
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"quantity"</span>, <span class="ch-string">"数量"</span>));
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"discount"</span>, <span class="ch-string">"折扣率"</span>));
 formulaData.setMarks(marks);
 
-JSONObject data = new JSONObject();
-data.put("price", 100);
-data.put("quantity", 5);
-data.put("discount", 0.1);
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
+data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
+data.put(<span class="ch-string">"discount"</span>, <span class="ch-number">0.1</span>);
 
 Object result = FormulaCalculator.calculate(formulaData, data);
-// 结果: 450.0</code></pre>
+<span class="ch-comment">// 结果: 450.0</span></code></pre>
             </div>
 
             <h3 data-i18n="e2_title">自定义函数</h3>
             <div class="code-block">
-                <pre><code>FormulaCalculator.registerCustomFunction("DOUBLE", (params, data, mapping) -&gt; {
-    double value = Double.parseDouble(params.trim());
-    return String.valueOf(value * 2);
+                <pre><code>FormulaCalculator.registerCustomFunction(<span class="ch-string">"DOUBLE"</span>, (params, data, mapping) -&gt; {
+    <span class="ch-keyword">double</span> value = Double.parseDouble(params.trim());
+    <span class="ch-keyword">return</span> String.valueOf(value * <span class="ch-number">2</span>);
 });
 
 Object result = FormulaCalculator.calculate("DOUBLE(10)", new JSONObject());
-// 结果: 20.0</code></pre>
+<span class="ch-comment">// 结果: 20.0</span></code></pre>
             </div>
 
             <h3 data-i18n="e3_title">一次性加载 Formula.js 库</h3>
             <div class="code-block">
-                <pre><code>// 仅在你需要扩展 Formula.js 场景时加载
-FormulaCalculator.loadFormulaJsLibrary("file:///D:/formula.js");
+                <pre><code><span class="ch-comment">// 仅在你需要扩展 Formula.js 场景时加载</span>
+FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
 
-JSONObject data = new JSONObject();
-String formula = "SUM(1, 2, 3) + ABS(-5) + SQRT(16)";
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
 
-// 结果: 15.0</code></pre>
+<span class="ch-comment">// 结果: 15.0</span></code></pre>
             </div>
         </div>
     </section>
@@ -1140,6 +1141,7 @@ Object result = FormulaCalculator.calculate(formula, data);
 
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
         let currentTheme = localStorage.getItem('theme') || 'system';
+        const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
         function applyTranslations(lang) {
             const t = translations[lang];
@@ -1152,18 +1154,11 @@ Object result = FormulaCalculator.calculate(formula, data);
 
         function applyTheme(theme) {
             if (theme === 'system') {
-                const hour = new Date().getHours();
-                const isDaytime = hour >= 6 && hour < 18;
-                document.documentElement.setAttribute('data-theme', isDaytime ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', systemThemeMedia.matches ? 'dark' : 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', theme);
             }
             updateThemeIcon(theme);
-        }
-
-        function isDaytime() {
-            const hour = new Date().getHours();
-            return hour >= 6 && hour < 18;
         }
 
         function updateThemeIcon(theme) {
@@ -1222,17 +1217,12 @@ Object result = FormulaCalculator.calculate(formula, data);
             });
         });
 
-        window.setInterval(() => {
+        systemThemeMedia.addEventListener('change', () => {
             if (currentTheme === 'system') {
-                const hour = new Date().getHours();
-                const isDaytime = hour >= 6 && hour < 18;
-                const currentAttr = document.documentElement.getAttribute('data-theme');
-                const expectedTheme = isDaytime ? 'light' : 'dark';
-                if (currentAttr !== expectedTheme) {
-                    applyTheme('system');
-                }
+                applyTheme('system');
+                updateThemeUI();
             }
-        }, 3600000);
+        });
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
