@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>贡献指南 - Formula4j-Plus</title>
+    <script>
+        (function () {
+            try {
+                var savedTheme = localStorage.getItem('theme') || 'system';
+                var resolvedTheme = savedTheme === 'system'
+                    ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : savedTheme;
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,13 +28,21 @@
             --bg: #0F172A;
             --bg-elevated: #1E293B;
             --bg-card: #1E293B;
+            --surface-subtle: rgba(15, 23, 42, 0.72);
             --text: #F8FAFC;
             --text-secondary: #94A3B8;
             --text-muted: #64748B;
             --border: #334155;
             --success: #10B981;
             --code-bg: #020617;
+            --code-surface: #0F172A;
             --code-border: #1E293B;
+            --code-text: #E2E8F0;
+            --inline-code-bg: rgba(37, 99, 235, 0.14);
+            --inline-code-border: rgba(59, 130, 246, 0.22);
+            --inline-code-text: #BFDBFE;
+            --blockquote-bg: rgba(37, 99, 235, 0.08);
+            --table-stripe: rgba(148, 163, 184, 0.06);
             --space-2: 0.5rem;
             --space-3: 0.75rem;
             --space-4: 1rem;
@@ -29,23 +50,31 @@
             --space-8: 2rem;
             --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-            --radius-sm: 6px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.14);
+            --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.22);
         }
 
         [data-theme="light"] {
             --bg: #FFFFFF;
             --bg-elevated: #F8FAFC;
             --bg-card: #FFFFFF;
+            --surface-subtle: rgba(148, 163, 184, 0.12);
             --text: #1E293B;
-            --text-secondary: #64748B;
-            --text-muted: #94A3B8;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
             --border: #E2E8F0;
-            --code-bg: #F8FAFC;
-            --code-border: #CBD5E1;
+            --code-bg: #EFF6FF;
+            --code-surface: #F8FAFC;
+            --code-border: #BFDBFE;
+            --code-text: #0F172A;
+            --inline-code-bg: #DBEAFE;
+            --inline-code-border: #BFDBFE;
+            --inline-code-text: #1D4ED8;
+            --blockquote-bg: #EFF6FF;
+            --table-stripe: #F8FAFC;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,7 +91,28 @@
         a { color: var(--primary-hover); text-decoration: none; transition: color 0.2s; }
         a:hover { color: var(--cta); }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 5rem var(--space-6) var(--space-8); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); }
+
+        .doc-shell {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6.5rem 0 var(--space-8);
+        }
+
+        .doc-header {
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-6);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .doc-lead {
+            max-width: 720px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-top: calc(var(--space-4) * -1);
+            margin-bottom: 0;
+        }
 
         .control-bar {
             position: fixed;
@@ -71,21 +121,22 @@
             display: flex;
             gap: var(--space-2);
             z-index: 1000;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            background: color-mix(in srgb, var(--bg-card) 86%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            border-radius: 999px;
             padding: var(--space-1);
             box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(16px);
         }
 
         .control-btn {
             display: flex;
             align-items: center;
             gap: var(--space-2);
-            padding: var(--space-2) var(--space-3);
+            padding: 0.625rem 0.95rem;
             background: transparent;
             border: 1px solid transparent;
-            border-radius: var(--radius-sm);
+            border-radius: 999px;
             color: var(--text-secondary);
             font-size: 0.8125rem;
             font-weight: 500;
@@ -93,7 +144,7 @@
             transition: all 0.2s ease;
             font-family: inherit;
         }
-        .control-btn:hover { background: var(--bg-elevated); color: var(--text); }
+        .control-btn:hover { background: var(--bg-elevated); color: var(--text); transform: translateY(-1px); }
         .control-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
         .control-btn svg { width: 16px; height: 16px; }
 
@@ -103,18 +154,21 @@
             position: absolute;
             top: calc(100% + var(--space-2));
             right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+            border-radius: 20px;
             box-shadow: var(--shadow-md);
-            min-width: 140px;
+            min-width: 160px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(0.98);
             transition: all 0.2s ease;
             z-index: 10;
+            padding: var(--space-1);
+            backdrop-filter: blur(18px);
         }
-        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
 
         .dropdown-item {
             display: block;
@@ -138,16 +192,17 @@
             display: inline-flex;
             align-items: center;
             gap: var(--space-2);
-            padding: var(--space-3) var(--space-4);
+            padding: 0.85rem 1.35rem;
             background: var(--bg-elevated);
             border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            border-radius: 999px;
             color: var(--text);
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: var(--space-8);
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .back-btn:hover { border-color: var(--primary-hover); color: var(--text); }
+        .back-btn:hover { border-color: var(--primary-hover); color: var(--text); transform: translateY(-1px); }
         .back-btn svg { width: 16px; height: 16px; }
 
         h1 {
@@ -180,6 +235,40 @@
         ul, ol { margin: var(--space-4) 0 var(--space-4) var(--space-6); color: var(--text-secondary); }
         li { margin-bottom: var(--space-2); }
 
+        blockquote {
+            margin: var(--space-4) 0;
+            padding: var(--space-4) var(--space-6);
+            background: var(--blockquote-bg);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-6) 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+
+        th, td {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-elevated);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: var(--table-stripe);
+        }
+
         .tip {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -189,15 +278,45 @@
         }
         .tip strong { color: #10B981; }
 
-        code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: 0.85rem 1.35rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+            color: var(--text);
+        }
+
+        code {
+            background: var(--inline-code-bg);
+            border: 1px solid var(--inline-code-border);
+            color: var(--inline-code-text);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
 
         @media (max-width: 768px) {
-            .container { padding: 4rem var(--space-4) var(--space-6); }
+            .container { padding: 0 var(--space-4); }
+            .doc-shell { padding: 5.5rem 0 var(--space-6); }
             h1 { font-size: 2rem; }
             h2 { font-size: 1.5rem; }
             .control-bar { top: var(--space-2); right: var(--space-2); }
             .control-btn span { display: none; }
             .control-btn { padding: var(--space-2); }
+            .back-btn, .btn { width: calc(100% - 7rem); justify-content: center; }
         }
     </style>
 </head>
@@ -243,15 +362,19 @@
     </div>
 
     <div class="container">
-        <a href="index.html" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span data-i18n="back">返回首页</span>
-        </a>
+        <div class="doc-shell">
+            <div class="doc-header">
+                <a href="index.html" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span data-i18n="back">返回首页</span>
+                </a>
 
-        <h1 data-i18n="title">贡献指南</h1>
+                <h1 data-i18n="title">贡献指南</h1>
+                <p class="doc-lead" data-i18n="lead">了解 issue、分支、提交规范与开发环境要求，确保外部贡献在风格和流程上与仓库保持一致。</p>
+            </div>
         <p data-i18n="intro">感谢您对 Formula4j-Plus 项目的关注！我们欢迎所有形式的贡献。</p>
 
         <h2 data-i18n="h2_contribute">如何贡献</h2>
@@ -316,6 +439,12 @@
 
         <div class="tip">
             <strong data-i18n="thanks">感谢您的贡献！</strong>
+            <p data-i18n="support_desc" style="margin-top: var(--space-3);">提交前建议先阅读 README、更新日志与使用文档，确保命名、文档与测试改动保持一致。</p>
+            <div style="margin-top: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-3);">
+                <a href="index.html#docs" class="btn" data-i18n="support_home">查看文档入口</a>
+                <a href="markdown-viewer.html?file=CHANGELOG.md" class="btn" data-i18n="support_changelog">查看更新日志</a>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -324,6 +453,7 @@
             'zh-CN': {
                 lang: '语言', theme: '主题', back: '返回首页', title: '贡献指南',
                 intro: '感谢您对 Formula4j-Plus 项目的关注！我们欢迎所有形式的贡献。',
+                lead: '了解 issue、分支、提交规范与开发环境要求，确保外部贡献在风格和流程上与仓库保持一致。',
                 h2_contribute: '如何贡献', h3_report: '报告问题',
                 report_desc: '如果您发现了 bug 或有功能建议，请通过以下方式提交：',
                 report1: '在 GitHub Issues 页面创建新 issue',
@@ -344,11 +474,14 @@
                 h2_rules: '行为准则', rule1: '尊重所有贡献者', rule2: '接受建设性批评',
                 rule3: '专注于对项目最有利的事情', rule4: '对其他社区成员表示同理心',
                 thanks: '感谢您的贡献！',
+                support_desc: '提交前建议先阅读 README、更新日志与使用文档，确保命名、文档与测试改动保持一致。',
+                support_home: '查看文档入口', support_changelog: '查看更新日志',
                 light: '日间模式', dark: '夜间模式', system: '跟随系统'
             },
             'zh-TW': {
                 lang: '語言', theme: '主題', back: '返回首頁', title: '貢獻指南',
                 intro: '感謝您對 Formula4j-Plus 專案的關注！我們歡迎所有形式的貢獻。',
+                lead: '了解 issue、分支、提交規範與開發環境要求，確保外部貢獻在風格和流程上與倉庫保持一致。',
                 h2_contribute: '如何貢獻', h3_report: '報告問題',
                 report_desc: '如果您發現了 bug 或有功能建議：',
                 report1: '在 GitHub Issues 頁面建立新 issue', report2: 'Bug 報告請包含詳細資訊',
@@ -367,11 +500,14 @@
                 h2_rules: '行為準則', rule1: '尊重所有貢獻者', rule2: '接受建設性批評',
                 rule3: '專注於對專案最有利的事情', rule4: '對其他社群成員表示同理心',
                 thanks: '感謝您的貢獻！',
+                support_desc: '提交前建議先閱讀 README、更新日誌與使用文檔，確保命名、文檔與測試改動保持一致。',
+                support_home: '查看文檔入口', support_changelog: '查看更新日誌',
                 light: '日間模式', dark: '夜間模式', system: '跟隨系統'
             },
             'en': {
                 lang: 'Language', theme: 'Theme', back: 'Back to Home', title: 'Contributing Guide',
                 intro: 'Thank you for your interest in Formula4j-Plus! We welcome all forms of contributions.',
+                lead: 'Review issues, branching, commit rules, and local setup expectations so outside contributions stay aligned with the repository workflow.',
                 h2_contribute: 'How to Contribute', h3_report: 'Report Issues',
                 report_desc: 'If you find a bug or have feature suggestions:',
                 report1: 'Create a new issue on GitHub Issues page', report2: 'Bug reports should include: description, steps, expected vs actual behavior',
@@ -391,6 +527,8 @@
                 h2_rules: 'Code of Conduct', rule1: 'Respect all contributors', rule2: 'Accept constructive criticism',
                 rule3: 'Focus on what is best for the project', rule4: 'Show empathy to other community members',
                 thanks: 'Thank you for your contribution!',
+                support_desc: 'Before submitting, review the README, changelog, and user guide so naming, docs, and test updates stay aligned.',
+                support_home: 'Open docs hub', support_changelog: 'Open changelog',
                 light: 'Light Mode', dark: 'Dark Mode', system: 'System'
             }
         };
@@ -398,6 +536,15 @@
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
         let currentTheme = localStorage.getItem('theme') || 'system';
         const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function resolveSystemTheme() {
+            const hour = new Date().getHours();
+            return (hour >= 18 || hour < 7) ? 'dark' : 'light';
+        }
+
+        function getResolvedTheme(theme) {
+            return theme === 'system' ? resolveSystemTheme() : theme;
+        }
 
         function applyTranslations(lang) {
             const t = translations[lang];
@@ -409,11 +556,7 @@
         }
 
         function applyTheme(theme) {
-            if (theme === 'system') {
-                document.documentElement.setAttribute('data-theme', systemThemeMedia.matches ? 'dark' : 'light');
-            } else {
-                document.documentElement.setAttribute('data-theme', theme);
-            }
+            document.documentElement.setAttribute('data-theme', getResolvedTheme(theme));
             updateThemeIcon(theme);
         }
 
@@ -469,10 +612,38 @@
             });
         });
 
-        systemThemeMedia.addEventListener('change', () => {
+        function syncThemeWithSystem() {
             if (currentTheme === 'system') {
                 applyTheme('system');
                 updateThemeUI();
+            }
+        }
+
+        function handleStoredThemeChange() {
+            const storedTheme = localStorage.getItem('theme') || 'system';
+            if (storedTheme !== currentTheme) {
+                currentTheme = storedTheme;
+            }
+            applyTheme(currentTheme);
+            updateThemeUI();
+        }
+
+        if (typeof systemThemeMedia.addEventListener === 'function') {
+            systemThemeMedia.addEventListener('change', syncThemeWithSystem);
+        } else if (typeof systemThemeMedia.addListener === 'function') {
+            systemThemeMedia.addListener(syncThemeWithSystem);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                syncThemeWithSystem();
+                handleStoredThemeChange();
+            }
+        });
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'theme') {
+                handleStoredThemeChange();
             }
         });
 

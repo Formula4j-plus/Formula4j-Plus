@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文档查看 - Formula4j-Plus</title>
+    <script>
+        (function () {
+            try {
+                var savedTheme = localStorage.getItem('theme') || 'system';
+                var resolvedTheme = savedTheme === 'system'
+                    ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : savedTheme;
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
@@ -152,6 +168,72 @@
 
         // 开始加载
         loadMarked();
+
+        const codeHighlightRules = [
+            {
+                regex: /(\/\/.*$)/gm,
+                className: 'ch-comment'
+            },
+            {
+                regex: /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,
+                className: 'ch-string'
+            },
+            {
+                regex: /\b(import|package|public|private|protected|class|interface|enum|static|final|void|new|return|if|else|for|while|switch|case|break|continue|try|catch|finally|throw|throws|extends|implements|boolean|int|long|double|float|char|byte|short|null|true|false)\b/g,
+                className: 'ch-keyword'
+            },
+            {
+                regex: /\b(\d+(?:\.\d+)?)\b/g,
+                className: 'ch-number'
+            },
+            {
+                regex: /\b([A-Za-z_][\w]*)\s*(?=\()/g,
+                className: 'ch-function'
+            }
+        ];
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function highlightCodeText(text) {
+            const placeholders = [];
+            let html = escapeHtml(text);
+
+            codeHighlightRules.forEach((rule) => {
+                html = html.replace(rule.regex, (match) => {
+                    const key = `__TOKEN_${placeholders.length}__`;
+                    placeholders.push(`<span class="${rule.className}">${match}</span>`);
+                    return key;
+                });
+            });
+
+            placeholders.forEach((value, index) => {
+                html = html.replace(new RegExp(`__TOKEN_${index}__`, 'g'), value);
+            });
+
+            return html;
+        }
+
+        function enhanceCodeBlocks(root = document) {
+            root.querySelectorAll('pre code').forEach((codeEl) => {
+                if (codeEl.dataset.highlighted === 'true') {
+                    return;
+                }
+
+                if (codeEl.querySelector('span')) {
+                    codeEl.dataset.highlighted = 'true';
+                    return;
+                }
+
+                const rawText = codeEl.textContent || '';
+                codeEl.innerHTML = highlightCodeText(rawText);
+                codeEl.dataset.highlighted = 'true';
+            });
+        }
     </script>
     <style>
         * {
@@ -161,87 +243,298 @@
         }
 
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --accent-color: #3b82f6;
-            --text-color: #1f2937;
-            --text-light: #6b7280;
-            --bg-color: #ffffff;
-            --bg-light: #f9fafb;
-            --bg-dark: #111827;
-            --border-color: #e5e7eb;
-            --code-bg: #f3f4f6;
-            --code-border: #e5e7eb;
+            --primary: #2563EB;
+            --primary-hover: #3B82F6;
+            --cta: #F97316;
+            --cta-hover: #EA580C;
+            --bg: #0F172A;
+            --bg-elevated: #1E293B;
+            --bg-card: #1E293B;
+            --surface-subtle: rgba(15, 23, 42, 0.72);
+            --text: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+            --success: #10B981;
+            --code-bg: #020617;
+            --code-surface: #0F172A;
+            --code-border: #1E293B;
+            --code-text: #E2E8F0;
+            --inline-code-bg: rgba(37, 99, 235, 0.14);
+            --inline-code-border: rgba(59, 130, 246, 0.22);
+            --inline-code-text: #BFDBFE;
+            --blockquote-bg: rgba(37, 99, 235, 0.08);
+            --table-stripe: rgba(148, 163, 184, 0.06);
+            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.14);
+            --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.22);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+        }
+
+        [data-theme="light"] {
+            --bg: #FFFFFF;
+            --bg-elevated: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --surface-subtle: rgba(148, 163, 184, 0.12);
+            --text: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --code-bg: #EFF6FF;
+            --code-surface: #F8FAFC;
+            --code-border: #BFDBFE;
+            --code-text: #0F172A;
+            --inline-code-bg: #DBEAFE;
+            --inline-code-border: #BFDBFE;
+            --inline-code-text: #1D4ED8;
+            --blockquote-bg: #EFF6FF;
+            --table-stripe: #F8FAFC;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-light);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            color: var(--text);
+            background-color: var(--bg);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        a {
+            color: var(--primary-hover);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--cta);
+        }
+
+        .control-bar {
+            position: fixed;
+            top: var(--space-4);
+            right: var(--space-4);
+            display: flex;
+            gap: var(--space-2);
+            z-index: 1000;
+            background: color-mix(in srgb, var(--bg-card) 86%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            border-radius: 999px;
+            padding: var(--space-1);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(16px);
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 0.625rem 0.95rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .control-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--text);
+            transform: translateY(-1px);
+        }
+
+        .control-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 1px;
+        }
+
+        .control-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.98);
+            transition: all 0.2s ease;
+            z-index: 10;
+            padding: var(--space-1);
+            backdrop-filter: blur(18px);
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-elevated);
+            color: var(--text);
+        }
+
+        .dropdown-item.active {
+            color: var(--primary-hover);
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: var(--space-1) 0;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 var(--space-6);
         }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+        .doc-shell {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6.5rem 0 var(--space-8);
+        }
+
+        .doc-header {
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-6);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .doc-lead {
+            max-width: 720px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-top: calc(var(--space-4) * -1);
+            margin-bottom: 0;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             font-weight: 700;
+            margin-bottom: var(--space-8);
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .back-btn {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: background 0.3s;
-            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 0.85rem 1.35rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: var(--space-8);
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            border-color: var(--primary-hover);
+            color: var(--text);
+            background: var(--bg-card);
+            transform: translateY(-1px);
         }
 
-        /* Main Content */
-        main {
-            padding: 2rem 0;
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: 0.85rem 1.35rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+            color: var(--text);
         }
 
         .markdown-container {
-            background: var(--bg-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
             padding: 3rem;
-            margin: 2rem auto;
-            max-width: 900px;
+            margin: 0;
+            backdrop-filter: none;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        [data-theme="dark"] .markdown-container {
+            background: rgba(15, 23, 42, 0.92);
+            border-color: rgba(51, 65, 85, 0.9);
+            box-shadow: 0 24px 64px rgba(2, 6, 23, 0.35);
+        }
+
+        [data-theme="light"] .markdown-container {
+            background: rgba(255, 255, 255, 0.94);
+            border-color: rgba(191, 219, 254, 0.9);
+            box-shadow: 0 24px 64px rgba(148, 163, 184, 0.2);
         }
 
         .loading {
             text-align: center;
             padding: 3rem;
-            color: var(--text-light);
+            color: var(--text-secondary);
         }
 
         .error {
@@ -261,7 +554,7 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--border-color);
-            color: var(--text-color);
+            color: var(--text);
         }
 
         .markdown-body h2 {
@@ -270,26 +563,26 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border-color);
-            color: var(--text-color);
+            color: var(--text);
         }
 
         .markdown-body h3 {
             font-size: 1.5rem;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
-            color: var(--text-color);
+            color: var(--text);
         }
 
         .markdown-body h4 {
             font-size: 1.25rem;
             margin-top: 1.25rem;
             margin-bottom: 0.5rem;
-            color: var(--text-color);
+            color: var(--text);
         }
 
         .markdown-body p {
             margin-bottom: 1rem;
-            color: var(--text-color);
+            color: var(--text);
         }
 
         .markdown-body ul, .markdown-body ol {
@@ -303,33 +596,33 @@
 
         .markdown-body blockquote {
             border-left: 4px solid var(--primary-color);
-            padding-left: 1rem;
             margin: 1rem 0;
-            color: var(--text-light);
-            background: var(--bg-light);
-            padding: 1rem;
-            border-radius: 4px;
+            color: var(--text-secondary);
+            background: var(--blockquote-bg);
+            padding: 1rem 1.25rem;
+            border-radius: 0 10px 10px 0;
         }
 
         .markdown-body code {
-            background: var(--code-bg);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: var(--inline-code-bg);
+            padding: 0.2rem 0.45rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 0.9em;
-            color: #e83e8c;
-            border: 1px solid var(--code-border);
+            color: var(--inline-code-text);
+            border: 1px solid var(--inline-code-border);
         }
 
         .markdown-body pre {
-            background: var(--bg-dark);
-            color: #f9fafb;
+            background: linear-gradient(180deg, var(--code-bg) 0%, var(--code-surface) 100%);
+            color: var(--code-text);
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 14px;
             overflow-x: auto;
             overflow-y: hidden;
             margin: 1.5rem 0;
             border: 1px solid var(--code-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 32px rgba(148, 163, 184, 0.16);
             white-space: pre;
             word-break: normal;
             overflow-wrap: normal;
@@ -348,27 +641,52 @@
             min-width: max-content;
         }
 
+        .ch-keyword { color: #C792EA; }
+        .ch-string { color: #C3E88D; }
+        .ch-comment { color: var(--text-muted); font-style: italic; }
+        .ch-function { color: #82AAFF; }
+        .ch-number { color: #F78C6C; }
+
+        [data-theme="light"] .ch-keyword { color: #7C3AED; }
+        [data-theme="light"] .ch-string { color: #047857; }
+        [data-theme="light"] .ch-comment { color: #64748B; }
+        [data-theme="light"] .ch-function { color: #2563EB; }
+        [data-theme="light"] .ch-number { color: #C2410C; }
+
+
         .markdown-body table {
             width: 100%;
             border-collapse: collapse;
             margin: 1.5rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: none;
         }
 
         .markdown-body th,
         .markdown-body td {
-            padding: 0.75rem;
+            padding: 0.875rem 1rem;
             text-align: left;
-            border: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border);
+        }
+
+
+        .markdown-body th,
+        .markdown-body td {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .markdown-body th {
             background: var(--bg-light);
+            color: var(--text);
             font-weight: 600;
         }
 
         .markdown-body tr:nth-child(even) {
-            background: var(--bg-light);
+            background: var(--table-stripe);
         }
 
         .markdown-body a {
@@ -397,14 +715,12 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
+            .doc-shell {
+                padding: 5.5rem 0 var(--space-6);
             }
 
             .markdown-container {
                 padding: 1.5rem;
-                margin: 1rem;
             }
 
             .markdown-body h1 {
@@ -414,30 +730,257 @@
             .markdown-body h2 {
                 font-size: 1.5rem;
             }
+
+            .control-bar {
+                top: var(--space-2);
+                right: var(--space-2);
+            }
+
+            .control-btn span {
+                display: none;
+            }
+
+            .control-btn {
+                padding: var(--space-2);
+            }
+
+            .back-btn, .btn {
+                width: calc(100% - 7rem);
+                justify-content: center;
+            }
+
+            .container {
+                padding: 0 var(--space-4);
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <h1>📖 文档查看</h1>
-                <a href="index.html" class="back-btn">← 返回首页</a>
+    <div class="control-bar">
+        <div class="dropdown">
+            <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span data-i18n="lang">语言</span>
+            </button>
+            <div class="dropdown-menu" id="langMenu">
+                <button class="dropdown-item active" data-lang="zh-CN">简体中文</button>
+                <button class="dropdown-item" data-lang="zh-TW">繁體中文</button>
+                <button class="dropdown-item" data-lang="en">English</button>
             </div>
         </div>
-    </header>
+        <div class="dropdown">
+            <button class="control-btn" id="themeBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span data-i18n="theme">主题</span>
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+                <button class="dropdown-item" data-theme="light" data-i18n="light">日间模式</button>
+                <button class="dropdown-item" data-theme="dark" data-i18n="dark">夜间模式</button>
+                <div class="divider"></div>
+                <button class="dropdown-item" data-theme="system" data-i18n="system">跟随系统</button>
+            </div>
+        </div>
+    </div>
 
-    <main>
-        <div class="container">
+    <div class="container">
+        <div class="doc-shell">
+            <div class="doc-header">
+                <a href="index.html" class="back-btn" data-i18n="back_home">返回首页</a>
+                <h1 data-i18n="page_title">文档查看</h1>
+                <p class="doc-lead" data-i18n="page_desc">统一阅读 README、更新日志和其他 Markdown 文档，保持与站点文档页一致的主题、排版与代码阅读体验。</p>
+            </div>
+
             <div class="markdown-container">
                 <div id="loading" class="loading">正在加载文档...</div>
                 <div id="error" class="error" style="display: none;"></div>
                 <div id="content" class="markdown-body" style="display: none;"></div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
+        const translations = {
+            'zh-CN': {
+                lang: '语言',
+                theme: '主题',
+                light: '日间模式',
+                dark: '夜间模式',
+                system: '跟随系统',
+                page_title: '文档查看',
+                page_desc: '统一阅读 README、更新日志和其他 Markdown 文档，保持与站点文档页一致的主题、排版与代码阅读体验。',
+                back_home: '返回首页',
+                loading: '正在加载文档...',
+                error_prefix: '加载失败: '
+            },
+            'zh-TW': {
+                lang: '語言',
+                theme: '主題',
+                light: '日間模式',
+                dark: '夜間模式',
+                system: '跟隨系統',
+                page_title: '文件檢視',
+                page_desc: '統一閱讀 README、更新日誌與其他 Markdown 文件，保持與站點文件頁一致的主題、排版與程式碼閱讀體驗。',
+                back_home: '返回首頁',
+                loading: '正在載入文件...',
+                error_prefix: '載入失敗: '
+            },
+            'en': {
+                lang: 'Language',
+                theme: 'Theme',
+                light: 'Light Mode',
+                dark: 'Dark Mode',
+                system: 'System',
+                page_title: 'Document Viewer',
+                page_desc: 'Read the README, changelog, and other Markdown files with the same theme, spacing, and code-reading experience as the rest of the site.',
+                back_home: 'Back to Home',
+                loading: 'Loading document...',
+                error_prefix: 'Load failed: '
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'zh-CN';
+        let currentTheme = localStorage.getItem('theme') || 'system';
+        const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function resolveSystemTheme() {
+            const hour = new Date().getHours();
+            return (hour >= 18 || hour < 7) ? 'dark' : 'light';
+        }
+
+        function getResolvedTheme(theme) {
+            return theme === 'system' ? resolveSystemTheme() : theme;
+        }
+
+        function applyTranslations(lang) {
+            const t = translations[lang] || translations['zh-CN'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', getResolvedTheme(theme));
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.innerHTML = theme === 'light'
+                ? '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'
+                : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        }
+
+        function updateLangUI() {
+            document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === currentLang);
+            });
+        }
+
+        function updateThemeUI() {
+            document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.theme === currentTheme);
+            });
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const btn = dropdown.querySelector('.control-btn');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-menu').forEach(m => {
+                    if (m !== menu) {
+                        m.classList.remove('show');
+                    }
+                });
+                menu.classList.toggle('show');
+                btn.setAttribute('aria-expanded', menu.classList.contains('show'));
+            });
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        });
+
+        document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentLang = item.dataset.lang;
+                localStorage.setItem('lang', currentLang);
+                applyTranslations(currentLang);
+                updateLangUI();
+                const loadingEl = document.getElementById('loading');
+                if (loadingEl && loadingEl.style.display !== 'none') {
+                    loadingEl.textContent = (translations[currentLang] || translations['zh-CN']).loading;
+                }
+            });
+        });
+
+        document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTheme = item.dataset.theme;
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+                updateThemeUI();
+            });
+        });
+
+        function syncThemeWithSystem() {
+            if (currentTheme === 'system') {
+                applyTheme('system');
+                updateThemeUI();
+            }
+        }
+
+        function handleStoredThemeChange() {
+            const storedTheme = localStorage.getItem('theme') || 'system';
+            if (storedTheme !== currentTheme) {
+                currentTheme = storedTheme;
+            }
+            applyTheme(currentTheme);
+            updateThemeUI();
+        }
+
+        if (typeof systemThemeMedia.addEventListener === 'function') {
+            systemThemeMedia.addEventListener('change', syncThemeWithSystem);
+        } else if (typeof systemThemeMedia.addListener === 'function') {
+            systemThemeMedia.addListener(syncThemeWithSystem);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                syncThemeWithSystem();
+                handleStoredThemeChange();
+            }
+        });
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'theme') {
+                handleStoredThemeChange();
+            }
+        });
+
+        applyTranslations(currentLang);
+        updateLangUI();
+        applyTheme(currentTheme);
+        updateThemeUI();
+
         // 获取URL参数中的文件路径
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -449,6 +992,9 @@
             const loadingEl = document.getElementById('loading');
             const errorEl = document.getElementById('error');
             const contentEl = document.getElementById('content');
+            const t = translations[currentLang] || translations['zh-CN'];
+
+            loadingEl.textContent = t.loading;
 
             // 等待 marked 加载完成
             function waitForMarked() {
@@ -476,7 +1022,7 @@
                 const response = await fetch(file);
                 
                 if (!response.ok) {
-                    throw new Error(`无法加载文件: ${response.status} ${response.statusText}`);
+                    throw new Error(`${response.status} ${response.statusText}`);
                 }
 
                 const markdown = await response.text();
@@ -504,17 +1050,20 @@
                 // 显示内容
                 loadingEl.style.display = 'none';
                 contentEl.innerHTML = html;
+                enhanceCodeBlocks(contentEl);
                 contentEl.style.display = 'block';
 
                 // 更新页面标题
                 const firstHeading = contentEl.querySelector('h1, h2');
                 if (firstHeading) {
                     document.title = `${firstHeading.textContent} - Formula4j-Plus`;
+                } else {
+                    document.title = `${t.page_title} - Formula4j-Plus`;
                 }
             } catch (error) {
                 loadingEl.style.display = 'none';
                 errorEl.style.display = 'block';
-                errorEl.textContent = `加载失败: ${error.message}`;
+                errorEl.textContent = `${(translations[currentLang] || translations['zh-CN']).error_prefix}${error.message}`;
                 console.error('Error loading markdown:', error);
             }
         }
