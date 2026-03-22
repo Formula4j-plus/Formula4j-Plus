@@ -12,21 +12,43 @@
 
     <name>Formula4j-Plus</name>
     <description>Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果</description>
+    <url>https://github.com/Formula4j-plus/Formula4j-Plus</url>
+
+    <licenses>
+        <license>
+            <name>Business Source License 1.1</name>
+            <url>https://github.com/Formula4j-plus/Formula4j-Plus/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>wanshen</id>
+            <name>WanShen</name>
+            <email>1498610052@qq.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/Formula4j-plus/Formula4j-Plus.git</connection>
+        <developerConnection>scm:git:https://github.com/Formula4j-plus/Formula4j-Plus.git</developerConnection>
+        <url>https://github.com/Formula4j-plus/Formula4j-Plus</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>4.13.2</junit.version>
+        <maven.deploy.skip>false</maven.deploy.skip>
+        <proguard.skip>false</proguard.skip>
         <!-- 支持Java 8-25运行时 -->
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.gitee.Fiee_Kernel</groupId>
-            <artifactId>Formula4j-Plus</artifactId>
-            <version>2.2.0</version>
-        </dependency>
         <!-- JSON处理 -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -94,126 +116,208 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <!-- Maven Shade Plugin - 打包包含所有依赖的Fat JAR -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>fat</shadedClassifierName>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Implementation-Title>Formula4j-Plus</Implementation-Title>
-                                        <Implementation-Version>${project.version}</Implementation-Version>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <!-- ProGuard代码混淆插件 - 打包时自动混淆 -->
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.6.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.guardsquare</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>7.2.2</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
                 <configuration>
-                    <proguardVersion>7.2.2</proguardVersion>
-                    <includeDependency>false</includeDependency>
-                    <attach>false</attach>
-                    <injar>${project.build.finalName}-fat.jar</injar>
-                    <outjar>${project.build.finalName}-obfuscated.jar</outjar>
-                    <proguardInclude>false</proguardInclude>
-                    <options>
-                        <option>-keep public class com.formula.calculator.FormulaCalculator { public static *; }</option>
-                        <option>-keep public class com.formula.calculator.FormulaException { public *; }</option>
-                        <option>-keep public class com.formula.calculator.FormulaUtils { public static *; }</option>
-                        <option>-keep class com.formula.calculator.model.** { *; }</option>
-                        <option>-keep interface com.formula.calculator.** { *; }</option>
-                        <option>-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }</option>
-                        <option>-keepclassmembers class * implements java.io.Serializable { static final long serialVersionUID; private static final java.io.ObjectStreamField[] serialPersistentFields; private void writeObject(java.io.ObjectOutputStream); private void readObject(java.io.ObjectInputStream); java.lang.Object writeReplace(); java.lang.Object readResolve(); }</option>
-                        <option>-keepattributes *Annotation*</option>
-                        <option>-keepattributes Signature</option>
-                        <option>-keepattributes Exceptions</option>
-                        <option>-keepattributes SourceFile,LineNumberTable</option>
-                        <option>-keepattributes InnerClasses,EnclosingMethod</option>
-                        <option>-keepattributes StackMapTable</option>
-                        <option>-target 1.8</option>
-                        <option>-optimizationpasses 5</option>
-                        <option>-dontusemixedcaseclassnames</option>
-                        <option>-dontskipnonpubliclibraryclasses</option>
-                        <option>-dontwarn com.alibaba.fastjson.**</option>
-                        <option>-dontwarn net.objecthunter.exp4j.**</option>
-                        <option>-keep class com.alibaba.fastjson.** { *; }</option>
-                        <option>-keep class net.objecthunter.exp4j.** { *; }</option>
-                        <option>-printmapping ${project.build.directory}/mapping.txt</option>
-                    </options>
-                    <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
-                    </libs>
+                    <source>8</source>
+                    <encoding>UTF-8</encoding>
+                    <doclint>none</doclint>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             
-            <!-- 将混淆后的jar替换为最终jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>replace-with-obfuscated</id>
-                        <phase>package</phase>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>sign</goal>
                         </goals>
-                        <configuration>
-                            <target>
-                                <delete file="${project.build.directory}/${project.build.finalName}.jar"/>
-                                <copy file="${project.build.directory}/${project.build.finalName}-obfuscated.jar"
-                                      tofile="${project.build.directory}/${project.build.finalName}.jar"/>
-                            </target>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>central-publish</id>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.passphrase>${env.MAVEN_GPG_PASSPHRASE}</gpg.passphrase>
+                <gpg.keyname>ED6E037631BADB37</gpg.keyname>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.5.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <executable>${gpg.executable}</executable>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>with-proguard</id>
+            <build>
+                <plugins>
+                    <!-- Maven Shade Plugin - 打包包含所有依赖的Fat JAR -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <shadedClassifierName>fat</shadedClassifierName>
+                                    <transformers>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <manifestEntries>
+                                                <Implementation-Title>Formula4j-Plus</Implementation-Title>
+                                                <Implementation-Version>${project.version}</Implementation-Version>
+                                            </manifestEntries>
+                                        </transformer>
+                                    </transformers>
+                                    <filters>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- ProGuard代码混淆插件 - 打包时自动混淆 -->
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.6.0</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.guardsquare</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>7.2.2</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <proguardVersion>7.2.2</proguardVersion>
+                            <includeDependency>false</includeDependency>
+                            <attach>false</attach>
+                            <injar>${project.build.finalName}-fat.jar</injar>
+                            <outjar>${project.build.finalName}-obfuscated.jar</outjar>
+                            <proguardInclude>false</proguardInclude>
+                            <options>
+                                <option>-keep public class com.formula.calculator.FormulaCalculator { public static *; }</option>
+                                <option>-keep public class com.formula.calculator.FormulaException { public *; }</option>
+                                <option>-keep public class com.formula.calculator.FormulaUtils { public static *; }</option>
+                                <option>-keep class com.formula.calculator.model.** { *; }</option>
+                                <option>-keep interface com.formula.calculator.** { *; }</option>
+                                <option>-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }</option>
+                                <option>-keepclassmembers class * implements java.io.Serializable { static final long serialVersionUID; private static final java.io.ObjectStreamField[] serialPersistentFields; private void writeObject(java.io.ObjectOutputStream); private void readObject(java.io.ObjectInputStream); java.lang.Object writeReplace(); java.lang.Object readResolve(); }</option>
+                                <option>-keepattributes *Annotation*</option>
+                                <option>-keepattributes Signature</option>
+                                <option>-keepattributes Exceptions</option>
+                                <option>-keepattributes SourceFile,LineNumberTable</option>
+                                <option>-keepattributes InnerClasses,EnclosingMethod</option>
+                                <option>-keepattributes StackMapTable</option>
+                                <option>-target 1.8</option>
+                                <option>-optimizationpasses 5</option>
+                                <option>-dontusemixedcaseclassnames</option>
+                                <option>-dontskipnonpubliclibraryclasses</option>
+                                <option>-dontwarn com.alibaba.fastjson.**</option>
+                                <option>-dontwarn net.objecthunter.exp4j.**</option>
+                                <option>-keep class com.alibaba.fastjson.** { *; }</option>
+                                <option>-keep class net.objecthunter.exp4j.** { *; }</option>
+                                <option>-printmapping ${project.build.directory}/mapping.txt</option>
+                            </options>
+                            <libs>
+                                <lib>${java.home}/lib/rt.jar</lib>
+                            </libs>
+                        </configuration>
+                    </plugin>
+
+                    <!-- 将混淆后的jar替换为最终jar -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>replace-with-obfuscated</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}-obfuscated.jar"
+                                              tofile="${project.build.directory}/${project.build.finalName}.jar"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
@@ -222,14 +326,11 @@
         </repository>
     </repositories>
 
-    <!-- 发布配置（可选，用于GitHub/Gitee Packages） -->
-    <!--
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/YOUR_USERNAME/formula4j-plus</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
         </repository>
     </distributionManagement>
-    -->
 </project>

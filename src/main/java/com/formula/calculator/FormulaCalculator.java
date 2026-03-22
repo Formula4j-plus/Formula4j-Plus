@@ -105,7 +105,7 @@ public class FormulaCalculator {
             
             // 检查结果是否是字符串字面量（用引号包裹）
             String trimmed = processedFormula.trim();
-            if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
+            if (isQuotedStringLiteral(trimmed)) {
                 // 返回字符串（移除引号）
                 return trimmed.substring(1, trimmed.length() - 1);
             }
@@ -121,8 +121,6 @@ public class FormulaCalculator {
             return evaluateExpression(processedFormula);
             
         } catch (Exception e) {
-            System.err.println("公式计算失败: formula=" + formula + ", error=" + e.getMessage());
-            e.printStackTrace();
             throw new FormulaException("公式计算失败: " + e.getMessage(), e);
         }
     }
@@ -495,12 +493,16 @@ public class FormulaCalculator {
         // IFS (多条件IF)
         result = processFunction(result, IFS.getName(), params -> {
             String[] parts = FormulaParamUtils.splitFunctionParams(params, -1);
-            if (parts.length < 2 || parts.length % 2 != 0) return "0";
-            for (int i = 0; i < parts.length; i += 2) {
+            if (parts.length < 2) return "0";
+            int pairLength = parts.length % 2 == 0 ? parts.length : parts.length - 1;
+            for (int i = 0; i < pairLength; i += 2) {
                 String condition = replaceFields(parts[i].trim(), data, fieldMapping);
                 if (evaluateCondition(condition)) {
                     return replaceFields(parts[i + 1].trim(), data, fieldMapping);
                 }
+            }
+            if (parts.length % 2 != 0) {
+                return replaceFields(parts[parts.length - 1].trim(), data, fieldMapping);
             }
             return "0";
         });
@@ -551,8 +553,12 @@ public class FormulaCalculator {
             if (parts.length < 2) return parts[0];
             try {
                 String expression = replaceFields(parts[0].trim(), data, fieldMapping);
+                String normalized = expression.trim();
+                if (isQuotedStringLiteral(normalized)) {
+                    normalized = normalized.substring(1, normalized.length() - 1);
+                }
                 // 检查是否为#N/A或null
-                if (expression.equalsIgnoreCase("#N/A") || expression.equalsIgnoreCase("N/A") || expression.equals("null")) {
+                if (normalized.equalsIgnoreCase("#N/A") || normalized.equalsIgnoreCase("N/A") || normalized.equals("null")) {
                     return replaceFields(parts[1].trim(), data, fieldMapping);
                 }
                 return expression;
@@ -2775,6 +2781,33 @@ public class FormulaCalculator {
         }
         
         return text;
+    }
+
+    /**
+     * 判断是否为单个字符串字面量，避免把包含拼接的表达式误判为纯字符串。
+     */
+    private static boolean isQuotedStringLiteral(String value) {
+        if (value == null || value.length() < 2 || !value.startsWith("\"") || !value.endsWith("\"")) {
+            return false;
+        }
+
+        boolean escaped = false;
+        for (int i = 1; i < value.length() - 1; i++) {
+            char c = value.charAt(i);
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (c == '\\') {
+                escaped = true;
+                continue;
+            }
+            if (c == '"') {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     /**
@@ -5103,38 +5136,7 @@ public class FormulaCalculator {
             // 将参数转换为JavaScript数组
             for (int i = 0; i < parts.length; i++) {
                 if (i > 0) jsCode.append(", ");
-                String param = parts[i].trim();
-                
-                // 尝试解析为数值
-                try {
-                    double numValue = Double.parseDouble(param);
-                    jsCode.append(numValue);
-                } catch (NumberFormatException e) {
-                    // 如果是字符串字面量
-                    if (param.startsWith("\"") && param.endsWith("\"")) {
-                        jsCode.append(param);
-                    } else {
-                        // 尝试从data中获取字段值
-                        String enCode = getEnCode(param, fieldMapping);
-                        if (enCode != null && data.containsKey(enCode)) {
-                            Object value = data.get(enCode);
-                            if (value instanceof Number) {
-                                jsCode.append(((Number) value).doubleValue());
-                            } else if (value instanceof String) {
-                                jsCode.append("\"").append(escapeJavaScriptString(value.toString())).append("\"");
-                            } else {
-                                jsCode.append("0");
-                            }
-                        } else {
-                            // 默认尝试解析为数值
-                            try {
-                                jsCode.append(Double.parseDouble(param));
-                            } catch (NumberFormatException ex) {
-                                jsCode.append("0");
-                            }
-                        }
-                    }
-                }
+                jsCode.append(convertRawParamToJavaScript(parts[i].trim(), data, fieldMapping));
             }
             
             jsCode.append("    ];");
@@ -5149,14 +5151,7 @@ public class FormulaCalculator {
             // 执行JavaScript代码
             Object result = globalFormulaJsEngine.eval(jsCode.toString());
             
-            // 转换结果为字符串
-            if (result == null) {
-                return null; // 函数不存在或调用失败
-            } else if (result instanceof Number) {
-                return String.valueOf(result);
-            } else {
-                return result.toString();
-            }
+            return normalizeFunctionResult(result, true);
         } catch (Exception e) {
             return null; // 调用失败
         }
@@ -5183,6 +5178,7 @@ public class FormulaCalculator {
         if (!"js".equalsIgnoreCase(type) && !"javascript".equalsIgnoreCase(type)) {
             throw new IllegalArgumentException("不支持的类型: " + type + "，仅支持 'js' 或 'javascript'");
         }
+        final String normalizedScript = script == null ? "" : script.trim();
         
         // 将JavaScript脚本包装为CustomFunction
         customFunctions.put(name.toUpperCase(), (params, data, fieldMapping) -> {
@@ -5194,67 +5190,31 @@ public class FormulaCalculator {
                     return "0";
                 }
                 
-                // 解析参数
-                String[] parts = FormulaParamUtils.splitFunctionParams(params, -1);
-                
-                // 构建JavaScript调用代码
-                StringBuilder jsCode = new StringBuilder();
-                jsCode.append("(function() {");
-                jsCode.append("  var func = ").append(script).append(";");
-                jsCode.append("  var params = [");
-                
-                // 将参数转换为JavaScript数组
-                for (int i = 0; i < parts.length; i++) {
-                    if (i > 0) jsCode.append(", ");
-                    String param = parts[i].trim();
-                    
-                    // 尝试解析为数值
-                    try {
-                        double numValue = Double.parseDouble(param);
-                        jsCode.append(numValue);
-                    } catch (NumberFormatException e) {
-                        // 如果是字符串字面量
-                        if (param.startsWith("\"") && param.endsWith("\"")) {
-                            jsCode.append(param);
-                        } else {
-                            // 尝试从data中获取字段值
-                            String enCode = getEnCode(param, fieldMapping);
-                            if (enCode != null && data.containsKey(enCode)) {
-                                Object value = data.get(enCode);
-                                if (value instanceof Number) {
-                                    jsCode.append(((Number) value).doubleValue());
-                                } else if (value instanceof String) {
-                                    jsCode.append("\"").append(value).append("\"");
-                                } else {
-                                    jsCode.append("0");
-                                }
-                            } else {
-                                // 默认尝试解析为数值
-                                try {
-                                    jsCode.append(Double.parseDouble(param));
-                                } catch (NumberFormatException ex) {
-                                    jsCode.append("0");
-                                }
-                            }
-                        }
+                engine.put("params", params);
+                engine.put("data", data);
+
+                Object result;
+                if (normalizedScript.startsWith("function") || normalizedScript.contains("=>")) {
+                    String[] parts = FormulaParamUtils.splitFunctionParams(params, -1);
+                    StringBuilder jsCode = new StringBuilder();
+                    jsCode.append("(function() {");
+                    jsCode.append("  var func = ").append(normalizedScript).append(";");
+                    jsCode.append("  var args = [");
+
+                    for (int i = 0; i < parts.length; i++) {
+                        if (i > 0) jsCode.append(", ");
+                        jsCode.append(convertParamToJavaScript(parts[i].trim(), data, fieldMapping));
                     }
-                }
-                
-                jsCode.append("  ];");
-                jsCode.append("  return func.apply(null, params);");
-                jsCode.append("})();");
-                
-                // 执行JavaScript代码
-                Object result = engine.eval(jsCode.toString());
-                
-                // 转换结果为字符串
-                if (result == null) {
-                    return "0";
-                } else if (result instanceof Number) {
-                    return String.valueOf(result);
+
+                    jsCode.append("];\n");
+                    jsCode.append("  return func.apply(null, args);");
+                    jsCode.append("})();");
+                    result = engine.eval(jsCode.toString());
                 } else {
-                    return result.toString();
+                    result = engine.eval(normalizedScript);
                 }
+                
+                return normalizeFunctionResult(result, false);
             } catch (Exception e) {
                 return "0";
             }
@@ -5312,38 +5272,7 @@ public class FormulaCalculator {
                 // 将参数转换为JavaScript数组
                 for (int i = 0; i < parts.length; i++) {
                     if (i > 0) jsCode.append(", ");
-                    String param = parts[i].trim();
-                    
-                    // 尝试解析为数值
-                    try {
-                        double numValue = Double.parseDouble(param);
-                        jsCode.append(numValue);
-                    } catch (NumberFormatException e) {
-                        // 如果是字符串字面量
-                        if (param.startsWith("\"") && param.endsWith("\"")) {
-                            jsCode.append(param);
-                        } else {
-                            // 尝试从data中获取字段值
-                            String enCode = getEnCode(param, fieldMapping);
-                            if (enCode != null && data.containsKey(enCode)) {
-                                Object value = data.get(enCode);
-                                if (value instanceof Number) {
-                                    jsCode.append(((Number) value).doubleValue());
-                                } else if (value instanceof String) {
-                                    jsCode.append("\"").append(escapeJavaScriptString(value.toString())).append("\"");
-                                } else {
-                                    jsCode.append("0");
-                                }
-                            } else {
-                                // 默认尝试解析为数值
-                                try {
-                                    jsCode.append(Double.parseDouble(param));
-                                } catch (NumberFormatException ex) {
-                                    jsCode.append("0");
-                                }
-                            }
-                        }
-                    }
+                    jsCode.append(convertRawParamToJavaScript(parts[i].trim(), data, fieldMapping));
                 }
                 
                 jsCode.append("  ];");
@@ -5353,14 +5282,7 @@ public class FormulaCalculator {
                 // 执行JavaScript代码
                 Object result = engine.eval(jsCode.toString());
                 
-                // 转换结果为字符串
-                if (result == null) {
-                    return "0";
-                } else if (result instanceof Number) {
-                    return String.valueOf(result);
-                } else {
-                    return result.toString();
-                }
+                return normalizeFunctionResult(result, false);
             } catch (Exception e) {
                 return "0";
             }
@@ -5411,8 +5333,6 @@ public class FormulaCalculator {
             globalFormulaJsEngine = engine;
             globalFormulaJsPath = formulaJsPath;
         } catch (Exception e) {
-            System.err.println("加载Formula.js库失败: " + formulaJsPath + ", error: " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException("加载Formula.js库失败: " + e.getMessage(), e);
         }
     }
@@ -5702,6 +5622,102 @@ public class FormulaCalculator {
         
         return sb.toString();
     }
+
+    /**
+     * 将函数参数转换为 JavaScript 字面量。
+     */
+    private static String convertParamToJavaScript(String param, JSONObject data, Map<String, String> fieldMapping) {
+        return convertRawParamToJavaScript(param, data, fieldMapping);
+    }
+
+    /**
+     * 将原始参数转换为 JavaScript 可执行字面量。
+     */
+    private static String convertRawParamToJavaScript(String param, JSONObject data, Map<String, String> fieldMapping) {
+        try {
+            double numValue = Double.parseDouble(param);
+            return String.valueOf(numValue);
+        } catch (NumberFormatException e) {
+            if (isBooleanLiteral(param)) {
+                return param.toLowerCase();
+            }
+
+            if (isQuotedLiteral(param)) {
+                return param;
+            }
+
+            String enCode = getEnCode(param, fieldMapping);
+            if (enCode != null && data.containsKey(enCode)) {
+                Object value = data.get(enCode);
+                if (value instanceof Number) {
+                    return String.valueOf(((Number) value).doubleValue());
+                }
+                if (value instanceof Boolean) {
+                    return value.toString().toLowerCase();
+                }
+                if (value instanceof String) {
+                    return "\"" + escapeJavaScriptString(value.toString()) + "\"";
+                }
+            }
+
+            return "0";
+        }
+    }
+
+    private static boolean isQuotedLiteral(String param) {
+        return param != null && param.length() >= 2
+                && ((param.startsWith("\"") && param.endsWith("\""))
+                || (param.startsWith("'") && param.endsWith("'")));
+    }
+
+    private static boolean isBooleanLiteral(String param) {
+        return "true".equalsIgnoreCase(param) || "false".equalsIgnoreCase(param);
+    }
+
+    /**
+     * 归一化函数结果，避免普通字符串再次被当作数学表达式解析。
+     */
+    private static String normalizeFunctionResult(Object result, boolean allowNull) {
+        if (result == null) {
+            return allowNull ? null : "0";
+        }
+
+        if (result instanceof Number) {
+            return String.valueOf(result);
+        }
+
+        if (result instanceof Boolean) {
+            return ((Boolean) result) ? "1" : "0";
+        }
+
+        String text = result.toString();
+        if (text == null) {
+            return allowNull ? null : "0";
+        }
+
+        String trimmed = text.trim();
+        if (trimmed.isEmpty()) {
+            return "\"\"";
+        }
+
+        if (isQuotedLiteral(trimmed)) {
+            if (trimmed.startsWith("'")) {
+                return "\"" + escapeJavaScriptString(trimmed.substring(1, trimmed.length() - 1)) + "\"";
+            }
+            return trimmed;
+        }
+
+        if (isBooleanLiteral(trimmed)) {
+            return "true".equalsIgnoreCase(trimmed) ? "1" : "0";
+        }
+
+        try {
+            Double.parseDouble(trimmed);
+            return trimmed;
+        } catch (NumberFormatException e) {
+            return "\"" + escapeJavaScriptString(text) + "\"";
+        }
+    }
     
     /**
      * 处理CONCATENATE函数（在replaceFields之前处理，以保留字符串值）
@@ -5794,8 +5810,6 @@ public class FormulaCalculator {
      * 处理IF函数（支持嵌套函数）
      */
     private static String processIfFunction(String formula, JSONObject data, Map<String, String> fieldMapping) {
-        // 从最外层开始处理IF函数，避免嵌套问题
-        Pattern pattern = Pattern.compile("IF\\s*\\(", Pattern.CASE_INSENSITIVE);
         String result = formula;
         boolean changed = true;
         int maxIterations = 100; // 防止无限循环
@@ -5804,13 +5818,18 @@ public class FormulaCalculator {
         while (changed && iterations < maxIterations) {
             changed = false;
             iterations++;
-            Matcher matcher = pattern.matcher(result);
-            StringBuffer sb = new StringBuffer();
-            
-            while (matcher.find()) {
-                int pos = matcher.end(); // 跳过 IF函数名和左括号
-                
-                // 找到匹配的右括号，处理嵌套括号
+            int searchStart = 0;
+            StringBuilder sb = new StringBuilder();
+
+            while (searchStart < result.length()) {
+                int ifStart = indexOfIfFunction(result, searchStart);
+                if (ifStart == -1) {
+                    sb.append(result.substring(searchStart));
+                    break;
+                }
+
+                int openParen = result.indexOf('(', ifStart);
+                int pos = openParen + 1;
                 int depth = 1;
                 int paramStart = pos;
                 int comma1Pos = -1;
@@ -5831,6 +5850,8 @@ public class FormulaCalculator {
                     }
                     pos++;
                 }
+
+                sb.append(result, searchStart, ifStart);
                 
                 if (depth == 0 && comma1Pos != -1 && comma2Pos != -1) {
                     String condition = result.substring(paramStart, comma1Pos).trim();
@@ -5856,19 +5877,28 @@ public class FormulaCalculator {
                     boolean conditionResult = FormulaParamUtils.evaluateCondition(condition);
                     String selectedValue = conditionResult ? trueValue : falseValue;
                     
-                    // 替换IF函数调用
-                    matcher.appendReplacement(sb, selectedValue);
+                    sb.append(selectedValue);
                     changed = true;
+                    searchStart = pos;
                 } else {
-                    // 格式不正确，保留原样
-                    matcher.appendReplacement(sb, matcher.group(0));
+                    int fallbackEnd = pos > ifStart ? pos : Math.min(result.length(), ifStart + 2);
+                    sb.append(result, ifStart, fallbackEnd);
+                    searchStart = fallbackEnd;
                 }
             }
-            matcher.appendTail(sb);
             result = sb.toString();
         }
         
         return result;
+    }
+
+    /**
+     * 查找下一个 IF 函数起始位置，避免匹配到普通标识符中的 IF。
+     */
+    private static int indexOfIfFunction(String formula, int fromIndex) {
+        Pattern pattern = Pattern.compile("(?<![a-zA-Z0-9_])IF\\s*\\(", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(formula);
+        return matcher.find(fromIndex) ? matcher.start() : -1;
     }
     
     /**
@@ -6082,8 +6112,6 @@ public class FormulaCalculator {
             
             return result.toString();
         } catch (Exception e) {
-            System.err.println("字符串拼接失败: expression=" + expression + ", error=" + e.getMessage());
-            e.printStackTrace();
             throw new FormulaException("字符串拼接失败: " + e.getMessage(), e);
         }
     }
@@ -6161,8 +6189,6 @@ public class FormulaCalculator {
             
             return result;
         } catch (Exception e) {
-            System.err.println("表达式计算失败: expression=" + expression + ", error=" + e.getMessage());
-            e.printStackTrace();
             throw new FormulaException("表达式计算失败: " + e.getMessage(), e);
         }
     }

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用指南 - Formula4j-Plus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-hover: #3B82F6;
+            --cta: #F97316;
+            --bg: #0F172A;
+            --bg-elevated: #1E293B;
+            --bg-card: #1E293B;
+            --text: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+            --success: #10B981;
+            --code-bg: #020617;
+            --code-border: #1E293B;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg: #FFFFFF;
+            --bg-elevated: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --code-bg: #1E293B;
+            --code-border: #E2E8F0;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a { color: var(--primary-hover); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--cta); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 5rem var(--space-6) var(--space-8); }
+
+        /* Control Bar */
+        .control-bar {
+            position: fixed;
+            top: var(--space-4);
+            right: var(--space-4);
+            display: flex;
+            gap: var(--space-2);
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .control-btn:hover { background: var(--bg-elevated); color: var(--text); }
+        .control-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+        .control-btn svg { width: 16px; height: 16px; }
+
+        .dropdown { position: relative; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 140px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        .dropdown-item:hover { background: var(--bg-elevated); color: var(--text); }
+        .dropdown-item.active { color: var(--primary-hover); font-weight: 500; }
+
+        .divider { height: 1px; background: var(--border); margin: var(--space-1) 0; }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-4);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: var(--space-8);
+            transition: all 0.2s;
+        }
+        .back-btn:hover { border-color: var(--primary-hover); color: var(--text); }
+        .back-btn svg { width: 16px; height: 16px; }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-8);
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: var(--space-8) 0 var(--space-4);
+            color: var(--text);
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: var(--space-6) 0 var(--space-3);
+            color: var(--text);
+        }
+
+        p { margin-bottom: var(--space-4); color: var(--text-secondary); }
+        ul, ol { margin: var(--space-4) 0 var(--space-4) var(--space-6); color: var(--text-secondary); }
+        li { margin-bottom: var(--space-2); }
+
+        hr { border: none; border-top: 1px solid var(--border); margin: var(--space-8) 0; }
+
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            overflow-x: auto;
+            margin: var(--space-4) 0;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.7;
+            transition: all 0.3s ease;
+        }
+        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .code-block code { font-family: inherit; color: var(--text); }
+
+        .ch-keyword { color: #C792EA; }
+        .ch-string { color: #C3E88D; }
+        .ch-comment { color: var(--text-muted); font-style: italic; }
+        .ch-number { color: #F78C6C; }
+
+        .tip {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin: var(--space-4) 0;
+        }
+        .tip strong { color: #10B981; }
+        .tip ul { margin: var(--space-2) 0 var(--space-2) var(--space-6); }
+
+        code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+
+        @media (max-width: 768px) {
+            .container { padding: 4rem var(--space-4) var(--space-6); }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .control-bar { top: var(--space-2); right: var(--space-2); }
+            .control-btn span { display: none; }
+            .control-btn { padding: var(--space-2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="control-bar">
+        <div class="dropdown">
+            <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span data-i18n="lang">语言</span>
+            </button>
+            <div class="dropdown-menu" id="langMenu">
+                <button class="dropdown-item active" data-lang="zh-CN">简体中文</button>
+                <button class="dropdown-item" data-lang="zh-TW">繁體中文</button>
+                <button class="dropdown-item" data-lang="en">English</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="control-btn" id="themeBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span data-i18n="theme">主题</span>
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+                <button class="dropdown-item" data-theme="light" data-i18n="light">日间模式</button>
+                <button class="dropdown-item" data-theme="dark" data-i18n="dark">夜间模式</button>
+                <div class="divider"></div>
+                <button class="dropdown-item" data-theme="system" data-i18n="system">跟随系统</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="../index.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span data-i18n="back">返回首页</span>
+        </a>
+
+        <h1 data-i18n="title">使用指南</h1>
+
+        <h2 data-i18n="h2_quick">快速开始：一次性加载Formula.js库</h2>
+        <p data-i18n="p1_desc">如果你需要一次性加载整个Formula.js库，然后直接使用所有函数，可以使用以下方式：</p>
+
+        <div class="code-block">
+            <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
+<span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
+
+<span class="ch-comment">// 一次性加载 Formula.js 库</span>
+FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
+
+<span class="ch-comment">// 加载后，所有函数都可以直接使用</span>
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
+Object result = FormulaCalculator.calculate(formula, data);
+<span class="ch-comment">// 输出: 15.0</span></code></pre>
+        </div>
+
+        <div class="tip">
+            <strong data-i18n="tip_title">说明：</strong>
+            <ul>
+                <li data-i18n="tip1">一次加载后，所有 Formula.js 函数都可以直接使用</li>
+                <li data-i18n="tip2">支持多个函数一起使用并相加</li>
+                <li data-i18n="tip3">自动识别未在 Java 中实现的函数</li>
+                <li data-i18n="tip4">与 Java 实现的函数无缝混合使用</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2 data-i18n="h2_data">前端数据结构</h2>
+        <p data-i18n="p2_desc">前端传来的数据结构格式：</p>
+
+        <div class="code-block">
+            <pre><code>{
+  <span class="ch-string">"txt"</span>: <span class="ch-string">"SUM(字段1,字段2)"</span>,
+  <span class="ch-string">"marks"</span>: [
+    { <span class="ch-string">"enCode"</span>: <span class="ch-string">"field1"</span>, <span class="ch-string">"menuId"</span>: <span class="ch-string">"字段1"</span> },
+    { <span class="ch-string">"enCode"</span>: <span class="ch-string">"field2"</span>, <span class="ch-string">"menuId"</span>: <span class="ch-string">"字段2"</span> }
+  ]
+}</code></pre>
+        </div>
+
+        <h2 data-i18n="h2_backend">后端使用示例</h2>
+
+        <h3 data-i18n="h3_1">1. 接收前端数据并计算</h3>
+        <div class="code-block">
+            <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
+<span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
+<span class="ch-keyword">import</span> com.formula.calculator.model.FormulaData;
+
+<span class="ch-comment">// 解析前端 JSON</span>
+JSONObject json = JSONObject.parseObject(frontendJson);
+FormulaData formulaData = FormulaData.fromJSON(json);
+
+<span class="ch-comment">// 准备数据（key 使用 enCode）</span>
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+data.put(<span class="ch-string">"field1"</span>, <span class="ch-number">10</span>);
+data.put(<span class="ch-string">"field2"</span>, <span class="ch-number">20</span>);
+
+<span class="ch-comment">// 计算公式</span>
+Object result = FormulaCalculator.calculate(formulaData, data);
+<span class="ch-comment">// 输出: 30.0</span></code></pre>
+        </div>
+
+        <h3 data-i18n="h3_2">2. 验证前端计算结果</h3>
+        <div class="code-block">
+            <pre><code><span class="ch-keyword">import</span> com.formula.calculator.FormulaUtils;
+
+<span class="ch-comment">// 验证前端结果</span>
+<span class="ch-keyword">boolean</span> verified = FormulaUtils.verify(formulaData, data, frontendResult);
+<span class="ch-keyword">if</span> (verified) {
+    System.out.println(<span class="ch-string">"计算结果一致"</span>);
+}</code></pre>
+        </div>
+
+        <h2 data-i18n="h2_field">字段映射说明</h2>
+        <ul>
+            <li><strong>menuId</strong>: <span data-i18n="menuId_desc">公式中使用的字段显示名称（如"单价"）</span></li>
+            <li><strong>enCode</strong>: <span data-i18n="enCode_desc">数据中的字段编码（如"price"）</span></li>
+        </ul>
+
+        <div class="tip">
+            <strong data-i18n="notice_title">注意事项：</strong>
+            <ul style="margin-left: var(--space-6);">
+                <li data-i18n="notice1">数据 key 必须使用 enCode</li>
+                <li data-i18n="notice2">公式中使用 menuId</li>
+                <li data-i18n="notice3">marks 数组必须包含所有公式中使用的字段</li>
+            </ul>
+        </div>
+
+        <h2 data-i18n="h2_faq">常见问题</h2>
+
+        <h3 data-i18n="q1">Q: 如果字段值为 null 怎么办？</h3>
+        <p data-i18n="a1">A: 字段值为 null 时，会自动使用 0 替代，并记录警告日志。</p>
+
+        <h3 data-i18n="q2">Q: 如何支持自定义函数？</h3>
+        <div class="code-block">
+            <pre><code>FormulaCalculator.registerCustomFunction(<span class="ch-string">"MYFUNC"</span>, (params, data, mapping) -> {
+    <span class="ch-keyword">return</span> <span class="ch-string">"结果"</span>;
+});</code></pre>
+        </div>
+
+        <h3 data-i18n="q3">Q: 如何验证计算结果精度？</h3>
+        <div class="code-block">
+            <pre><code><span class="ch-comment">// 默认误差 0.0001</span>
+<span class="ch-keyword">boolean</span> verified = FormulaUtils.verify(formulaData, data, result);
+
+<span class="ch-comment">// 自定义误差范围</span>
+<span class="ch-keyword">boolean</span> verified = FormulaUtils.verify(formulaData, data, result, <span class="ch-number">0.01</span>);</code></pre>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            'zh-CN': {
+                lang: '语言', theme: '主题', back: '返回首页', title: '使用指南',
+                h2_quick: '快速开始：一次性加载Formula.js库',
+                p1_desc: '如果你需要一次性加载整个Formula.js库，然后直接使用所有函数，可以使用以下方式：',
+                tip_title: '说明：', tip1: '一次加载后，所有 Formula.js 函数都可以直接使用',
+                tip2: '支持多个函数一起使用并相加', tip3: '自动识别未在 Java 中实现的函数',
+                tip4: '与 Java 实现的函数无缝混合使用',
+                h2_data: '前端数据结构', p2_desc: '前端传来的数据结构格式：',
+                h2_backend: '后端使用示例', h3_1: '1. 接收前端数据并计算', h3_2: '2. 验证前端计算结果',
+                h2_field: '字段映射说明', menuId_desc: '公式中使用的字段显示名称（如"单价"）',
+                enCode_desc: '数据中的字段编码（如"price"）',
+                notice_title: '注意事项：', notice1: '数据 key 必须使用 enCode',
+                notice2: '公式中使用 menuId', notice3: 'marks 数组必须包含所有公式中使用的字段',
+                h2_faq: '常见问题', q1: 'Q: 如果字段值为 null 怎么办？',
+                a1: 'A: 字段值为 null 时，会自动使用 0 替代，并记录警告日志。',
+                q2: 'Q: 如何支持自定义函数？', q3: 'Q: 如何验证计算结果精度？',
+                light: '日间模式', dark: '夜间模式', system: '跟随系统'
+            },
+            'zh-TW': {
+                lang: '語言', theme: '主題', back: '返回首頁', title: '使用指南',
+                h2_quick: '快速開始：一次性載入Formula.js庫',
+                p1_desc: '如果你需要一次性載入整個Formula.js庫，可以使用以下方式：',
+                tip_title: '說明：', tip1: '一次載入後，所有函數都可以直接使用',
+                tip2: '支援多個函數一起使用', tip3: '自動識別未實現的函數',
+                tip4: '與 Java 函數無縫混合',
+                h2_data: '前端資料結構', p2_desc: '前端傳來的資料結構格式：',
+                h2_backend: '後端使用範例', h3_1: '1. 接收資料並計算', h3_2: '2. 驗證計算結果',
+                h2_field: '欄位映射說明', menuId_desc: '公式中使用的欄位顯示名稱',
+                enCode_desc: '資料中的欄位編碼',
+                notice_title: '注意事項：', notice1: '資料 key 必須使用 enCode',
+                notice2: '公式中使用 menuId', notice3: 'marks 陣列必須包含所有欄位',
+                h2_faq: '常見問題', q1: 'Q: 如果欄位值為 null 怎麼辦？',
+                a1: 'A: 會自動使用 0 替代。',
+                q2: 'Q: 如何支援自訂函數？', q3: 'Q: 如何驗證精度？',
+                light: '日間模式', dark: '夜間模式', system: '跟隨系統'
+            },
+            'en': {
+                lang: 'Language', theme: 'Theme', back: 'Back to Home', title: 'User Guide',
+                h2_quick: 'Quick Start: Load Formula.js Library',
+                p1_desc: 'To load the entire Formula.js library at once and use all functions:',
+                tip_title: 'Notes:', tip1: 'After loading, all Formula.js functions can be used directly',
+                tip2: 'Supports multiple functions used together', tip3: 'Auto-identifies unimplemented functions',
+                tip4: 'Seamlessly mixed with Java-implemented functions',
+                h2_data: 'Frontend Data Structure', p2_desc: 'Frontend data structure format:',
+                h2_backend: 'Backend Usage Examples', h3_1: '1. Receive and Calculate', h3_2: '2. Verify Result',
+                h2_field: 'Field Mapping', menuId_desc: 'Field display name in formula',
+                enCode_desc: 'Field code in data object',
+                notice_title: 'Notes:', notice1: 'Data key must use enCode',
+                notice2: 'Formula uses menuId', notice3: 'marks array must contain all fields',
+                h2_faq: 'FAQ', q1: 'Q: What if field value is null?',
+                a1: 'A: It will automatically use 0 and log a warning.',
+                q2: 'Q: How to support custom functions?', q3: 'Q: How to verify accuracy?',
+                light: 'Light Mode', dark: 'Dark Mode', system: 'System'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'zh-CN';
+        let currentTheme = localStorage.getItem('theme') || 'system';
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                document.documentElement.setAttribute('data-theme', isDaytime ? 'light' : 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.innerHTML = theme === 'light'
+                ? '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'
+                : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        }
+
+        function updateLangUI() {
+            document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === currentLang);
+            });
+        }
+
+        function updateThemeUI() {
+            document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.theme === currentTheme);
+            });
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const btn = dropdown.querySelector('.control-btn');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+                menu.classList.toggle('show');
+                btn.setAttribute('aria-expanded', menu.classList.contains('show'));
+            });
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        });
+
+        document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentLang = item.dataset.lang;
+                localStorage.setItem('lang', currentLang);
+                applyTranslations(currentLang);
+                updateLangUI();
+            });
+        });
+
+        document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTheme = item.dataset.theme;
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+                updateThemeUI();
+            });
+        });
+
+        window.setInterval(() => {
+            if (currentTheme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                const currentAttr = document.documentElement.getAttribute('data-theme');
+                const expectedTheme = isDaytime ? 'light' : 'dark';
+                if (currentAttr !== expectedTheme) {
+                    applyTheme('system');
+                }
+            }
+        }, 3600000);
+
+        applyTranslations(currentLang);
+        updateLangUI();
+        applyTheme(currentTheme);
+        updateThemeUI();
+    </script>
+</body>
+</html>

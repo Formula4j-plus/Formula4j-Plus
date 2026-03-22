@@ -7,341 +7,556 @@
     <meta name="keywords" content="Formula4j-Plus, Java, 公式计算, Formula.js, 计算引擎">
     <meta name="author" content="WanShen">
     <title>Formula4j-Plus - Java公式计算引擎</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Core Colors */
+            --primary: #2563EB;
+            --primary-hover: #3B82F6;
+            --cta: #F97316;
+            --cta-hover: #EA580C;
+            --bg: #0F172A;
+            --bg-elevated: #1E293B;
+            --bg-card: #1E293B;
+            --text: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+            --success: #10B981;
+            --code-bg: #020617;
+            --code-border: #1E293B;
+            /* Spacing Scale (8dp) */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            /* Typography */
+            --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            /* Effects */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --accent-color: #3b82f6;
-            --text-color: #1f2937;
-            --text-light: #6b7280;
-            --bg-color: #ffffff;
-            --bg-light: #f9fafb;
-            --bg-dark: #111827;
-            --border-color: #e5e7eb;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
+        [data-theme="light"] {
+            --bg: #FFFFFF;
+            --bg-elevated: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --code-bg: #1E293B;
+            --code-border: #E2E8F0;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text);
             line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        a {
+            color: var(--primary-hover);
+            text-decoration: none;
+            transition: color 0.2s ease;
         }
+        a:hover { color: var(--cta); }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 var(--space-6);
         }
 
-        .header-content {
-            text-align: center;
+        /* ==================== Control Bar ==================== */
+        .control-bar {
+            position: fixed;
+            top: var(--space-4);
+            right: var(--space-4);
+            display: flex;
+            gap: var(--space-2);
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-1);
+            box-shadow: var(--shadow-sm);
         }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .control-btn:hover { background: var(--bg-elevated); color: var(--text); }
+        .control-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+        .control-btn.active { background: var(--primary); color: white; }
+        .control-btn svg { width: 16px; height: 16px; }
+
+        .dropdown { position: relative; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 140px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        .dropdown-item:hover { background: var(--bg-elevated); color: var(--text); }
+        .dropdown-item.active { color: var(--primary-hover); font-weight: 500; }
+
+        .divider { height: 1px; background: var(--border); margin: var(--space-1) 0; }
+
+        /* ==================== Header ==================== */
+        header {
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08) 0%, transparent 100%);
+            padding: 6rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            transition: background 0.3s ease;
+        }
+
+        .header-content { position: relative; z-index: 1; }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
+            font-size: clamp(2.5rem, 6vw, 4rem);
             font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-4);
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .subtitle {
             font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto var(--space-8);
         }
 
         .badges {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: var(--space-3);
             flex-wrap: wrap;
-            margin-top: 1rem;
+            margin-bottom: var(--space-8);
         }
 
         .badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
+            padding: var(--space-2) var(--space-4);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
             font-size: 0.875rem;
-            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            transition: all 0.3s ease;
         }
 
-        /* Navigation */
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-8);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+        .btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .btn svg { width: 20px; height: 20px; }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+            color: var(--text);
+        }
+
+        /* ==================== Navigation ==================== */
         nav {
-            background: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
+        [data-theme="light"] nav { background: rgba(255, 255, 255, 0.95); }
 
         nav ul {
             list-style: none;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            padding: 1rem 0;
-        }
-
-        nav ul li {
-            margin: 0 1rem;
+            padding: var(--space-4) 0;
+            gap: var(--space-2);
         }
 
         nav ul li a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 0;
             display: block;
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+            border-radius: var(--radius-sm);
+        }
+        nav ul li a:hover, nav ul li a:focus {
+            color: var(--text);
+            background: var(--bg-elevated);
         }
 
-        nav ul li a:hover {
-            color: var(--primary-color);
-        }
-
-        /* Sections */
-        section {
-            padding: 4rem 0;
-        }
-
-        section:nth-child(even) {
-            background-color: var(--bg-light);
-        }
+        /* ==================== Sections ==================== */
+        section { padding: 5rem 0; }
+        section:nth-child(even) { background: var(--bg-elevated); }
 
         h2 {
             font-size: 2.5rem;
-            margin-bottom: 2rem;
+            font-weight: 700;
             text-align: center;
-            color: var(--text-color);
+            margin-bottom: var(--space-8);
+            letter-spacing: -0.01em;
         }
 
         h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+            margin-top: var(--space-8);
         }
 
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Code Blocks */
-        .code-block {
-            background: var(--bg-dark);
-            color: #f9fafb;
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .code-block code {
-            color: #e5e7eb;
-        }
-
-        .code-block .keyword {
-            color: #c678dd;
-        }
-
-        .code-block .string {
-            color: #98c379;
-        }
-
-        .code-block .comment {
-            color: #5c6370;
-        }
-
-        .code-block .function {
-            color: #61afef;
-        }
-
-        .code-block .number {
-            color: #d19a66;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 2rem;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: background 0.3s, transform 0.2s;
-            margin: 0.5rem;
-        }
-
-        .btn:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--text-light);
-        }
-
-        .btn-secondary:hover {
-            background: var(--text-color);
-        }
-
-        .button-group {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        /* Stats */
+        /* ==================== Stats ==================== */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            gap: var(--space-6);
         }
 
         .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
             text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
         }
+        .stat-card:hover { border-color: var(--primary-hover); transform: translateY(-2px); }
 
         .stat-number {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+            color: var(--primary-hover);
+            margin-bottom: var(--space-2);
+        }
+        .stat-label { color: var(--text-secondary); font-size: 0.9375rem; }
+
+        /* ==================== Features ==================== */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-6);
         }
 
-        .stat-label {
-            color: var(--text-light);
-            font-size: 1rem;
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            transition: all 0.2s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .feature-card.visible { opacity: 1; transform: translateY(0); }
+        .feature-card:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Footer */
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-4);
+        }
+        .feature-icon svg { width: 24px; height: 24px; color: white; }
+
+        .feature-card h3 { margin-top: 0; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.7; margin-top: var(--space-2); }
+
+        /* ==================== Code Blocks ==================== */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            overflow-x: auto;
+            margin: var(--space-4) 0;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.7;
+            transition: all 0.3s ease;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-block code {
+            font-family: inherit;
+            color: var(--text);
+        }
+
+        /* Syntax Highlighting */
+        .ch-keyword { color: #C792EA; }
+        .ch-string { color: #C3E88D; }
+        .ch-comment { color: var(--text-muted); font-style: italic; }
+        .ch-function { color: #82AAFF; }
+        .ch-number { color: #F78C6C; }
+
+        /* ==================== Section Footer ==================== */
+        .section-footer { text-align: center; margin-top: var(--space-8); }
+
+        /* ==================== Footer ==================== */
         footer {
-            background: var(--bg-dark);
-            color: white;
-            padding: 3rem 0;
+            background: var(--code-bg);
+            border-top: 1px solid var(--border);
+            padding: 4rem 0 2rem;
             text-align: center;
+            transition: all 0.3s ease;
         }
 
-        footer a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
+        footer p { color: var(--text-secondary); margin-bottom: var(--space-3); }
+        footer strong { font-size: 1.125rem; }
 
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin: 1rem 0;
+            gap: var(--space-8);
             flex-wrap: wrap;
+            margin: var(--space-6) 0;
         }
+        .footer-links a { color: var(--text-secondary); font-size: 0.9375rem; }
+        .footer-links a:hover { color: var(--primary-hover); }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
+        footer small { color: var(--text-muted); display: block; margin-top: var(--space-8); }
 
-            .subtitle {
-                font-size: 1rem;
-            }
-
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            section {
-                padding: 2rem 0;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Highlight */
+        /* ==================== Highlight ==================== */
         .highlight {
-            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-            padding: 0.2rem 0.5rem;
+            background: linear-gradient(120deg, rgba(37, 99, 235, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%);
+            padding: 0.15rem 0.4rem;
             border-radius: 4px;
-            font-weight: 500;
+            color: var(--cta);
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+        }
+
+        /* ==================== Contact ==================== */
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-8);
+            flex-wrap: wrap;
+            margin: var(--space-6) 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--text-secondary);
+        }
+        .contact-item svg { width: 20px; height: 20px; color: var(--primary-hover); }
+
+        /* ==================== Responsive ==================== */
+        @media (max-width: 768px) {
+            h2 { font-size: 2rem; }
+            section { padding: 3rem 0; }
+            .features { grid-template-columns: 1fr; }
+            .cta-group { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 280px; justify-content: center; }
+            .contact-info { flex-direction: column; align-items: center; gap: var(--space-4); }
+            .control-bar { top: var(--space-2); right: var(--space-2); }
+            .control-btn span { display: none; }
+            .control-btn { padding: var(--space-2); }
+            .footer-links { gap: var(--space-4); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .feature-card { opacity: 1; transform: none; }
         }
     </style>
 </head>
 <body>
+    <!-- Control Bar -->
+    <div class="control-bar">
+        <div class="dropdown">
+            <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span data-i18n="lang">语言</span>
+            </button>
+            <div class="dropdown-menu" id="langMenu">
+                <button class="dropdown-item active" data-lang="zh-CN">简体中文</button>
+                <button class="dropdown-item" data-lang="zh-TW">繁體中文</button>
+                <button class="dropdown-item" data-lang="en">English</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="control-btn" id="themeBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span data-i18n="theme">主题</span>
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+                <button class="dropdown-item" data-theme="light" data-i18n="light">日间模式</button>
+                <button class="dropdown-item" data-theme="dark" data-i18n="dark">夜间模式</button>
+                <div class="divider"></div>
+                <button class="dropdown-item" data-theme="system" data-i18n="system">跟随系统</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
                 <h1>Formula4j-Plus</h1>
-                <p class="subtitle">Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果</p>
+                <p class="subtitle" data-i18n="subtitle">Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果</p>
                 <div class="badges">
-                    <span class="badge">Java 8-25</span>
-                    <span class="badge">249+ 函数</span>
+                    <span class="badge" data-i18n="badge_java">Java 8-25</span>
+                    <span class="badge" data-i18n="badge_func">249+ 函数</span>
                     <span class="badge">BUSL-1.1</span>
-                    <span class="badge">Formula.js 兼容</span>
+                    <span class="badge" data-i18n="badge_formula">Formula.js 兼容</span>
                 </div>
-                <div class="button-group" style="margin-top: 2rem;">
-                    <a href="#quick-start" class="btn">快速开始</a>
-                    <a href="https://github.com" class="btn btn-secondary" target="_blank">GitHub</a>
-                    <a href="#docs" class="btn btn-secondary">文档</a>
+                <div class="cta-group">
+                    <a href="#quick-start" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span data-i18n="quick_start">快速开始</span>
+                    </a>
+                    <a href="https://github.com" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="#docs" class="btn btn-secondary"><span data-i18n="docs">文档</span></a>
                 </div>
             </div>
         </div>
@@ -351,12 +566,12 @@
     <nav>
         <div class="container">
             <ul>
-                <li><a href="#features">功能特性</a></li>
-                <li><a href="#quick-start">快速开始</a></li>
-                <li><a href="#examples">使用示例</a></li>
-                <li><a href="#functions">函数列表</a></li>
-                <li><a href="#docs">文档</a></li>
-                <li><a href="#contact">联系方式</a></li>
+                <li><a href="#features" data-i18n="nav_features">功能特性</a></li>
+                <li><a href="#quick-start" data-i18n="nav_start">快速开始</a></li>
+                <li><a href="#examples" data-i18n="nav_examples">使用示例</a></li>
+                <li><a href="#functions" data-i18n="nav_functions">函数列表</a></li>
+                <li><a href="#docs" data-i18n="nav_docs">文档</a></li>
+                <li><a href="#contact" data-i18n="nav_contact">联系方式</a></li>
             </ul>
         </div>
     </nav>
@@ -367,19 +582,19 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number">249+</div>
-                    <div class="stat-label">支持函数</div>
+                    <div class="stat-label" data-i18n="stat_func">支持函数</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">100%</div>
-                    <div class="stat-label">Formula.js 兼容</div>
+                    <div class="stat-label" data-i18n="stat_compat">Formula.js 兼容</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">Java 8-25</div>
-                    <div class="stat-label">支持版本</div>
+                    <div class="stat-label" data-i18n="stat_java">支持版本</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">BUSL-1.1</div>
-                    <div class="stat-label">许可证</div>
+                    <div class="stat-label" data-i18n="stat_license">许可证</div>
                 </div>
             </div>
         </div>
@@ -388,37 +603,68 @@
     <!-- Features -->
     <section id="features">
         <div class="container">
-            <h2>功能特性</h2>
+            <h2 data-i18n="h2_features">功能特性</h2>
             <div class="features">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>249+ 函数支持</h3>
-                    <p>支持统计、数学、文本、日期、财务、工程等各类函数，完全兼容 Formula.js 库。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f1_title">249+ 函数支持</h3>
+                    <p data-i18n="f1_desc">支持统计、数学、文本、日期、财务、工程等各类函数，完全兼容 Formula.js 库。</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔧</div>
-                    <h3>自定义函数扩展</h3>
-                    <p>支持 Java Lambda、JavaScript 字符串和文件三种方式注册自定义函数，灵活扩展。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f2_title">自定义函数扩展</h3>
+                    <p data-i18n="f2_desc">支持 Java Lambda、JavaScript 字符串和文件三种方式注册自定义函数，灵活扩展。</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <h3>Formula.js 兼容</h3>
-                    <p>完全兼容 Formula.js 语法，可以直接使用前端相同的公式，确保计算结果一致。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="17 1 21 5 17 9"></polyline>
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                            <polyline points="7 23 3 19 7 15"></polyline>
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f3_title">Formula.js 兼容</h3>
+                    <p data-i18n="f3_desc">完全兼容 Formula.js 语法，可以直接使用前端相同的公式，确保计算结果一致。</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📝</div>
-                    <h3>字段映射</h3>
-                    <p>支持 menuId 到 enCode 的字段映射，完美适配前端数据结构。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f4_title">字段映射</h3>
+                    <p data-i18n="f4_desc">支持 menuId 到 enCode 的字段映射，完美适配前端数据结构。</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">✅</div>
-                    <h3>结果验证</h3>
-                    <p>提供前端计算结果验证功能，支持自定义误差范围。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f5_title">结果验证</h3>
+                    <p data-i18n="f5_desc">提供前端计算结果验证功能，支持自定义误差范围。</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>高性能</h3>
-                    <p>经过优化，可以高效处理大量计算，支持复杂嵌套函数。</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="f6_title">高性能</h3>
+                    <p data-i18n="f6_desc">经过优化，可以高效处理大量计算，支持复杂嵌套函数。</p>
                 </div>
             </div>
         </div>
@@ -427,49 +673,49 @@
     <!-- Quick Start -->
     <section id="quick-start">
         <div class="container">
-            <h2>快速开始</h2>
+            <h2 data-i18n="h2_start">快速开始</h2>
             
-            <h3>1. 添加依赖</h3>
+            <h3 data-i18n="s1_title">1. 添加依赖</h3>
             <div class="code-block">
-<code><span class="comment">&lt;!-- Maven --&gt;</span>
-<span class="keyword">&lt;dependency&gt;</span>
-    <span class="keyword">&lt;groupId&gt;</span>com.formula<span class="keyword">&lt;/groupId&gt;</span>
-    <span class="keyword">&lt;artifactId&gt;</span>formula4j-plus<span class="keyword">&lt;/artifactId&gt;</span>
-    <span class="keyword">&lt;version&gt;</span>2.2.0<span class="keyword">&lt;/version&gt;</span>
-<span class="keyword">&lt;/dependency&gt;</span></code>
+                <pre><code><span class="ch-comment">&lt;!-- Maven --&gt;</span>
+<span class="ch-keyword">&lt;dependency&gt;</span>
+    <span class="ch-keyword">&lt;groupId&gt;</span>com.formula<span class="ch-keyword">&lt;/groupId&gt;</span>
+    <span class="ch-keyword">&lt;artifactId&gt;</span>formula4j-plus<span class="ch-keyword">&lt;/artifactId&gt;</span>
+    <span class="ch-keyword">&lt;version&gt;</span>2.2.0<span class="ch-keyword">&lt;/version&gt;</span>
+<span class="ch-keyword">&lt;/dependency&gt;</span></code></pre>
             </div>
 
-            <h3>2. 基本使用</h3>
+            <h3 data-i18n="s2_title">2. 基本使用</h3>
             <div class="code-block">
-<code><span class="keyword">import</span> com.formula.calculator.FormulaCalculator;
-<span class="keyword">import</span> com.alibaba.fastjson.JSONObject;
+                <pre><code><span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
+<span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
 
-<span class="comment">// 准备数据</span>
-JSONObject data = <span class="keyword">new</span> JSONObject();
-data.put(<span class="string">"price"</span>, <span class="number">100</span>);
-data.put(<span class="string">"quantity"</span>, <span class="number">5</span>);
+<span class="ch-comment">// 准备数据</span>
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
+data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
 
-<span class="comment">// 计算公式</span>
-String formula = <span class="string">"${price} * ${quantity}"</span>;
+<span class="ch-comment">// 计算公式</span>
+String formula = <span class="ch-string">"${price} * ${quantity}"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-System.out.println(<span class="string">"结果: "</span> + result); <span class="comment">// 输出: 500.0</span></code>
+System.out.println(<span class="ch-string">"结果: "</span> + result); <span class="ch-comment">// 输出: 500.0</span></code></pre>
             </div>
 
-            <h3>3. 使用函数</h3>
+            <h3 data-i18n="s3_title">3. 使用函数</h3>
             <div class="code-block">
-<code><span class="comment">// 使用SUM函数</span>
-String formula = <span class="string">"SUM(10, 20, 30)"</span>;
+                <pre><code><span class="ch-comment">// 使用 SUM 函数</span>
+String formula = <span class="ch-string">"SUM(10, 20, 30)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="comment">// 结果: 60.0</span>
+<span class="ch-comment">// 结果: 60.0</span>
 
-<span class="comment">// 使用IF函数</span>
-String formula2 = <span class="string">"IF(10 > 5, 100, 0)"</span>;
+<span class="ch-comment">// 使用 IF 函数</span>
+String formula2 = <span class="ch-string">"IF(10 > 5, 100, 0)"</span>;
 Object result2 = FormulaCalculator.calculate(formula2, data);
-<span class="comment">// 结果: 100.0</span></code>
+<span class="ch-comment">// 结果: 100.0</span></code></pre>
             </div>
 
-            <div class="button-group">
-                <a href="#docs" class="btn">查看完整文档</a>
+            <div class="section-footer">
+                <a href="#docs" class="btn btn-primary"><span data-i18n="view_docs">查看完整文档</span></a>
             </div>
         </div>
     </section>
@@ -477,58 +723,58 @@ Object result2 = FormulaCalculator.calculate(formula2, data);
     <!-- Examples -->
     <section id="examples">
         <div class="container">
-            <h2>使用示例</h2>
+            <h2 data-i18n="h2_examples">使用示例</h2>
             
-            <h3>使用 FormulaData 结构</h3>
+            <h3 data-i18n="e1_title">使用 FormulaData 结构</h3>
             <div class="code-block">
-<code><span class="keyword">import</span> com.formula.calculator.model.FormulaData;
-<span class="keyword">import</span> com.formula.calculator.model.FieldMark;
+                <pre><code><span class="ch-keyword">import</span> com.formula.calculator.model.FormulaData;
+<span class="ch-keyword">import</span> com.formula.calculator.model.FieldMark;
 
-<span class="comment">// 构建FormulaData</span>
-FormulaData formulaData = <span class="keyword">new</span> FormulaData();
-formulaData.setTxt(<span class="string">"SUM(单价,数量) * (1 - 折扣率)"</span>);
+<span class="ch-comment">// 构建 FormulaData</span>
+FormulaData formulaData = <span class="ch-keyword">new</span> FormulaData();
+formulaData.setTxt(<span class="ch-string">"SUM(单价,数量) * (1 - 折扣率)"</span>);
 
-<span class="comment">// 添加字段映射</span>
-List&lt;FieldMark&gt; marks = <span class="keyword">new</span> ArrayList&lt;&gt;();
-marks.add(<span class="keyword">new</span> FieldMark(<span class="string">"price"</span>, <span class="string">"单价"</span>));
-marks.add(<span class="keyword">new</span> FieldMark(<span class="string">"quantity"</span>, <span class="string">"数量"</span>));
-marks.add(<span class="keyword">new</span> FieldMark(<span class="string">"discount"</span>, <span class="string">"折扣率"</span>));
+<span class="ch-comment">// 添加字段映射</span>
+List&lt;FieldMark&gt; marks = <span class="ch-keyword">new</span> ArrayList&lt;&gt;();
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"price"</span>, <span class="ch-string">"单价"</span>));
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"quantity"</span>, <span class="ch-string">"数量"</span>));
+marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"discount"</span>, <span class="ch-string">"折扣率"</span>));
 formulaData.setMarks(marks);
 
-<span class="comment">// 准备数据</span>
-JSONObject data = <span class="keyword">new</span> JSONObject();
-data.put(<span class="string">"price"</span>, <span class="number">100</span>);
-data.put(<span class="string">"quantity"</span>, <span class="number">5</span>);
-data.put(<span class="string">"discount"</span>, <span class="number">0.1</span>);
+<span class="ch-comment">// 准备数据</span>
+JSONObject data = <span class="ch-keyword">new</span> JSONObject();
+data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
+data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
+data.put(<span class="ch-string">"discount"</span>, <span class="ch-number">0.1</span>);
 
-<span class="comment">// 计算</span>
+<span class="ch-comment">// 计算</span>
 Object result = FormulaCalculator.calculate(formulaData, data);
-<span class="comment">// 结果: 450.0</span></code>
+<span class="ch-comment">// 结果: 450.0</span></code></pre>
             </div>
 
-            <h3>自定义函数</h3>
+            <h3 data-i18n="e2_title">自定义函数</h3>
             <div class="code-block">
-<code><span class="comment">// 注册Java Lambda函数</span>
-FormulaCalculator.registerCustomFunction(<span class="string">"DOUBLE"</span>, (params, data, mapping) -&gt; {
-    <span class="keyword">double</span> value = Double.parseDouble(params.trim());
-    <span class="keyword">return</span> String.valueOf(value * <span class="number">2</span>);
+                <pre><code><span class="ch-comment">// 注册 Java Lambda 函数</span>
+FormulaCalculator.registerCustomFunction(<span class="ch-string">"DOUBLE"</span>, (params, data, mapping) -> {
+    <span class="ch-keyword">double</span> value = Double.parseDouble(params.trim());
+    <span class="ch-keyword">return</span> String.valueOf(value * <span class="ch-number">2</span>);
 });
 
-<span class="comment">// 使用</span>
-String formula = <span class="string">"DOUBLE(10)"</span>;
+<span class="ch-comment">// 使用</span>
+String formula = <span class="ch-string">"DOUBLE(10)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="comment">// 结果: 20.0</span></code>
+<span class="ch-comment">// 结果: 20.0</span></code></pre>
             </div>
 
-            <h3>一次性加载 Formula.js 库</h3>
+            <h3 data-i18n="e3_title">一次性加载 Formula.js 库</h3>
             <div class="code-block">
-<code><span class="comment">// 加载Formula.js库</span>
-FormulaCalculator.loadFormulaJsLibrary(<span class="string">"file:///D:/formula.js"</span>);
+                <pre><code><span class="ch-comment">// 加载 Formula.js 库</span>
+FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
 
-<span class="comment">// 加载后，所有函数都可以直接使用</span>
-String formula = <span class="string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
+<span class="ch-comment">// 加载后，所有函数都可以直接使用</span>
+String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="comment">// 结果: 15.0</span></code>
+<span class="ch-comment">// 结果: 15.0</span></code></pre>
             </div>
         </div>
     </section>
@@ -536,43 +782,100 @@ Object result = FormulaCalculator.calculate(formula, data);
     <!-- Functions -->
     <section id="functions">
         <div class="container">
-            <h2>函数分类</h2>
+            <h2 data-i18n="h2_functions">函数分类</h2>
             <div class="features">
                 <div class="feature-card">
-                    <h3>📊 统计函数</h3>
-                    <p>SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc1_title">统计函数</h3>
+                    <p data-i18n="fc1_desc">SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🔢 数学函数</h3>
-                    <p>ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="2" x2="12" y2="6"></line>
+                            <line x1="12" y1="18" x2="12" y2="22"></line>
+                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                            <line x1="2" y1="12" x2="6" y2="12"></line>
+                            <line x1="18" y1="12" x2="22" y2="12"></line>
+                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc2_title">数学函数</h3>
+                    <p data-i18n="fc2_desc">ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📝 文本函数</h3>
-                    <p>CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                            <line x1="9" y1="20" x2="15" y2="20"></line>
+                            <line x1="12" y1="4" x2="12" y2="20"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc3_title">文本函数</h3>
+                    <p data-i18n="fc3_desc">CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📅 日期函数</h3>
-                    <p>TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc4_title">日期函数</h3>
+                    <p data-i18n="fc4_desc">TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🔍 逻辑函数</h3>
-                    <p>IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc5_title">逻辑函数</h3>
+                    <p data-i18n="fc5_desc">IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>💰 财务函数</h3>
-                    <p>PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc6_title">财务函数</h3>
+                    <p data-i18n="fc6_desc">PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🔧 工程函数</h3>
-                    <p>BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc7_title">工程函数</h3>
+                    <p data-i18n="fc7_desc">BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📈 分布函数</h3>
-                    <p>NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等</p>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="fc8_title">分布函数</h3>
+                    <p data-i18n="fc8_desc">NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等</p>
                 </div>
             </div>
-            <div class="button-group">
-                <a href="#docs" class="btn">查看完整函数列表</a>
+            <div class="section-footer">
+                <a href="#docs" class="btn btn-primary"><span data-i18n="view_func_list">查看完整函数列表</span></a>
             </div>
         </div>
     </section>
@@ -580,27 +883,61 @@ Object result = FormulaCalculator.calculate(formula, data);
     <!-- Docs -->
     <section id="docs">
         <div class="container">
-            <h2>文档资源</h2>
+            <h2 data-i18n="h2_docs">文档资源</h2>
             <div class="features">
                 <div class="feature-card">
-                    <h3>📖 使用文档</h3>
-                    <p>详细的使用指南和示例代码，帮助您快速上手。</p>
-                    <a href="USAGE.md" class="btn" style="margin-top: 1rem;">查看文档</a>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="d1_title">使用文档</h3>
+                    <p data-i18n="d1_desc">详细的使用指南和示例代码，帮助您快速上手。</p>
+                    <a href="docs/使用指南.html" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
+                        <span data-i18n="view_guide">查看文档</span>
+                    </a>
                 </div>
                 <div class="feature-card">
-                    <h3>🚀 快速开始</h3>
-                    <p>5分钟快速上手，包含基本使用和常见场景。</p>
-                    <a href="#quick-start" class="btn" style="margin-top: 1rem;">开始使用</a>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="d2_title">快速开始</h3>
+                    <p data-i18n="d2_desc">5分钟快速上手，包含基本使用和常见场景。</p>
+                    <a href="#quick-start" class="btn btn-secondary" style="margin-top: 1rem;">
+                        <span data-i18n="start_use">开始使用</span>
+                    </a>
                 </div>
                 <div class="feature-card">
-                    <h3>❓ 常见问题</h3>
-                    <p>FAQ 和故障排除指南，解决常见使用问题。</p>
-                    <a href="#contact" class="btn" style="margin-top: 1rem;">获取帮助</a>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="d3_title">常见问题</h3>
+                    <p data-i18n="d3_desc">FAQ 和故障排除指南，解决常见使用问题。</p>
+                    <a href="#contact" class="btn btn-secondary" style="margin-top: 1rem;">
+                        <span data-i18n="get_help">获取帮助</span>
+                    </a>
                 </div>
                 <div class="feature-card">
-                    <h3>🤝 贡献指南</h3>
-                    <p>欢迎贡献代码！查看贡献指南了解如何参与。</p>
-                    <a href="CONTRIBUTING.md" class="btn" style="margin-top: 1rem;">参与贡献</a>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="d4_title">贡献指南</h3>
+                    <p data-i18n="d4_desc">欢迎贡献代码！查看贡献指南了解如何参与。</p>
+                    <a href="CONTRIBUTING.html" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
+                        <span data-i18n="contribute">参与贡献</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -609,27 +946,27 @@ Object result = FormulaCalculator.calculate(formula, data);
     <!-- Contact -->
     <section id="contact">
         <div class="container">
-            <h2>联系方式</h2>
-            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-                <p style="font-size: 1.1rem; margin-bottom: 2rem;">
-                    如有问题或建议，欢迎通过以下方式联系：
-                </p>
-                <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-                    <div>
-                        <strong>📧 邮箱</strong><br>
-                        <a href="mailto:1498610052@qq.com" style="color: var(--primary-color);">1498610052@qq.com</a>
-                    </div>
-                    <div>
-                        <strong>👤 作者</strong><br>
-                        WanShen
-                    </div>
+            <h2 data-i18n="h2_contact">联系方式</h2>
+            <p style="text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto var(--space-8);" data-i18n="contact_desc">如有问题或建议，欢迎通过以下方式联系：</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <a href="mailto:1498610052@qq.com">1498610052@qq.com</a>
                 </div>
-                <div style="margin-top: 2rem;">
-                    <p style="color: var(--text-light);">
-                        项目采用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 许可证<br>
-                        <small style="opacity: 0.8;">非生产使用免费 | 生产使用需商业许可 | 2029-01-01 后转为 Apache 2.0</small>
-                    </p>
+                <div class="contact-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>WanShen</span>
                 </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--space-8);">
+                <p style="color: var(--text-secondary);" data-i18n="license_desc">项目采用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 许可证</p>
+                <small style="color: var(--text-muted);" data-i18n="license_note">非生产使用免费 | 生产使用需商业许可 | 2029-01-01 后转为 Apache 2.0</small>
             </div>
         </div>
     </section>
@@ -637,62 +974,256 @@ Object result = FormulaCalculator.calculate(formula, data);
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p style="font-size: 1.1rem; margin-bottom: 1rem;">
-                <strong>Formula4j-Plus</strong>
-            </p>
-            <p style="margin-bottom: 1rem; opacity: 0.8;">
-                Java公式计算引擎，支持Formula.js语法
-            </p>
+            <p><strong>Formula4j-Plus</strong></p>
+            <p style="color: var(--text-muted);" data-i18n="footer_desc">Java公式计算引擎，支持Formula.js语法</p>
             <div class="footer-links">
-                <a href="LICENSE">许可证</a>
-                <a href="NOTICE">第三方库</a>
-                <a href="CHANGELOG.md">更新日志</a>
-                <a href="CONTRIBUTING.md">贡献指南</a>
-                <a href="README.md">README</a>
+                <a href="LICENSE" data-i18n="footer_license">许可证</a>
+                <a href="NOTICE" data-i18n="footer_notice">第三方库</a>
+                <a href="CHANGELOG.md" data-i18n="footer_changelog">更新日志</a>
+                <a href="CONTRIBUTING.html" data-i18n="footer_contrib">贡献指南</a>
+                <a href="README.md" data-i18n="footer_readme">README</a>
             </div>
-            <p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">
-                Copyright © 2025 WanShen. Licensed under Business Source License 1.1 (BUSL-1.1).
-            </p>
+            <small>Copyright &copy; 2025 WanShen. Licensed under Business Source License 1.1 (BUSL-1.1).</small>
         </div>
     </footer>
 
     <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+        const translations = {
+            'zh-CN': {
+                lang: '语言', theme: '主题',
+                subtitle: 'Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果',
+                badge_java: 'Java 8-25', badge_func: '249+ 函数', badge_formula: 'Formula.js 兼容',
+                quick_start: '快速开始', docs: '文档',
+                nav_features: '功能特性', nav_start: '快速开始', nav_examples: '使用示例',
+                nav_functions: '函数列表', nav_docs: '文档', nav_contact: '联系方式',
+                stat_func: '支持函数', stat_compat: 'Formula.js 兼容', stat_java: '支持版本', stat_license: '许可证',
+                h2_features: '功能特性', h2_start: '快速开始', h2_examples: '使用示例',
+                h2_functions: '函数分类', h2_docs: '文档资源', h2_contact: '联系方式',
+                f1_title: '249+ 函数支持', f1_desc: '支持统计、数学、文本、日期、财务、工程等各类函数，完全兼容 Formula.js 库。',
+                f2_title: '自定义函数扩展', f2_desc: '支持 Java Lambda、JavaScript 字符串和文件三种方式注册自定义函数，灵活扩展。',
+                f3_title: 'Formula.js 兼容', f3_desc: '完全兼容 Formula.js 语法，可以直接使用前端相同的公式，确保计算结果一致。',
+                f4_title: '字段映射', f4_desc: '支持 menuId 到 enCode 的字段映射，完美适配前端数据结构。',
+                f5_title: '结果验证', f5_desc: '提供前端计算结果验证功能，支持自定义误差范围。',
+                f6_title: '高性能', f6_desc: '经过优化，可以高效处理大量计算，支持复杂嵌套函数。',
+                s1_title: '1. 添加依赖', s2_title: '2. 基本使用', s3_title: '3. 使用函数',
+                view_docs: '查看完整文档',
+                e1_title: '使用 FormulaData 结构', e2_title: '自定义函数', e3_title: '一次性加载 Formula.js 库',
+                fc1_title: '统计函数', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等',
+                fc2_title: '数学函数', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等',
+                fc3_title: '文本函数', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等',
+                fc4_title: '日期函数', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等',
+                fc5_title: '逻辑函数', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等',
+                fc6_title: '财务函数', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等',
+                fc7_title: '工程函数', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等',
+                fc8_title: '分布函数', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等',
+                view_func_list: '查看完整函数列表',
+                d1_title: '使用文档', d1_desc: '详细的使用指南和示例代码，帮助您快速上手。',
+                d2_title: '快速开始', d2_desc: '5分钟快速上手，包含基本使用和常见场景。',
+                d3_title: '常见问题', d3_desc: 'FAQ 和故障排除指南，解决常见使用问题。',
+                d4_title: '贡献指南', d4_desc: '欢迎贡献代码！查看贡献指南了解如何参与。',
+                view_guide: '查看文档', start_use: '开始使用', get_help: '获取帮助', contribute: '参与贡献',
+                contact_desc: '如有问题或建议，欢迎通过以下方式联系：',
+                license_desc: '项目采用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 许可证',
+                license_note: '非生产使用免费 | 生产使用需商业许可 | 2029-01-01 后转为 Apache 2.0',
+                footer_desc: 'Java公式计算引擎，支持Formula.js语法',
+                footer_license: '许可证', footer_notice: '第三方库', footer_changelog: '更新日志',
+                footer_contrib: '贡献指南', footer_readme: 'README',
+                light: '日间模式', dark: '夜间模式', system: '跟随系统'
+            },
+            'zh-TW': {
+                lang: '語言', theme: '主題',
+                subtitle: 'Java公式計算引擎，支援Formula.js語法，用於後端驗證前端計算結果',
+                badge_java: 'Java 8-25', badge_func: '249+ 函數', badge_formula: 'Formula.js 相容',
+                quick_start: '快速開始', docs: '文檔',
+                nav_features: '功能特性', nav_start: '快速開始', nav_examples: '使用範例',
+                nav_functions: '函數列表', nav_docs: '文檔', nav_contact: '聯絡方式',
+                stat_func: '支援函數', stat_compat: 'Formula.js 相容', stat_java: '支援版本', stat_license: '授權',
+                h2_features: '功能特性', h2_start: '快速開始', h2_examples: '使用範例',
+                h2_functions: '函數分類', h2_docs: '文檔資源', h2_contact: '聯絡方式',
+                f1_title: '249+ 函數支援', f1_desc: '支援統計、數學、文字、日期、財務、工程等各類函數，完全相容 Formula.js 庫。',
+                f2_title: '自訂函數擴展', f2_desc: '支援 Java Lambda、JavaScript 字串和檔案三種方式註冊自訂函數，靈活擴展。',
+                f3_title: 'Formula.js 相容', f3_desc: '完全相容 Formula.js 語法，可以直接使用前端相同的公式，確保計算結果一致。',
+                f4_title: '欄位映射', f4_desc: '支援 menuId 到 enCode 的欄位映射，完美適配前端資料結構。',
+                f5_title: '結果驗證', f5_desc: '提供前端計算結果驗證功能，支援自訂誤差範圍。',
+                f6_title: '高效能', f6_desc: '經過優化，可以高效處理大量計算，支援複雜巢狀函數。',
+                s1_title: '1. 新增依賴', s2_title: '2. 基本使用', s3_title: '3. 使用函數',
+                view_docs: '查看完整文檔',
+                e1_title: '使用 FormulaData 結構', e2_title: '自訂函數', e3_title: '一次性載入 Formula.js 庫',
+                fc1_title: '統計函數', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等',
+                fc2_title: '數學函數', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等',
+                fc3_title: '文字函數', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等',
+                fc4_title: '日期函數', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等',
+                fc5_title: '邏輯函數', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等',
+                fc6_title: '財務函數', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等',
+                fc7_title: '工程函數', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等',
+                fc8_title: '分布函數', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等',
+                view_func_list: '查看完整函數列表',
+                d1_title: '使用文檔', d1_desc: '詳細的使用指南和範例程式碼，幫助您快速上手。',
+                d2_title: '快速開始', d2_desc: '5分鐘快速上手，包含基本使用和常見場景。',
+                d3_title: '常見問題', d3_desc: 'FAQ 和故障排除指南，解決常見使用問題。',
+                d4_title: '貢獻指南', d4_desc: '歡迎貢獻程式碼！查看貢獻指南了解如何參與。',
+                view_guide: '查看文檔', start_use: '開始使用', get_help: '獲取幫助', contribute: '參與貢獻',
+                contact_desc: '如有問題或建議，歡迎透過以下方式聯繫：',
+                license_desc: '專案採用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 授權',
+                license_note: '非生產使用免費 | 生產使用需商業授權 | 2029-01-01 後轉為 Apache 2.0',
+                footer_desc: 'Java公式計算引擎，支援Formula.js語法',
+                footer_license: '授權', footer_notice: '第三方庫', footer_changelog: '更新日誌',
+                footer_contrib: '貢獻指南', footer_readme: 'README',
+                light: '日間模式', dark: '夜間模式', system: '跟隨系統'
+            },
+            'en': {
+                lang: 'Language', theme: 'Theme',
+                subtitle: 'Java Formula Calculation Engine with Formula.js compatibility for backend validation',
+                badge_java: 'Java 8-25', badge_func: '249+ Functions', badge_formula: 'Formula.js Compatible',
+                quick_start: 'Quick Start', docs: 'Docs',
+                nav_features: 'Features', nav_start: 'Quick Start', nav_examples: 'Examples',
+                nav_functions: 'Functions', nav_docs: 'Docs', nav_contact: 'Contact',
+                stat_func: 'Supported Functions', stat_compat: 'Formula.js Compatible', stat_java: 'Java Versions', stat_license: 'License',
+                h2_features: 'Features', h2_start: 'Quick Start', h2_examples: 'Examples',
+                h2_functions: 'Function Categories', h2_docs: 'Documentation', h2_contact: 'Contact',
+                f1_title: '249+ Function Support', f1_desc: 'Statistical, mathematical, text, date, financial, engineering functions and more. Fully compatible with Formula.js library.',
+                f2_title: 'Custom Function Extension', f2_desc: 'Register custom functions via Java Lambda, JavaScript strings, or files. Flexible and extensible.',
+                f3_title: 'Formula.js Compatible', f3_desc: 'Fully compatible with Formula.js syntax. Use the same formulas as frontend to ensure consistent results.',
+                f4_title: 'Field Mapping', f4_desc: 'Supports menuId to enCode field mapping, perfectly adapted to frontend data structures.',
+                f5_title: 'Result Validation', f5_desc: 'Frontend calculation result validation with customizable tolerance range support.',
+                f6_title: 'High Performance', f6_desc: 'Optimized for handling large volumes of calculations efficiently. Supports complex nested functions.',
+                s1_title: '1. Add Dependency', s2_title: '2. Basic Usage', s3_title: '3. Using Functions',
+                view_docs: 'View Full Documentation',
+                e1_title: 'Using FormulaData Structure', e2_title: 'Custom Functions', e3_title: 'Load Formula.js Library',
+                fc1_title: 'Statistical', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE, and more',
+                fc2_title: 'Mathematical', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI, and more',
+                fc3_title: 'Text', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE, and more',
+                fc4_title: 'Date & Time', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM, and more',
+                fc5_title: 'Logical', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER, and more',
+                fc6_title: 'Financial', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR, and more',
+                fc7_title: 'Engineering', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS, and more',
+                fc8_title: 'Distribution', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST, and more',
+                view_func_list: 'View Full Function List',
+                d1_title: 'User Guide', d1_desc: 'Detailed usage guide and example code to help you get started quickly.',
+                d2_title: 'Quick Start', d2_desc: 'Get started in 5 minutes with basic usage and common scenarios.',
+                d3_title: 'FAQ', d3_desc: 'FAQ and troubleshooting guide to solve common issues.',
+                d4_title: 'Contributing', d4_desc: 'Welcome to contribute! Check the contributing guide to learn how to participate.',
+                view_guide: 'View Guide', start_use: 'Get Started', get_help: 'Get Help', contribute: 'Contribute',
+                contact_desc: 'For questions or suggestions, feel free to reach out:',
+                license_desc: 'Licensed under <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span>',
+                license_note: 'Free for non-production use | Commercial license for production | Apache 2.0 after 2029-01-01',
+                footer_desc: 'Java Formula Calculation Engine with Formula.js Compatibility',
+                footer_license: 'License', footer_notice: 'Third-party', footer_changelog: 'Changelog',
+                footer_contrib: 'Contributing', footer_readme: 'README',
+                light: 'Light Mode', dark: 'Dark Mode', system: 'System'
+            }
         };
 
+        let currentLang = localStorage.getItem('lang') || 'zh-CN';
+        let currentTheme = localStorage.getItem('theme') || 'system';
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                document.documentElement.setAttribute('data-theme', isDaytime ? 'light' : 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            updateThemeIcon(theme);
+        }
+
+        function isDaytime() {
+            const hour = new Date().getHours();
+            return hour >= 6 && hour < 18;
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'light') {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            } else {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            }
+        }
+
+        function updateLangUI() {
+            document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === currentLang);
+            });
+        }
+
+        function updateThemeUI() {
+            document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.theme === currentTheme);
+            });
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const btn = dropdown.querySelector('.control-btn');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+                document.querySelectorAll('.control-btn').forEach(b => { if (b !== btn) b.setAttribute('aria-expanded', 'false'); });
+                menu.classList.toggle('show');
+                btn.setAttribute('aria-expanded', menu.classList.contains('show'));
+            });
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+            document.querySelectorAll('.control-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+        });
+
+        document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentLang = item.dataset.lang;
+                localStorage.setItem('lang', currentLang);
+                applyTranslations(currentLang);
+                updateLangUI();
+            });
+        });
+
+        document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTheme = item.dataset.theme;
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+                updateThemeUI();
+            });
+        });
+
+        window.setInterval(() => {
+            if (currentTheme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                const currentAttr = document.documentElement.getAttribute('data-theme');
+                const expectedTheme = isDaytime ? 'light' : 'dark';
+                if (currentAttr !== expectedTheme) {
+                    applyTheme('system');
+                }
+            }
+        }, 3600000);
+
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    setTimeout(() => entry.target.classList.add('visible'), index * 50);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-        document.querySelectorAll('.feature-card, .stat-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s, transform 0.6s';
-            observer.observe(card);
-        });
+        document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
+
+        applyTranslations(currentLang);
+        updateLangUI();
+        applyTheme(currentTheme);
+        updateThemeUI();
     </script>
 </body>
 </html>
-

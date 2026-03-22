@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贡献指南 - Formula4j-Plus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-hover: #3B82F6;
+            --cta: #F97316;
+            --bg: #0F172A;
+            --bg-elevated: #1E293B;
+            --bg-card: #1E293B;
+            --text: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+            --success: #10B981;
+            --code-bg: #020617;
+            --code-border: #1E293B;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg: #FFFFFF;
+            --bg-elevated: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --code-bg: #1E293B;
+            --code-border: #E2E8F0;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a { color: var(--primary-hover); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--cta); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 5rem var(--space-6) var(--space-8); }
+
+        .control-bar {
+            position: fixed;
+            top: var(--space-4);
+            right: var(--space-4);
+            display: flex;
+            gap: var(--space-2);
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .control-btn:hover { background: var(--bg-elevated); color: var(--text); }
+        .control-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+        .control-btn svg { width: 16px; height: 16px; }
+
+        .dropdown { position: relative; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 140px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        .dropdown-item:hover { background: var(--bg-elevated); color: var(--text); }
+        .dropdown-item.active { color: var(--primary-hover); font-weight: 500; }
+
+        .divider { height: 1px; background: var(--border); margin: var(--space-1) 0; }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-4);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: var(--space-8);
+            transition: all 0.2s;
+        }
+        .back-btn:hover { border-color: var(--primary-hover); color: var(--text); }
+        .back-btn svg { width: 16px; height: 16px; }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-8);
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: var(--space-8) 0 var(--space-4);
+            color: var(--text);
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: var(--space-6) 0 var(--space-3);
+            color: var(--text);
+        }
+
+        p { margin-bottom: var(--space-4); color: var(--text-secondary); }
+        ul, ol { margin: var(--space-4) 0 var(--space-4) var(--space-6); color: var(--text-secondary); }
+        li { margin-bottom: var(--space-2); }
+
+        .tip {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+        .tip strong { color: #10B981; }
+
+        code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+
+        @media (max-width: 768px) {
+            .container { padding: 4rem var(--space-4) var(--space-6); }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .control-bar { top: var(--space-2); right: var(--space-2); }
+            .control-btn span { display: none; }
+            .control-btn { padding: var(--space-2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="control-bar">
+        <div class="dropdown">
+            <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span data-i18n="lang">语言</span>
+            </button>
+            <div class="dropdown-menu" id="langMenu">
+                <button class="dropdown-item active" data-lang="zh-CN">简体中文</button>
+                <button class="dropdown-item" data-lang="zh-TW">繁體中文</button>
+                <button class="dropdown-item" data-lang="en">English</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="control-btn" id="themeBtn" aria-haspopup="true" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span data-i18n="theme">主题</span>
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+                <button class="dropdown-item" data-theme="light" data-i18n="light">日间模式</button>
+                <button class="dropdown-item" data-theme="dark" data-i18n="dark">夜间模式</button>
+                <div class="divider"></div>
+                <button class="dropdown-item" data-theme="system" data-i18n="system">跟随系统</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="index.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span data-i18n="back">返回首页</span>
+        </a>
+
+        <h1 data-i18n="title">贡献指南</h1>
+        <p data-i18n="intro">感谢您对 Formula4j-Plus 项目的关注！我们欢迎所有形式的贡献。</p>
+
+        <h2 data-i18n="h2_contribute">如何贡献</h2>
+
+        <h3 data-i18n="h3_report">报告问题</h3>
+        <p data-i18n="report_desc">如果您发现了 bug 或有功能建议，请通过以下方式提交：</p>
+        <ol>
+            <li data-i18n="report1">在 GitHub Issues 页面创建新 issue</li>
+            <li data-i18n="report2">Bug 报告请包含：问题描述、复现步骤、预期行为、实际行为、环境信息</li>
+        </ol>
+
+        <h3 data-i18n="h3_code">提交代码</h3>
+        <ol>
+            <li data-i18n="code1">Fork 项目</li>
+            <li data-i18n="code2">创建分支：<code>git checkout -b feature/your-feature-name</code></li>
+            <li data-i18n="code3">编写代码并添加单元测试</li>
+            <li data-i18n="code4">提交更改：<code>git commit -m "feat: 添加新功能描述"</code></li>
+            <li data-i18n="code5">推送分支并创建 Pull Request</li>
+        </ol>
+
+        <h3 data-i18n="h3_style">代码规范</h3>
+        <ul>
+            <li data-i18n="style1"><strong>Java 代码风格</strong>：遵循 Google Java Style Guide</li>
+            <li data-i18n="style2"><strong>命名规范</strong>：类名大驼峰，方法名小驼峰、常量全大写下划线分隔</li>
+            <li data-i18n="style3"><strong>注释</strong>：公共 API 必须添加 JavaDoc</li>
+            <li data-i18n="style4"><strong>测试</strong>：新功能必须包含单元测试</li>
+        </ul>
+
+        <h3 data-i18n="h3_commit">Commit 信息规范</h3>
+        <p data-i18n="commit_desc">我们使用 Conventional Commits 规范：</p>
+        <ul>
+            <li><code>feat</code>: <span data-i18n="c_feat">新功能</span></li>
+            <li><code>fix</code>: <span data-i18n="c_fix">修复 bug</span></li>
+            <li><code>docs</code>: <span data-i18n="c_docs">文档更新</span></li>
+            <li><code>refactor</code>: <span data-i18n="c_refactor">代码重构</span></li>
+            <li><code>test</code>: <span data-i18n="c_test">测试相关</span></li>
+        </ul>
+
+        <h3 data-i18n="h3_env">开发环境设置</h3>
+        <ol>
+            <li data-i18n="env1">克隆项目：<code>git clone https://github.com/Formula4j-plus/Formula4j-Plus.git</code></li>
+            <li data-i18n="env2">构建项目：<code>mvn clean compile</code></li>
+            <li data-i18n="env3">运行测试：<code>mvn test</code></li>
+            <li data-i18n="env4">打包项目：<code>mvn clean package</code></li>
+        </ol>
+
+        <h3 data-i18n="h3_function">添加新函数</h3>
+        <ol>
+            <li data-i18n="func1">在 FunctionName 枚举中添加函数名</li>
+            <li data-i18n="func2">在 FormulaCalculator 中实现函数逻辑</li>
+            <li data-i18n="func3">添加单元测试</li>
+            <li data-i18n="func4">更新 README.md 中的函数列表</li>
+        </ol>
+
+        <h2 data-i18n="h2_rules">行为准则</h2>
+        <ul>
+            <li data-i18n="rule1">尊重所有贡献者</li>
+            <li data-i18n="rule2">接受建设性批评</li>
+            <li data-i18n="rule3">专注于对项目最有利的事情</li>
+            <li data-i18n="rule4">对其他社区成员表示同理心</li>
+        </ul>
+
+        <div class="tip">
+            <strong data-i18n="thanks">感谢您的贡献！</strong>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            'zh-CN': {
+                lang: '语言', theme: '主题', back: '返回首页', title: '贡献指南',
+                intro: '感谢您对 Formula4j-Plus 项目的关注！我们欢迎所有形式的贡献。',
+                h2_contribute: '如何贡献', h3_report: '报告问题',
+                report_desc: '如果您发现了 bug 或有功能建议，请通过以下方式提交：',
+                report1: '在 GitHub Issues 页面创建新 issue',
+                report2: 'Bug 报告请包含：问题描述、复现步骤、预期行为、实际行为、环境信息',
+                h3_code: '提交代码', code1: 'Fork 项目', code2: '创建分支',
+                code3: '编写代码并添加单元测试', code4: '提交更改', code5: '推送分支并创建 Pull Request',
+                h3_style: '代码规范', style1: 'Java 代码风格：遵循 Google Java Style Guide',
+                style2: '命名规范：类名大驼峰，方法名小驼峰、常量全大写下划线分隔',
+                style3: '注释：公共 API 必须添加 JavaDoc', style4: '测试：新功能必须包含单元测试',
+                h3_commit: 'Commit 信息规范', commit_desc: '我们使用 Conventional Commits 规范：',
+                c_feat: '新功能', c_fix: '修复 bug', c_docs: '文档更新',
+                c_refactor: '代码重构', c_test: '测试相关',
+                h3_env: '开发环境设置', env1: '克隆项目', env2: '构建项目',
+                env3: '运行测试', env4: '打包项目',
+                h3_function: '添加新函数', func1: '在 FunctionName 枚举中添加函数名',
+                func2: '在 FormulaCalculator 中实现函数逻辑', func3: '添加单元测试',
+                func4: '更新 README.md 中的函数列表',
+                h2_rules: '行为准则', rule1: '尊重所有贡献者', rule2: '接受建设性批评',
+                rule3: '专注于对项目最有利的事情', rule4: '对其他社区成员表示同理心',
+                thanks: '感谢您的贡献！',
+                light: '日间模式', dark: '夜间模式', system: '跟随系统'
+            },
+            'zh-TW': {
+                lang: '語言', theme: '主題', back: '返回首頁', title: '貢獻指南',
+                intro: '感謝您對 Formula4j-Plus 專案的關注！我們歡迎所有形式的貢獻。',
+                h2_contribute: '如何貢獻', h3_report: '報告問題',
+                report_desc: '如果您發現了 bug 或有功能建議：',
+                report1: '在 GitHub Issues 頁面建立新 issue', report2: 'Bug 報告請包含詳細資訊',
+                h3_code: '提交程式碼', code1: 'Fork 專案', code2: '建立分支',
+                code3: '編寫程式碼並新增單元測試', code4: '提交更改', code5: '推送分支並建立 Pull Request',
+                h3_style: '程式碼規範', style1: 'Java 程式碼風格', style2: '命名規範',
+                style3: '註釋：公共 API 必須新增 JavaDoc', style4: '測試：新功能必須包含單元測試',
+                h3_commit: 'Commit 資訊規範', commit_desc: '我們使用 Conventional Commits 規範：',
+                c_feat: '新功能', c_fix: '修復 bug', c_docs: '文檔更新',
+                c_refactor: '程式碼重構', c_test: '測試相關',
+                h3_env: '開發環境設定', env1: '複製專案', env2: '建置專案',
+                env3: '執行測試', env4: '打包專案',
+                h3_function: '新增函數', func1: '在 FunctionName 枚舉中新增函數名',
+                func2: '在 FormulaCalculator 中實作函數邏輯', func3: '新增單元測試',
+                func4: '更新函數列表',
+                h2_rules: '行為準則', rule1: '尊重所有貢獻者', rule2: '接受建設性批評',
+                rule3: '專注於對專案最有利的事情', rule4: '對其他社群成員表示同理心',
+                thanks: '感謝您的貢獻！',
+                light: '日間模式', dark: '夜間模式', system: '跟隨系統'
+            },
+            'en': {
+                lang: 'Language', theme: 'Theme', back: 'Back to Home', title: 'Contributing Guide',
+                intro: 'Thank you for your interest in Formula4j-Plus! We welcome all forms of contributions.',
+                h2_contribute: 'How to Contribute', h3_report: 'Report Issues',
+                report_desc: 'If you find a bug or have feature suggestions:',
+                report1: 'Create a new issue on GitHub Issues page', report2: 'Bug reports should include: description, steps, expected vs actual behavior',
+                h3_code: 'Submit Code', code1: 'Fork the project', code2: 'Create a branch',
+                code3: 'Write code and add unit tests', code4: 'Commit changes', code5: 'Push and create Pull Request',
+                h3_style: 'Code Standards', style1: 'Java code style: Follow Google Java Style Guide',
+                style2: 'Naming: PascalCase for classes, camelCase for methods',
+                style3: 'Comments: Add JavaDoc for public APIs', style4: 'Tests: New features must include unit tests',
+                h3_commit: 'Commit Message Convention', commit_desc: 'We use Conventional Commits:',
+                c_feat: 'New feature', c_fix: 'Bug fix', c_docs: 'Documentation',
+                c_refactor: 'Refactoring', c_test: 'Tests',
+                h3_env: 'Development Environment', env1: 'Clone project', env2: 'Build project',
+                env3: 'Run tests', env4: 'Package project',
+                h3_function: 'Add New Functions', func1: 'Add function name to FunctionName enum',
+                func2: 'Implement function logic in FormulaCalculator', func3: 'Add unit tests',
+                func4: 'Update function list in README.md',
+                h2_rules: 'Code of Conduct', rule1: 'Respect all contributors', rule2: 'Accept constructive criticism',
+                rule3: 'Focus on what is best for the project', rule4: 'Show empathy to other community members',
+                thanks: 'Thank you for your contribution!',
+                light: 'Light Mode', dark: 'Dark Mode', system: 'System'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'zh-CN';
+        let currentTheme = localStorage.getItem('theme') || 'system';
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                document.documentElement.setAttribute('data-theme', isDaytime ? 'light' : 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.innerHTML = theme === 'light'
+                ? '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'
+                : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        }
+
+        function updateLangUI() {
+            document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === currentLang);
+            });
+        }
+
+        function updateThemeUI() {
+            document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.theme === currentTheme);
+            });
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const btn = dropdown.querySelector('.control-btn');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+                menu.classList.toggle('show');
+                btn.setAttribute('aria-expanded', menu.classList.contains('show'));
+            });
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        });
+
+        document.querySelectorAll('#langMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentLang = item.dataset.lang;
+                localStorage.setItem('lang', currentLang);
+                applyTranslations(currentLang);
+                updateLangUI();
+            });
+        });
+
+        document.querySelectorAll('#themeMenu .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTheme = item.dataset.theme;
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+                updateThemeUI();
+            });
+        });
+
+        window.setInterval(() => {
+            if (currentTheme === 'system') {
+                const hour = new Date().getHours();
+                const isDaytime = hour >= 6 && hour < 18;
+                const currentAttr = document.documentElement.getAttribute('data-theme');
+                const expectedTheme = isDaytime ? 'light' : 'dark';
+                if (currentAttr !== expectedTheme) {
+                    applyTheme('system');
+                }
+            }
+        }, 3600000);
+
+        applyTranslations(currentLang);
+        updateLangUI();
+        applyTheme(currentTheme);
+        updateThemeUI();
+    </script>
+</body>
+</html>

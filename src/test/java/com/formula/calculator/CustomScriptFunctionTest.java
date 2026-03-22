@@ -49,7 +49,7 @@ public class CustomScriptFunctionTest {
         
         Object result = FormulaCalculator.calculate(formula, data, null);
         System.out.println("✓ JavaScript使用数据测试通过: " + result);
-        assertEquals("50.0", result.toString());
+        assertEquals(50.0, Double.parseDouble(result.toString()), 0.0001);
         
         // 清理
         FormulaCalculator.unregisterCustomFunction("MULTIPLY");
@@ -73,6 +73,30 @@ public class CustomScriptFunctionTest {
         
         // 清理
         FormulaCalculator.unregisterCustomFunction("DOUBLE");
+    }
+
+    @Test
+    public void testJavaScriptFunctionWithSingleQuotedLiteral() {
+        FormulaCalculator.registerCustomFunction("WRAPTEXT", "js", "function(text) { return '[' + text + ']'; }");
+
+        JSONObject data = new JSONObject();
+        Object result = FormulaCalculator.calculate("WRAPTEXT('hello')", data, null);
+
+        assertEquals("[hello]", result);
+
+        FormulaCalculator.unregisterCustomFunction("WRAPTEXT");
+    }
+
+    @Test
+    public void testJavaScriptFunctionWithBooleanLiteral() {
+        FormulaCalculator.registerCustomFunction("BOOLTEXT", "js", "function(flag) { return flag ? 'Y' : 'N'; }");
+
+        JSONObject data = new JSONObject();
+        Object result = FormulaCalculator.calculate("BOOLTEXT(true)", data, null);
+
+        assertEquals("Y", result);
+
+        FormulaCalculator.unregisterCustomFunction("BOOLTEXT");
     }
 }
 

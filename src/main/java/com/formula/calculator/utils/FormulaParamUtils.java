@@ -22,15 +22,26 @@ public class FormulaParamUtils {
         List<String> result = new ArrayList<>();
         int depth = 0;
         StringBuilder current = new StringBuilder();
+        boolean inString = false;
+        boolean escaped = false;
         
         for (char c : params.toCharArray()) {
-            if (c == '(') {
+            if (escaped) {
+                current.append(c);
+                escaped = false;
+            } else if (c == '\\') {
+                current.append(c);
+                escaped = true;
+            } else if (c == '"') {
+                current.append(c);
+                inString = !inString;
+            } else if (!inString && c == '(') {
                 depth++;
                 current.append(c);
-            } else if (c == ')') {
+            } else if (!inString && c == ')') {
                 depth--;
                 current.append(c);
-            } else if (c == ',' && depth == 0) {
+            } else if (!inString && c == ',' && depth == 0) {
                 result.add(current.toString());
                 current = new StringBuilder();
             } else {
