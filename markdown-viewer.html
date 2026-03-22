@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档查看 - Formula4j-Plus</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="mask-icon" href="favicon.svg" color="#2563eb">
+    <!-- 尝试多个 CDN 加载 marked.js -->
+    <script>
+        // 多个 CDN 备用方案
+        const markedCDNs = [
+            'https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js',
+            'https://unpkg.com/marked@11.1.1/marked.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js',
+            'https://fastly.jsdelivr.net/npm/marked@11.1.1/marked.min.js'
+        ];
+
+        // 简单的 markdown 解析器（作为备用）
+        window.createSimpleMarkdownParser = function() {
+            return {
+                parse: function(markdown) {
+                    let html = markdown;
+                    
+                    // 先处理代码块（避免被其他规则影响）
+                    const codeBlocks = [];
+                    html = html.replace(/```([\w]*)\n?([\s\S]*?)```/g, function(match, lang, code) {
+                        const id = 'CODE_BLOCK_' + codeBlocks.length;
+                        codeBlocks.push('<pre><code class="language-' + (lang || '') + '">' + 
+                                      code.trim().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + 
+                                      '</code></pre>');
+                        return id;
+                    });
+                    
+                    // 处理行内代码（避免被其他规则影响）
+                    const inlineCodes = [];
+                    html = html.replace(/`([^`\n]+)`/g, function(match, code) {
+                        const id = 'INLINE_CODE_' + inlineCodes.length;
+                        inlineCodes.push('<code>' + code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code>');
+                        return id;
+                    });
+                    
+                    // 转义 HTML（但保留已标记的代码块和行内代码）
+                    html = html.replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;');
+                    
+                    // 恢复代码块
+                    codeBlocks.forEach(function(code, index) {
+                        html = html.replace('CODE_BLOCK_' + index, code);
+                    });
+                    
+                    // 恢复行内代码
+                    inlineCodes.forEach(function(code, index) {
+                        html = html.replace('INLINE_CODE_' + index, code);
+                    });
+                    
+                    // 标题（按顺序，从多级到少级）
+                    html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
+                    html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
+                    html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+                    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+                    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+                    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+                    
+                    // 粗体和斜体（先处理粗体，避免嵌套问题）
+                    html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+                    html = html.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+                    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                    html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+                    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+                    html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+                    
+                    // 链接
+                    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                    
+                    // 图片
+                    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                    
+                    // 水平线
+                    html = html.replace(/^---$/gim, '<hr>');
+                    html = html.replace(/^\*\*\*$/gim, '<hr>');
+                    
+                    // 引用块
+                    html = html.replace(/^> (.+)$/gim, '<blockquote>$1</blockquote>');
+                    
+                    // 有序列表
+                    html = html.replace(/^(\d+)\. (.+)$/gim, '<li>$2</li>');
+                    html = html.replace(/(<li>.*<\/li>)/s, function(match) {
+                        return '<ol>' + match + '</ol>';
+                    });
+                    
+                    // 无序列表
+                    html = html.replace(/^[\*\-\+] (.+)$/gim, '<li>$1</li>');
+                    html = html.replace(/(<li>.*<\/li>)/s, function(match) {
+                        if (!match.includes('<ol>')) {
+                            return '<ul>' + match + '</ul>';
+                        }
+                        return match;
+                    });
+                    
+                    // 段落（处理空行）
+                    html = html.split('\n\n').map(function(para) {
+                        para = para.trim();
+                        if (para && !para.match(/^<[h|u|o|b|p|d]/)) {
+                            return '<p>' + para + '</p>';
+                        }
+                        return para;
+                    }).join('\n');
+                    
+                    // 换行
+                    html = html.replace(/\n/g, '<br>');
+                    
+                    return html;
+                },
+                setOptions: function() {} // 兼容性方法
+            };
+        };
+
+        // 加载 marked.js
+        let markedLoaded = false;
+        let loadAttempt = 0;
+
+        function loadMarked() {
+            if (loadAttempt >= markedCDNs.length) {
+                // 所有 CDN 都失败，使用备用解析器
+                console.warn('所有 CDN 加载失败，使用备用 markdown 解析器');
+                window.marked = createSimpleMarkdownParser();
+                markedLoaded = true;
+                if (window.onMarkedReady) {
+                    window.onMarkedReady();
+                }
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = markedCDNs[loadAttempt];
+            script.onload = function() {
+                markedLoaded = true;
+                if (window.onMarkedReady) {
+                    window.onMarkedReady();
+                }
+            };
+            script.onerror = function() {
+                loadAttempt++;
+                loadMarked();
+            };
+            document.head.appendChild(script);
+        }
+
+        // 开始加载
+        loadMarked();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-dark: #111827;
+            --border-color: #e5e7eb;
+            --code-bg: #f3f4f6;
+            --code-border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+        }
+
+        .markdown-container {
+            background: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #ef4444;
+        }
+
+        /* Markdown Styles */
+        .markdown-body {
+            line-height: 1.8;
+        }
+
+        .markdown-body h1 {
+            font-size: 2.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .markdown-body h2 {
+            font-size: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .markdown-body h3 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+        }
+
+        .markdown-body h4 {
+            font-size: 1.25rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .markdown-body p {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .markdown-body ul, .markdown-body ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        .markdown-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: var(--text-light);
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .markdown-body code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+            border: 1px solid var(--code-border);
+        }
+
+        .markdown-body pre {
+            background: var(--bg-dark);
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--code-border);
+        }
+
+        .markdown-body pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .markdown-body th,
+        .markdown-body td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        .markdown-body th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .markdown-body a {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .markdown-body a:hover {
+            border-bottom-color: var(--primary-color);
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .markdown-body hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .markdown-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .markdown-body h1 {
+                font-size: 2rem;
+            }
+
+            .markdown-body h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>📖 文档查看</h1>
+                <a href="index.html" class="back-btn">← 返回首页</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="markdown-container">
+                <div id="loading" class="loading">正在加载文档...</div>
+                <div id="error" class="error" style="display: none;"></div>
+                <div id="content" class="markdown-body" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 获取URL参数中的文件路径
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 加载并渲染markdown文件
+        async function loadMarkdown(file) {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const contentEl = document.getElementById('content');
+
+            // 等待 marked 加载完成
+            function waitForMarked() {
+                return new Promise((resolve) => {
+                    if (typeof marked !== 'undefined') {
+                        resolve();
+                    } else {
+                        window.onMarkedReady = resolve;
+                        // 超时保护：5秒后使用备用解析器
+                        setTimeout(() => {
+                            if (typeof marked === 'undefined') {
+                                window.marked = createSimpleMarkdownParser();
+                                resolve();
+                            }
+                        }, 5000);
+                    }
+                });
+            }
+
+            try {
+                // 等待 marked 加载
+                await waitForMarked();
+                
+                // 从GitHub Pages加载文件
+                const response = await fetch(file);
+                
+                if (!response.ok) {
+                    throw new Error(`无法加载文件: ${response.status} ${response.statusText}`);
+                }
+
+                const markdown = await response.text();
+                
+                // 配置marked选项（如果支持）
+                if (typeof marked !== 'undefined' && marked.setOptions) {
+                    marked.setOptions({
+                        breaks: true,
+                        gfm: true,
+                        headerIds: true,
+                        mangle: false
+                    });
+                }
+
+                // 渲染markdown
+                let html;
+                if (typeof marked !== 'undefined') {
+                    html = marked.parse(markdown);
+                } else {
+                    // 如果 marked 仍未加载，使用备用解析器
+                    const simpleParser = createSimpleMarkdownParser();
+                    html = simpleParser.parse(markdown);
+                }
+                
+                // 显示内容
+                loadingEl.style.display = 'none';
+                contentEl.innerHTML = html;
+                contentEl.style.display = 'block';
+
+                // 更新页面标题
+                const firstHeading = contentEl.querySelector('h1, h2');
+                if (firstHeading) {
+                    document.title = `${firstHeading.textContent} - Formula4j-Plus`;
+                }
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = `加载失败: ${error.message}`;
+                console.error('Error loading markdown:', error);
+            }
+        }
+
+        // 页面加载时执行
+        window.addEventListener('DOMContentLoaded', () => {
+            const file = getUrlParameter('file') || 'README.md';
+            
+            // 如果直接访问，尝试从URL路径获取文件名
+            if (file === 'README.md' && window.location.pathname !== '/index.html') {
+                const pathParts = window.location.pathname.split('/');
+                const fileName = pathParts[pathParts.length - 1];
+                if (fileName.endsWith('.md')) {
+                    loadMarkdown(fileName);
+                } else {
+                    loadMarkdown(file);
+                }
+            } else {
+                loadMarkdown(file);
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -3,6 +3,14 @@ name: Publish to Maven Central
 on:
   release:
     types: [created]
+  # 也可以手动触发
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: '跳过测试'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   publish:
