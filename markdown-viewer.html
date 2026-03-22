@@ -327,8 +327,13 @@
             padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
+            overflow-y: hidden;
             margin: 1.5rem 0;
             border: 1px solid var(--code-border);
+            white-space: pre;
+            word-break: normal;
+            overflow-wrap: normal;
+            tab-size: 4;
         }
 
         .markdown-body pre code {
@@ -338,6 +343,9 @@
             color: inherit;
             font-size: 0.9rem;
             line-height: 1.6;
+            display: block;
+            white-space: inherit;
+            min-width: max-content;
         }
 
         .markdown-body table {
@@ -513,10 +521,10 @@
 
         // 页面加载时执行
         window.addEventListener('DOMContentLoaded', () => {
-            const file = getUrlParameter('file') || 'README.md';
+            const file = getUrlParameter('file') || 'Project-Overview.md';
             
             // 如果直接访问，尝试从URL路径获取文件名
-            if (file === 'README.md' && window.location.pathname !== '/index.html') {
+            if (file === 'Project-Overview.md' && window.location.pathname !== '/index.html') {
                 const pathParts = window.location.pathname.split('/');
                 const fileName = pathParts[pathParts.length - 1];
                 if (fileName.endsWith('.md')) {

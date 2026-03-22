@@ -389,24 +389,34 @@
             background: var(--code-bg);
             border: 1px solid var(--code-border);
             border-radius: var(--radius-lg);
-            padding: var(--space-4);
+            padding: var(--space-4) var(--space-6);
             overflow-x: auto;
+            overflow-y: hidden;
             margin: var(--space-4) 0;
             font-family: var(--font-mono);
             font-size: 0.875rem;
             line-height: 1.7;
             transition: all 0.3s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
         }
 
         .code-block pre {
             margin: 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: pre;
+            word-break: normal;
+            overflow-wrap: normal;
+            overflow-x: auto;
+            tab-size: 4;
+            line-height: 1.8;
         }
 
         .code-block code {
+            display: block;
+            white-space: inherit;
             font-family: inherit;
             color: var(--text);
+            min-width: max-content;
+            -webkit-font-smoothing: auto;
         }
 
         /* Syntax Highlighting */
@@ -550,7 +560,7 @@
                         </svg>
                         <span data-i18n="quick_start">快速开始</span>
                     </a>
-                    <a href="https://github.com" class="btn btn-secondary" target="_blank" rel="noopener">
+                    <a href="https://github.com/Formula4j-plus/Formula4j-Plus" class="btn btn-secondary" target="_blank" rel="noopener">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
@@ -677,41 +687,40 @@
             
             <h3 data-i18n="s1_title">1. 添加依赖</h3>
             <div class="code-block">
-                <pre><code><span class="ch-comment">&lt;!-- Maven --&gt;</span>
-<span class="ch-keyword">&lt;dependency&gt;</span>
-    <span class="ch-keyword">&lt;groupId&gt;</span>com.formula<span class="ch-keyword">&lt;/groupId&gt;</span>
-    <span class="ch-keyword">&lt;artifactId&gt;</span>formula4j-plus<span class="ch-keyword">&lt;/artifactId&gt;</span>
-    <span class="ch-keyword">&lt;version&gt;</span>2.2.0<span class="ch-keyword">&lt;/version&gt;</span>
-<span class="ch-keyword">&lt;/dependency&gt;</span></code></pre>
+                <pre><code>&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.formula&lt;/groupId&gt;
+    &lt;artifactId&gt;formula4j-plus&lt;/artifactId&gt;
+    &lt;version&gt;3.0.0&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
             </div>
 
             <h3 data-i18n="s2_title">2. 基本使用</h3>
             <div class="code-block">
-                <pre><code><span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
-<span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
+                <pre><code>import com.alibaba.fastjson.JSONObject;
+import com.formula.calculator.FormulaCalculator;
 
-<span class="ch-comment">// 准备数据</span>
-JSONObject data = <span class="ch-keyword">new</span> JSONObject();
-data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
-data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
+JSONObject data = new JSONObject();
+data.put("price", 100);
+data.put("quantity", 5);
 
-<span class="ch-comment">// 计算公式</span>
-String formula = <span class="ch-string">"${price} * ${quantity}"</span>;
+String formula = "${price} * ${quantity}";
 Object result = FormulaCalculator.calculate(formula, data);
-System.out.println(<span class="ch-string">"结果: "</span> + result); <span class="ch-comment">// 输出: 500.0</span></code></pre>
+
+System.out.println("结果: " + result);
+// 输出: 500</code></pre>
             </div>
 
             <h3 data-i18n="s3_title">3. 使用函数</h3>
             <div class="code-block">
-                <pre><code><span class="ch-comment">// 使用 SUM 函数</span>
-String formula = <span class="ch-string">"SUM(10, 20, 30)"</span>;
-Object result = FormulaCalculator.calculate(formula, data);
-<span class="ch-comment">// 结果: 60.0</span>
+                <pre><code>String sumFormula = "SUM(10, 20, 30)";
+Object sumResult = FormulaCalculator.calculate(sumFormula, data);
+// 结果: 60.0
 
-<span class="ch-comment">// 使用 IF 函数</span>
-String formula2 = <span class="ch-string">"IF(10 > 5, 100, 0)"</span>;
-Object result2 = FormulaCalculator.calculate(formula2, data);
-<span class="ch-comment">// 结果: 100.0</span></code></pre>
+String ifFormula = "IF(10 &gt; 5, 100, 0)";
+Object ifResult = FormulaCalculator.calculate(ifFormula, data);
+// 结果: 100</code></pre>
             </div>
 
             <div class="section-footer">
@@ -727,54 +736,53 @@ Object result2 = FormulaCalculator.calculate(formula2, data);
             
             <h3 data-i18n="e1_title">使用 FormulaData 结构</h3>
             <div class="code-block">
-                <pre><code><span class="ch-keyword">import</span> com.formula.calculator.model.FormulaData;
-<span class="ch-keyword">import</span> com.formula.calculator.model.FieldMark;
+                <pre><code>import com.alibaba.fastjson.JSONObject;
+import com.formula.calculator.FormulaCalculator;
+import com.formula.calculator.model.FieldMark;
+import com.formula.calculator.model.FormulaData;
 
-<span class="ch-comment">// 构建 FormulaData</span>
-FormulaData formulaData = <span class="ch-keyword">new</span> FormulaData();
-formulaData.setTxt(<span class="ch-string">"SUM(单价,数量) * (1 - 折扣率)"</span>);
+import java.util.ArrayList;
+import java.util.List;
 
-<span class="ch-comment">// 添加字段映射</span>
-List&lt;FieldMark&gt; marks = <span class="ch-keyword">new</span> ArrayList&lt;&gt;();
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"price"</span>, <span class="ch-string">"单价"</span>));
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"quantity"</span>, <span class="ch-string">"数量"</span>));
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"discount"</span>, <span class="ch-string">"折扣率"</span>));
+FormulaData formulaData = new FormulaData();
+formulaData.setTxt("单价 * 数量 * (1 - 折扣率)");
+
+List&lt;FieldMark&gt; marks = new ArrayList&lt;&gt;();
+marks.add(new FieldMark("price", "单价"));
+marks.add(new FieldMark("quantity", "数量"));
+marks.add(new FieldMark("discount", "折扣率"));
 formulaData.setMarks(marks);
 
-<span class="ch-comment">// 准备数据</span>
-JSONObject data = <span class="ch-keyword">new</span> JSONObject();
-data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
-data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
-data.put(<span class="ch-string">"discount"</span>, <span class="ch-number">0.1</span>);
+JSONObject data = new JSONObject();
+data.put("price", 100);
+data.put("quantity", 5);
+data.put("discount", 0.1);
 
-<span class="ch-comment">// 计算</span>
 Object result = FormulaCalculator.calculate(formulaData, data);
-<span class="ch-comment">// 结果: 450.0</span></code></pre>
+// 结果: 450.0</code></pre>
             </div>
 
             <h3 data-i18n="e2_title">自定义函数</h3>
             <div class="code-block">
-                <pre><code><span class="ch-comment">// 注册 Java Lambda 函数</span>
-FormulaCalculator.registerCustomFunction(<span class="ch-string">"DOUBLE"</span>, (params, data, mapping) -> {
-    <span class="ch-keyword">double</span> value = Double.parseDouble(params.trim());
-    <span class="ch-keyword">return</span> String.valueOf(value * <span class="ch-number">2</span>);
+                <pre><code>FormulaCalculator.registerCustomFunction("DOUBLE", (params, data, mapping) -&gt; {
+    double value = Double.parseDouble(params.trim());
+    return String.valueOf(value * 2);
 });
 
-<span class="ch-comment">// 使用</span>
-String formula = <span class="ch-string">"DOUBLE(10)"</span>;
-Object result = FormulaCalculator.calculate(formula, data);
-<span class="ch-comment">// 结果: 20.0</span></code></pre>
+Object result = FormulaCalculator.calculate("DOUBLE(10)", new JSONObject());
+// 结果: 20.0</code></pre>
             </div>
 
             <h3 data-i18n="e3_title">一次性加载 Formula.js 库</h3>
             <div class="code-block">
-                <pre><code><span class="ch-comment">// 加载 Formula.js 库</span>
-FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
+                <pre><code>// 仅在你需要扩展 Formula.js 场景时加载
+FormulaCalculator.loadFormulaJsLibrary("file:///D:/formula.js");
 
-<span class="ch-comment">// 加载后，所有函数都可以直接使用</span>
-String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
+JSONObject data = new JSONObject();
+String formula = "SUM(1, 2, 3) + ABS(-5) + SQRT(16)";
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="ch-comment">// 结果: 15.0</span></code></pre>
+
+// 结果: 15.0</code></pre>
             </div>
         </div>
     </section>
@@ -901,6 +909,22 @@ Object result = FormulaCalculator.calculate(formula, data);
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <line x1="10" y1="9" x2="8" y2="9"></line>
+                        </svg>
+                    </div>
+                    <h3>项目概览</h3>
+                    <p>查看仓库首页文档与更新说明，保留 Markdown 阅读体验，适合 GitHub Pages 直接浏览。</p>
+                    <a href="markdown-viewer.html?file=Project-Overview.md" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
+                        <span>查看 README</span>
+                    </a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                         </svg>
                     </div>
@@ -979,9 +1003,9 @@ Object result = FormulaCalculator.calculate(formula, data);
             <div class="footer-links">
                 <a href="LICENSE" data-i18n="footer_license">许可证</a>
                 <a href="NOTICE" data-i18n="footer_notice">第三方库</a>
-                <a href="CHANGELOG.md" data-i18n="footer_changelog">更新日志</a>
+                <a href="markdown-viewer.html?file=CHANGELOG.md" data-i18n="footer_changelog">更新日志</a>
                 <a href="CONTRIBUTING.html" data-i18n="footer_contrib">贡献指南</a>
-                <a href="README.md" data-i18n="footer_readme">README</a>
+                <a href="markdown-viewer.html?file=Project-Overview.md" data-i18n="footer_readme">README</a>
             </div>
             <small>Copyright &copy; 2025 WanShen. Licensed under Business Source License 1.1 (BUSL-1.1).</small>
         </div>

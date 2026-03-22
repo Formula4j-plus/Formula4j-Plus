@@ -187,16 +187,32 @@
             background: var(--code-bg);
             border: 1px solid var(--code-border);
             border-radius: var(--radius-lg);
-            padding: var(--space-4);
+            padding: var(--space-4) var(--space-6);
             overflow-x: auto;
+            overflow-y: hidden;
             margin: var(--space-4) 0;
             font-family: var(--font-mono);
             font-size: 0.875rem;
             line-height: 1.7;
             transition: all 0.3s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
         }
-        .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
-        .code-block code { font-family: inherit; color: var(--text); }
+        .code-block pre {
+            margin: 0;
+            white-space: pre;
+            word-break: normal;
+            overflow-wrap: normal;
+            overflow-x: auto;
+            line-height: 1.8;
+            tab-size: 4;
+        }
+        .code-block code {
+            display: block;
+            white-space: inherit;
+            min-width: max-content;
+            font-family: inherit;
+            color: var(--text);
+        }
 
         .ch-keyword { color: #C792EA; }
         .ch-string { color: #C3E88D; }
