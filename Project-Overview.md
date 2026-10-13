@@ -1,5 +1,7 @@
 # Formula4j-Plus
 
+> 当前维护说明：计算结果类型、详细校验、实例隔离和脚本边界见[引擎行为契约](docs/engine-contract.md)，配套文档见 [Wiki](docs/wiki/README.md)。
+
 `Formula4j-Plus` 是一个 Java 公式计算引擎，主要用于在后端执行公式、复算前端结果，以及处理带字段映射的动态表达式。
 
 项目本身偏工程落地，不是脚本语言或规则平台，核心目标是把前端已有的公式表达式在 Java 侧稳定跑起来。
@@ -125,7 +127,7 @@ FormulaCalculator.unregisterCustomFunction("MYFUNC");
 
 完整函数名可直接查看源码：
 
-- 函数入口：`src/main/java/com/formula/calculator/FormulaCalculator.java`
+- 函数入口：`src/main/java/com/formula/calculator/FormulaCalculator.java`（门面）；数学实现位于 `functions/math/MathFunctions.java`
 - 函数枚举：`src/main/java/com/formula/calculator/FunctionName.java`
 - 示例代码：`src/main/java/com/formula/calculator/example/FormulaExample.java`
 - 测试用例：`src/test/java/com/formula/calculator/`

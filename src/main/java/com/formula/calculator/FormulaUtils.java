@@ -2,6 +2,8 @@ package com.formula.calculator;
 
 import com.alibaba.fastjson.JSONObject;
 import com.formula.calculator.model.FormulaData;
+import com.formula.calculator.api.VerificationResult;
+import com.formula.calculator.support.ResultVerifier;
 
 /**
  * 公式计算工具类
@@ -11,6 +13,28 @@ import com.formula.calculator.model.FormulaData;
  * @version 2.0.0
  */
 public class FormulaUtils {
+
+    /** 类型化详细校验；保留原 verify 的兼容行为，通过本入口获取错误分类。 */
+    public static VerificationResult verifyDetailed(String formula, JSONObject data,
+                                                     Object frontendResult, double tolerance) {
+        return ResultVerifier.verify(() -> FormulaCalculator.calculate(formula, data), frontendResult, tolerance);
+    }
+
+    /** 使用默认绝对误差 0.0001 进行详细校验。 */
+    public static VerificationResult verifyDetailed(String formula, JSONObject data, Object frontendResult) {
+        return verifyDetailed(formula, data, frontendResult, 0.0001);
+    }
+
+    /** 对带字段映射的公式进行详细校验。 */
+    public static VerificationResult verifyDetailed(FormulaData formula, JSONObject data,
+                                                     Object frontendResult, double tolerance) {
+        return ResultVerifier.verify(() -> FormulaCalculator.calculate(formula, data), frontendResult, tolerance);
+    }
+
+    /** 对带字段映射的公式使用默认误差进行详细校验。 */
+    public static VerificationResult verifyDetailed(FormulaData formula, JSONObject data, Object frontendResult) {
+        return verifyDetailed(formula, data, frontendResult, 0.0001);
+    }
     
     /**
      * 计算公式（便捷方法）

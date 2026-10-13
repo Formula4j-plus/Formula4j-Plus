@@ -46,7 +46,7 @@ mvn test
 如果你要新增函数，通常需要同步处理：
 
 1. `FunctionName` 中增加函数名
-2. `FormulaCalculator` 或对应工具类中补实现
+2. 数学函数在 `functions/math/MathFunctions` 注册；其他类别在兼容求值流程或对应工具类补实现
 3. `src/test/java/com/formula/calculator/` 中补测试
 4. 文档按需更新
 
@@ -58,3 +58,5 @@ mvn test
 - 文档修改保持和当前项目能力一致
 
 感谢你的贡献。
+
+网站视觉维护 `assets/site.css` 与 `assets/site.js`；Wiki 章节维护 `docs/wiki/`。提交前运行 `python scripts/check_docs.py`，关联本地 Wiki 使用 `python scripts/sync_wiki.py` 同步。

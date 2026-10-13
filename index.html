@@ -10,13 +10,13 @@
     <script>
         (function () {
             try {
-                var savedTheme = localStorage.getItem('theme') || 'system';
+                var savedTheme = localStorage.getItem('theme') || 'light';
                 var resolvedTheme = savedTheme === 'system'
                     ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                     : savedTheme;
                 document.documentElement.setAttribute('data-theme', resolvedTheme);
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
     </script>
@@ -25,65 +25,75 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Core Colors */
-            --primary: #2563EB;
-            --primary-hover: #3B82F6;
-            --cta: #F97316;
-            --cta-hover: #EA580C;
-            --bg: #0F172A;
-            --bg-elevated: #1E293B;
-            --bg-card: #1E293B;
-            --surface-subtle: rgba(15, 23, 42, 0.72);
-            --text: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --text-muted: #64748B;
-            --border: #334155;
-            --success: #10B981;
-            --code-bg: #020617;
-            --code-surface: #0F172A;
-            --code-border: #1E293B;
-            --code-text: #E2E8F0;
-            --inline-code-bg: rgba(37, 99, 235, 0.14);
-            --inline-code-border: rgba(59, 130, 246, 0.22);
-            --inline-code-text: #BFDBFE;
-            --blockquote-bg: rgba(37, 99, 235, 0.08);
-            --table-stripe: rgba(148, 163, 184, 0.06);
-            /* Spacing Scale (8dp) */
+            --primary: #5eead4;
+            --primary-hover: #67e8f9;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.16);
+            --cta: #22d3ee;
+            --cta-hover: #06b6d4;
+            --bg: #06101f;
+            --bg-elevated: rgba(12, 26, 46, 0.82);
+            --bg-card: rgba(9, 18, 35, 0.72);
+            --surface-subtle: rgba(15, 23, 42, 0.62);
+            --surface-strong: rgba(15, 23, 42, 0.82);
+            --text: #ecfeff;
+            --text-secondary: #b6c7e3;
+            --text-muted: #6b85a8;
+            --border: rgba(125, 211, 252, 0.18);
+            --success: #34d399;
+            --code-bg: rgba(2, 6, 23, 0.94);
+            --code-surface: rgba(8, 15, 31, 0.98);
+            --code-border: rgba(103, 232, 249, 0.14);
+            --code-text: #dbeafe;
+            --inline-code-bg: rgba(34, 211, 238, 0.12);
+            --inline-code-border: rgba(103, 232, 249, 0.22);
+            --inline-code-text: #a5f3fc;
+            --blockquote-bg: rgba(14, 116, 144, 0.12);
+            --table-stripe: rgba(34, 211, 238, 0.04);
             --space-1: 0.25rem;
             --space-2: 0.5rem;
             --space-3: 0.75rem;
             --space-4: 1rem;
             --space-6: 1.5rem;
             --space-8: 2rem;
-            /* Typography */
             --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-            /* Effects */
-            --radius-sm: 12px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.14);
-            --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.22);
+            --radius-sm: 14px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --shadow-sm: 0 18px 40px rgba(2, 6, 23, 0.26);
+            --shadow-md: 0 28px 80px rgba(2, 6, 23, 0.34);
+            --glow: 0 0 0 1px rgba(103, 232, 249, 0.1), 0 0 36px rgba(34, 211, 238, 0.12);
         }
 
         [data-theme="light"] {
-            --bg: #FFFFFF;
-            --bg-elevated: #F8FAFC;
-            --bg-card: #FFFFFF;
-            --surface-subtle: rgba(148, 163, 184, 0.12);
-            --text: #1E293B;
-            --text-secondary: #475569;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --code-bg: #EFF6FF;
-            --code-surface: #F8FAFC;
-            --code-border: #BFDBFE;
-            --code-text: #0F172A;
-            --inline-code-bg: #DBEAFE;
-            --inline-code-border: #BFDBFE;
-            --inline-code-text: #1D4ED8;
-            --blockquote-bg: #EFF6FF;
-            --table-stripe: #F8FAFC;
+            --primary: #0891b2;
+            --primary-hover: #0ea5e9;
+            --accent: #2563eb;
+            --accent-soft: rgba(37, 99, 235, 0.12);
+            --cta: #0284c7;
+            --cta-hover: #0369a1;
+            --bg: #eff6ff;
+            --bg-elevated: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.72);
+            --surface-subtle: rgba(148, 163, 184, 0.1);
+            --surface-strong: rgba(255, 255, 255, 0.92);
+            --text: #082f49;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border: rgba(14, 165, 233, 0.16);
+            --code-bg: rgba(239, 246, 255, 0.94);
+            --code-surface: rgba(255, 255, 255, 0.98);
+            --code-border: rgba(14, 165, 233, 0.16);
+            --code-text: #0f172a;
+            --inline-code-bg: rgba(14, 165, 233, 0.08);
+            --inline-code-border: rgba(14, 165, 233, 0.18);
+            --inline-code-text: #0c4a6e;
+            --blockquote-bg: rgba(59, 130, 246, 0.08);
+            --table-stripe: rgba(59, 130, 246, 0.04);
+            --shadow-sm: 0 20px 45px rgba(148, 163, 184, 0.2);
+            --shadow-md: 0 30px 80px rgba(148, 163, 184, 0.24);
+            --glow: 0 0 0 1px rgba(14, 165, 233, 0.08), 0 0 28px rgba(14, 165, 233, 0.1);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -100,11 +110,15 @@
 
         body {
             font-family: var(--font-sans);
-            background-color: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 28%),
+                radial-gradient(circle at 85% 12%, rgba(59, 130, 246, 0.18), transparent 24%),
+                linear-gradient(180deg, rgba(8, 15, 31, 0.96) 0%, rgba(6, 16, 31, 1) 100%);
             color: var(--text);
             line-height: 1.6;
             font-size: 16px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            transition: background-color 0.35s ease, color 0.35s ease, background 0.35s ease;
         }
 
         a {
@@ -118,6 +132,8 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 var(--space-6);
+            position: relative;
+            z-index: 1;
         }
 
         /* ==================== Control Bar ==================== */
@@ -128,12 +144,13 @@
             display: flex;
             gap: var(--space-2);
             z-index: 1000;
-            background: color-mix(in srgb, var(--bg-card) 86%, transparent);
-            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 92%, transparent);
             border-radius: 999px;
             padding: var(--space-1);
-            box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-sm), var(--glow);
+            backdrop-filter: blur(22px) saturate(140%);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
         }
 
         .control-btn {
@@ -218,7 +235,105 @@
             transition: background 0.3s ease;
         }
 
-        .header-content { position: relative; z-index: 1; }
+        .header-content { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+            background: color-mix(in srgb, var(--primary) 10%, transparent);
+            color: var(--primary-hover);
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: var(--space-4);
+        }
+
+        .hero-description {
+            max-width: 760px;
+            margin: 0 auto var(--space-6);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .section-lead {
+            max-width: 760px;
+            margin: 0 auto var(--space-8);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .hero-panel {
+            margin-top: var(--space-8);
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: var(--space-6);
+            align-items: stretch;
+            text-align: left;
+        }
+
+        .hero-card,
+        .quick-links-card {
+            background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-card h3,
+        .quick-links-card h3 {
+            margin-top: 0;
+            margin-bottom: var(--space-3);
+        }
+
+        .hero-list {
+            list-style: none;
+            display: grid;
+            gap: var(--space-3);
+        }
+
+        .hero-list li {
+            color: var(--text-secondary);
+            padding-left: 1.35rem;
+            position: relative;
+        }
+
+        .hero-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--cta);
+            font-weight: 700;
+        }
+
+        .quick-links-card ul {
+            list-style: none;
+            display: grid;
+            gap: var(--space-3);
+        }
+
+        .quick-links-card a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text);
+        }
+
+        .quick-links-card a:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
 
         h1 {
             font-size: clamp(2.5rem, 6vw, 4rem);
@@ -419,6 +534,17 @@
         .feature-card h3 { margin-top: 0; }
         .feature-card p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.7; margin-top: var(--space-2); }
 
+        .faq-list {
+            display: grid;
+            gap: var(--space-6);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .faq-list .feature-card {
+            opacity: 1;
+            transform: none;
+        }
+
         /* ==================== Code Blocks ==================== */
         .code-block {
             background: linear-gradient(180deg, var(--code-bg) 0%, var(--code-surface) 100%);
@@ -527,6 +653,12 @@
         .contact-item svg { width: 20px; height: 20px; color: var(--primary-hover); }
 
         /* ==================== Responsive ==================== */
+        @media (max-width: 900px) {
+            .hero-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             h2 { font-size: 2rem; }
             section { padding: 3rem 0; }
@@ -538,14 +670,38 @@
             .control-btn span { display: none; }
             .control-btn { padding: var(--space-2); }
             .footer-links { gap: var(--space-4); }
+            .hero-card,
+            .quick-links-card {
+                padding: var(--space-5, 1.25rem);
+            }
+            .quick-links-card a {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
             .feature-card { opacity: 1; transform: none; }
         }
     </style>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body class="home-page">
+    <a class="skip-link" href="#main-content" data-site-i18n="skip">跳到正文</a>
+    <div class="site-topbar" role="banner">
+        <div class="site-topbar-inner">
+            <a class="site-brand" href="index.html" aria-label="Formula4j-Plus 首页"><span class="site-brand-mark" aria-hidden="true">f(x)</span>Formula4j-Plus</a>
+            <div class="site-links" id="site-navigation" role="navigation" aria-label="主导航">
+                <a href="docs/使用指南.html" data-site-i18n="guide">使用指南</a>
+                <a href="markdown-viewer.html?file=Project-Overview.md" data-site-i18n="overview">项目概览</a>
+                <a href="markdown-viewer.html?file=CHANGELOG.md" data-site-i18n="changes">更新日志</a>
+                <a href="https://github.com/Formula4j-plus/Formula4j-Plus" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+            <div class="site-controls-slot"></div>
+            <button class="mobile-menu-toggle" aria-label="打开导航" aria-expanded="false" aria-controls="site-navigation">☰</button>
+        </div>
+    </div>
     <!-- Control Bar -->
     <div class="control-bar">
         <div class="dropdown">
@@ -587,140 +743,76 @@
         </div>
     </div>
 
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <h1>Formula4j-Plus</h1>
-                <p class="subtitle" data-i18n="subtitle">Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果</p>
-                <div class="badges">
-                    <span class="badge" data-i18n="badge_java">Java 8-25</span>
-                    <span class="badge" data-i18n="badge_func">249+ 函数</span>
-                    <span class="badge">BUSL-1.1</span>
-                    <span class="badge" data-i18n="badge_formula">Formula.js 兼容</span>
+    <header class="hero" id="main-content" tabindex="-1">
+        <div class="container hero-layout">
+            <div>
+                <div class="hero-eyebrow" data-site-i18n="eyebrow">JAVA 公式计算引擎</div>
+                <h1><span data-site-i18n="line1">让每一次计算，</span><em data-site-i18n="line2">都有据可依。</em></h1>
+                <p class="hero-subtitle" data-site-i18n="subtitle">为动态表单与业务结果提供后端复算。让前后端共用公式，让计算过程清晰可追溯。</p>
+                <div class="hero-actions">
+                    <a href="#quick-start" class="btn btn-primary"><span data-site-i18n="start">快速开始</span><span aria-hidden="true">→</span></a>
+                    <a href="docs/使用指南.html" class="btn btn-secondary" data-site-i18n="read">阅读文档</a>
                 </div>
-                <div class="cta-group">
-                    <a href="#quick-start" class="btn btn-primary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        <span data-i18n="quick_start">快速开始</span>
-                    </a>
-                    <a href="https://github.com/Formula4j-plus/Formula4j-Plus" class="btn btn-secondary" target="_blank" rel="noopener">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        GitHub
-                    </a>
-                    <a href="#docs" class="btn btn-secondary"><span data-i18n="docs">文档</span></a>
+                <div class="hero-meta"><span data-site-i18n="java">Java 8 编译目标</span><span data-site-i18n="version">v3.0.0</span><span>Formula.js-style</span></div>
+            </div>
+            <div>
+                <div class="formula-preview">
+                    <div class="preview-top"><span data-site-i18n="example">计算示例</span><span>FORMULA / JAVA</span></div>
+                    <div class="preview-code">
+                        <div class="preview-comment">// formula</div>
+                        <div class="preview-formula">${price} * ${quantity}</div>
+                        <div class="preview-comment">// data</div>
+                        <div>price: <span class="preview-number">100</span></div>
+                        <div>quantity: <span class="preview-number">5</span></div>
+                    </div>
+                    <div class="preview-result"><span data-site-i18n="result">预期结果</span><strong>500</strong></div>
                 </div>
+                <p class="preview-caption" data-site-i18n="caption">静态示例 · 在 Java 项目中执行</p>
             </div>
         </div>
     </header>
-
-    <!-- Navigation -->
-    <nav>
+    <div class="container feature-strip">
+        <div class="strip-feature"><span class="strip-icon" aria-hidden="true">≡</span><div><h3 data-site-i18n="mapTitle">字段映射</h3><p data-site-i18n="mapDesc">连接表单里的字段名称与业务数据，让公式更贴近业务。</p></div></div>
+        <div class="strip-feature"><span class="strip-icon" aria-hidden="true">ƒ</span><div><h3 data-site-i18n="fnTitle">函数扩展</h3><p data-site-i18n="fnDesc">复用内置函数，通过 Java Lambda 扩展自己的计算逻辑。</p></div></div>
+        <div class="strip-feature"><span class="strip-icon" aria-hidden="true">✓</span><div><h3 data-site-i18n="verifyTitle">结果校验</h3><p data-site-i18n="verifyDesc">后端复算提交的数据，按指定误差核对数值结果。</p></div></div>
+    </div>
+    <section id="scenarios">
         <div class="container">
-            <ul>
-                <li><a href="#features" data-i18n="nav_features">功能特性</a></li>
-                <li><a href="#quick-start" data-i18n="nav_start">快速开始</a></li>
-                <li><a href="#examples" data-i18n="nav_examples">使用示例</a></li>
-                <li><a href="#functions" data-i18n="nav_functions">函数列表</a></li>
-                <li><a href="#docs" data-i18n="nav_docs">文档</a></li>
-                <li><a href="#contact" data-i18n="nav_contact">联系方式</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Stats -->
-    <section>
-        <div class="container">
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number">249+</div>
-                    <div class="stat-label" data-i18n="stat_func">支持函数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label" data-i18n="stat_compat">Formula.js 兼容</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">Java 8-25</div>
-                    <div class="stat-label" data-i18n="stat_java">支持版本</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">BUSL-1.1</div>
-                    <div class="stat-label" data-i18n="stat_license">许可证</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features">
-        <div class="container">
-            <h2 data-i18n="h2_features">功能特性</h2>
+            <h2 data-i18n="h2_scenarios">典型使用场景</h2>
+            <p class="section-lead" data-i18n="scenarios_lead">它更适合做后端统一执行层，而不是仅在页面展示一个公式结果。</p>
             <div class="features">
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            <path d="M3 3h18v18H3z"></path>
+                            <path d="M7 7h10v4H7z"></path>
+                            <path d="M7 15h3"></path>
+                            <path d="M14 15h3"></path>
                         </svg>
                     </div>
-                    <h3 data-i18n="f1_title">249+ 函数支持</h3>
-                    <p data-i18n="f1_desc">支持统计、数学、文本、日期、财务、工程等各类函数，完全兼容 Formula.js 库。</p>
+                    <h3 data-i18n="scenario_pricing_title">报价与计费计算</h3>
+                    <p data-i18n="scenario_pricing_desc">把前端配置的价格公式放到后端复算，减少订单、报价、折扣规则的结果偏差。</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="f2_title">自定义函数扩展</h3>
-                    <p data-i18n="f2_desc">支持 Java Lambda、JavaScript 字符串和文件三种方式注册自定义函数，灵活扩展。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="17 1 21 5 17 9"></polyline>
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                            <polyline points="7 23 3 19 7 15"></polyline>
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="f3_title">Formula.js 兼容</h3>
-                    <p data-i18n="f3_desc">完全兼容 Formula.js 语法，可以直接使用前端相同的公式，确保计算结果一致。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="f4_title">字段映射</h3>
-                    <p data-i18n="f4_desc">支持 menuId 到 enCode 的字段映射，完美适配前端数据结构。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M9 11l3 3L22 4"></path>
                             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                         </svg>
                     </div>
-                    <h3 data-i18n="f5_title">结果验证</h3>
-                    <p data-i18n="f5_desc">提供前端计算结果验证功能，支持自定义误差范围。</p>
+                    <h3 data-i18n="scenario_validation_title">表单与规则校验</h3>
+                    <p data-i18n="scenario_validation_desc">对动态表单、审批条件、分值规则做统一复算，作为后端验证与提交兜底。</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 data-i18n="f6_title">高性能</h3>
-                    <p data-i18n="f6_desc">经过优化，可以高效处理大量计算，支持复杂嵌套函数。</p>
+                    <h3 data-i18n="scenario_metrics_title">指标聚合与结果复核</h3>
+                    <p data-i18n="scenario_metrics_desc">在导入、对账、统计前后执行统一公式，减少人工复核与跨系统口径漂移。</p>
                 </div>
             </div>
         </div>
@@ -730,7 +822,8 @@
     <section id="quick-start">
         <div class="container">
             <h2 data-i18n="h2_start">快速开始</h2>
-            
+            <p class="section-lead" data-i18n="quick_start_lead">先用最短路径跑通一次计算，再根据目标进入使用指南、项目概览或贡献文档。</p>
+
             <h3 data-i18n="s1_title">1. 添加依赖</h3>
             <div class="code-block">
                 <pre><code><span class="ch-keyword">&lt;dependencies&gt;</span>
@@ -770,166 +863,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
             </div>
 
             <div class="section-footer">
-                <a href="#docs" class="btn btn-primary"><span data-i18n="view_docs">查看完整文档</span></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Examples -->
-    <section id="examples">
-        <div class="container">
-            <h2 data-i18n="h2_examples">使用示例</h2>
-            
-            <h3 data-i18n="e1_title">使用 FormulaData 结构</h3>
-            <div class="code-block">
-                <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
-<span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
-<span class="ch-keyword">import</span> com.formula.calculator.model.FieldMark;
-<span class="ch-keyword">import</span> com.formula.calculator.model.FormulaData;
-
-<span class="ch-keyword">import</span> java.util.ArrayList;
-<span class="ch-keyword">import</span> java.util.List;
-
-FormulaData formulaData = <span class="ch-keyword">new</span> FormulaData();
-formulaData.setTxt(<span class="ch-string">"单价 * 数量 * (1 - 折扣率)"</span>);
-
-List&lt;FieldMark&gt; marks = <span class="ch-keyword">new</span> ArrayList&lt;&gt;();
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"price"</span>, <span class="ch-string">"单价"</span>));
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"quantity"</span>, <span class="ch-string">"数量"</span>));
-marks.add(<span class="ch-keyword">new</span> FieldMark(<span class="ch-string">"discount"</span>, <span class="ch-string">"折扣率"</span>));
-formulaData.setMarks(marks);
-
-JSONObject data = <span class="ch-keyword">new</span> JSONObject();
-data.put(<span class="ch-string">"price"</span>, <span class="ch-number">100</span>);
-data.put(<span class="ch-string">"quantity"</span>, <span class="ch-number">5</span>);
-data.put(<span class="ch-string">"discount"</span>, <span class="ch-number">0.1</span>);
-
-Object result = FormulaCalculator.calculate(formulaData, data);
-<span class="ch-comment">// 结果: 450.0</span></code></pre>
-            </div>
-
-            <h3 data-i18n="e2_title">自定义函数</h3>
-            <div class="code-block">
-                <pre><code>FormulaCalculator.registerCustomFunction(<span class="ch-string">"DOUBLE"</span>, (params, data, mapping) -&gt; {
-    <span class="ch-keyword">double</span> value = Double.parseDouble(params.trim());
-    <span class="ch-keyword">return</span> String.valueOf(value * <span class="ch-number">2</span>);
-});
-
-Object result = FormulaCalculator.calculate("DOUBLE(10)", new JSONObject());
-<span class="ch-comment">// 结果: 20.0</span></code></pre>
-            </div>
-
-            <h3 data-i18n="e3_title">一次性加载 Formula.js 库</h3>
-            <div class="code-block">
-                <pre><code><span class="ch-comment">// 仅在你需要扩展 Formula.js 场景时加载</span>
-FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
-
-JSONObject data = <span class="ch-keyword">new</span> JSONObject();
-String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
-Object result = FormulaCalculator.calculate(formula, data);
-
-<span class="ch-comment">// 结果: 15.0</span></code></pre>
-            </div>
-        </div>
-    </section>
-
-    <!-- Functions -->
-    <section id="functions">
-        <div class="container">
-            <h2 data-i18n="h2_functions">函数分类</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="20" x2="18" y2="10"></line>
-                            <line x1="12" y1="20" x2="12" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="14"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc1_title">统计函数</h3>
-                    <p data-i18n="fc1_desc">SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="2" x2="12" y2="6"></line>
-                            <line x1="12" y1="18" x2="12" y2="22"></line>
-                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                            <line x1="2" y1="12" x2="6" y2="12"></line>
-                            <line x1="18" y1="12" x2="22" y2="12"></line>
-                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc2_title">数学函数</h3>
-                    <p data-i18n="fc2_desc">ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="4 7 4 4 20 4 20 7"></polyline>
-                            <line x1="9" y1="20" x2="15" y2="20"></line>
-                            <line x1="12" y1="4" x2="12" y2="20"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc3_title">文本函数</h3>
-                    <p data-i18n="fc3_desc">CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc4_title">日期函数</h3>
-                    <p data-i18n="fc4_desc">TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc5_title">逻辑函数</h3>
-                    <p data-i18n="fc5_desc">IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc6_title">财务函数</h3>
-                    <p data-i18n="fc6_desc">PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc7_title">工程函数</h3>
-                    <p data-i18n="fc7_desc">BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="fc8_title">分布函数</h3>
-                    <p data-i18n="fc8_desc">NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等</p>
-                </div>
-            </div>
-            <div class="section-footer">
-                <a href="#docs" class="btn btn-primary"><span data-i18n="view_func_list">查看完整函数列表</span></a>
+                <a href="#docs" class="btn btn-primary"><span data-i18n="view_docs">查看文档导航</span></a>
             </div>
         </div>
     </section>
@@ -937,7 +871,8 @@ Object result = FormulaCalculator.calculate(formula, data);
     <!-- Docs -->
     <section id="docs">
         <div class="container">
-            <h2 data-i18n="h2_docs">文档资源</h2>
+            <h2 data-i18n="h2_docs">文档导航</h2>
+            <p class="section-lead" data-i18n="docs_lead">先快速接入，再根据目标进入使用指南、项目概览、更新日志或贡献文档。</p>
             <div class="features">
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -946,8 +881,8 @@ Object result = FormulaCalculator.calculate(formula, data);
                             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                         </svg>
                     </div>
-                    <h3 data-i18n="d1_title">使用文档</h3>
-                    <p data-i18n="d1_desc">详细的使用指南和示例代码，帮助您快速上手。</p>
+                    <h3 data-i18n="docs_usage_title">使用指南</h3>
+                    <p data-i18n="docs_usage_desc">面向接入与公式使用，适合首次上手和排查字段映射问题。</p>
                     <a href="docs/使用指南.html" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
                         <span data-i18n="view_guide">查看文档</span>
                     </a>
@@ -962,10 +897,10 @@ Object result = FormulaCalculator.calculate(formula, data);
                             <line x1="10" y1="9" x2="8" y2="9"></line>
                         </svg>
                     </div>
-                    <h3>项目概览</h3>
-                    <p>查看仓库首页文档与更新说明，保留 Markdown 阅读体验，适合 GitHub Pages 直接浏览。</p>
+                    <h3 data-i18n="docs_overview_title">项目概览</h3>
+                    <p data-i18n="docs_overview_desc">了解项目定位、适用场景和当前推荐使用方式。</p>
                     <a href="markdown-viewer.html?file=Project-Overview.md" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
-                        <span>查看 README</span>
+                        <span data-i18n="view_overview">查看概览</span>
                     </a>
                 </div>
                 <div class="feature-card">
@@ -974,24 +909,10 @@ Object result = FormulaCalculator.calculate(formula, data);
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                         </svg>
                     </div>
-                    <h3 data-i18n="d2_title">快速开始</h3>
-                    <p data-i18n="d2_desc">5分钟快速上手，包含基本使用和常见场景。</p>
-                    <a href="#quick-start" class="btn btn-secondary" style="margin-top: 1rem;">
-                        <span data-i18n="start_use">开始使用</span>
-                    </a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </div>
-                    <h3 data-i18n="d3_title">常见问题</h3>
-                    <p data-i18n="d3_desc">FAQ 和故障排除指南，解决常见使用问题。</p>
-                    <a href="#contact" class="btn btn-secondary" style="margin-top: 1rem;">
-                        <span data-i18n="get_help">获取帮助</span>
+                    <h3 data-i18n="docs_changelog_title">更新日志</h3>
+                    <p data-i18n="docs_changelog_desc">查看版本演进、能力补充和最近的文档调整。</p>
+                    <a href="markdown-viewer.html?file=CHANGELOG.md" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
+                        <span data-i18n="view_changelog">查看更新</span>
                     </a>
                 </div>
                 <div class="feature-card">
@@ -1003,11 +924,59 @@ Object result = FormulaCalculator.calculate(formula, data);
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </div>
-                    <h3 data-i18n="d4_title">贡献指南</h3>
-                    <p data-i18n="d4_desc">欢迎贡献代码！查看贡献指南了解如何参与。</p>
+                    <h3 data-i18n="docs_contrib_title">参与贡献</h3>
+                    <p data-i18n="docs_contrib_desc">了解贡献流程、规范与协作方式，适合准备提交 PR 的维护者。</p>
                     <a href="CONTRIBUTING.html" class="btn btn-secondary" style="margin-top: 1rem;" target="_blank" rel="noopener">
                         <span data-i18n="contribute">参与贡献</span>
                     </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capabilities -->
+    <section id="capabilities">
+        <div class="container">
+            <h2 data-i18n="h2_capabilities">能力概览</h2>
+            <p class="section-lead" data-i18n="capabilities_lead">保留核心能力说明，但不再把首页做成完整函数目录。</p>
+            <div class="features">
+                <div class="feature-card">
+                    <h3 data-i18n="capability_1_title">字段映射执行</h3>
+                    <p data-i18n="capability_1_desc">支持 `${field}`、`[field]` 与 `FormulaData` 场景，便于前端展示字段与后端真实字段解耦。</p>
+                </div>
+                <div class="feature-card">
+                    <h3 data-i18n="capability_2_title">自定义函数扩展</h3>
+                    <p data-i18n="capability_2_desc">支持 Java Lambda、自定义逻辑扩展和现有公式入口复用。</p>
+                </div>
+                <div class="feature-card">
+                    <h3 data-i18n="capability_3_title">Formula.js 风格兼容</h3>
+                    <p data-i18n="capability_3_desc">适合承接前端已有表达式，减少前后端重写公式的迁移成本。</p>
+                </div>
+                <div class="feature-card">
+                    <h3 data-i18n="capability_4_title">结果复算与校验</h3>
+                    <p data-i18n="capability_4_desc">可用于提交前后结果比对、批量复核和规则一致性校验。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <div class="container">
+            <h2 data-i18n="h2_faq">常见问题</h2>
+            <p class="section-lead" data-i18n="faq_lead">先回答适用边界，再决定是直接接入还是继续查看详细文档。</p>
+            <div class="faq-list">
+                <div class="feature-card">
+                    <h3 data-i18n="faq_q1">它适合替代前端公式执行吗？</h3>
+                    <p data-i18n="faq_a1">更适合作为后端校验、复算和规则统一层，而不是单纯面向页面展示的前端计算工具。</p>
+                </div>
+                <div class="feature-card">
+                    <h3 data-i18n="faq_q2">适合哪些输入数据形式？</h3>
+                    <p data-i18n="faq_a2">适合 `JSONObject`、字段映射后的 `FormulaData`，以及需要按展示字段转真实字段的场景。</p>
+                </div>
+                <div class="feature-card">
+                    <h3 data-i18n="faq_q3">第一次接入应该先看哪份文档？</h3>
+                    <p data-i18n="faq_a3">先看快速开始跑通样例，再按需求进入使用指南、项目概览或贡献指南。</p>
                 </div>
             </div>
         </div>
@@ -1058,64 +1027,47 @@ Object result = FormulaCalculator.calculate(formula, data);
     </footer>
 
     <script>
-        function enhanceStaticCodeBlocks(root = document) {
-            root.querySelectorAll('pre code').forEach((codeEl) => {
-                if (codeEl.dataset.highlighted === 'true') {
-                    return;
-                }
-                if (codeEl.querySelector('span')) {
-                    codeEl.dataset.highlighted = 'true';
-                    return;
-                }
-                const rawText = codeEl.textContent || '';
-                const html = rawText
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/(\/\/.*$)/gm, '<span class="ch-comment">$1</span>')
-                    .replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, '<span class="ch-string">$1</span>')
-                    .replace(/\b(import|package|public|private|protected|class|interface|enum|static|final|void|new|return|if|else|for|while|switch|case|break|continue|try|catch|finally|throw|throws|extends|implements|boolean|int|long|double|float|char|byte|short|null|true|false)\b/g, '<span class="ch-keyword">$1</span>')
-                    .replace(/\b([A-Za-z_][\w]*)\s*(?=\()/g, '<span class="ch-function">$1</span>')
-                    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="ch-number">$1</span>');
-                codeEl.innerHTML = html;
-                codeEl.dataset.highlighted = 'true';
-            });
-        }
 
         const translations = {
             'zh-CN': {
                 lang: '语言', theme: '主题',
-                subtitle: 'Java公式计算引擎，支持Formula.js语法，用于后端验证前端计算结果',
-                badge_java: 'Java 8-25', badge_func: '249+ 函数', badge_formula: 'Formula.js 兼容',
-                quick_start: '快速开始', docs: '文档',
-                nav_features: '功能特性', nav_start: '快速开始', nav_examples: '使用示例',
-                nav_functions: '函数列表', nav_docs: '文档', nav_contact: '联系方式',
-                stat_func: '支持函数', stat_compat: 'Formula.js 兼容', stat_java: '支持版本', stat_license: '许可证',
-                h2_features: '功能特性', h2_start: '快速开始', h2_examples: '使用示例',
-                h2_functions: '函数分类', h2_docs: '文档资源', h2_contact: '联系方式',
-                f1_title: '249+ 函数支持', f1_desc: '支持统计、数学、文本、日期、财务、工程等各类函数，完全兼容 Formula.js 库。',
-                f2_title: '自定义函数扩展', f2_desc: '支持 Java Lambda、JavaScript 字符串和文件三种方式注册自定义函数，灵活扩展。',
-                f3_title: 'Formula.js 兼容', f3_desc: '完全兼容 Formula.js 语法，可以直接使用前端相同的公式，确保计算结果一致。',
-                f4_title: '字段映射', f4_desc: '支持 menuId 到 enCode 的字段映射，完美适配前端数据结构。',
-                f5_title: '结果验证', f5_desc: '提供前端计算结果验证功能，支持自定义误差范围。',
-                f6_title: '高性能', f6_desc: '经过优化，可以高效处理大量计算，支持复杂嵌套函数。',
+                hero_eyebrow: 'Open Source Java Formula Engine',
+                hero_title: '让前后端公式口径保持一致，而不是靠人工兜底',
+                hero_subtitle: '兼容 Formula.js 风格表达式，适合报价、规则校验、指标计算与复杂表单结果复算。',
+                hero_description: '为 Java 后端提供统一公式执行入口，在接收前端表达式后完成复算、验证和字段映射，降低业务口径漂移。',
+                hero_primary_cta: '3 分钟开始接入', hero_secondary_cta: '查看文档入口',
+                hero_panel_title: '为什么团队会把它放在后端', hero_links_title: '下一步看哪里',
+                hero_point_1: '复算前端提交结果，减少报价、审批、指标口径不一致。',
+                hero_point_2: '通过字段映射承接动态表单与低代码场景中的展示字段。',
+                hero_point_3: '保留 Formula.js 风格表达式，降低前后端迁移成本。',
+                hero_link_start: '先看最短接入路径', hero_link_docs: '按目标进入文档导航', hero_link_faq: '先确认适用边界',
+                badge_java: 'Java 8-25', badge_func: '249+ 函数', badge_formula: 'Formula.js 兼容', badge_validation: '后端校验场景',
+                nav_scenarios: '适用场景', nav_start: '快速开始', nav_docs: '文档导航',
+                nav_capabilities: '能力概览', nav_faq: '常见问题', nav_contact: '联系方式',
+                stat_func: '支持函数', stat_compat: '表达式兼容', stat_java: '支持版本', stat_validation: '复算与校验', stat_validation_value: 'Backend',
+                h2_scenarios: '典型使用场景', h2_start: '快速开始', h2_docs: '文档导航', h2_capabilities: '能力概览', h2_faq: '常见问题', h2_contact: '联系方式',
+                scenarios_lead: '它更适合做后端统一执行层，而不是仅在页面展示一个公式结果。',
+                scenario_pricing_title: '报价与计费计算', scenario_pricing_desc: '把前端配置的价格公式放到后端复算，减少订单、报价、折扣规则的结果偏差。',
+                scenario_validation_title: '表单与规则校验', scenario_validation_desc: '对动态表单、审批条件、分值规则做统一复算，作为后端验证与提交兜底。',
+                scenario_metrics_title: '指标聚合与结果复核', scenario_metrics_desc: '在导入、对账、统计前后执行统一公式，减少人工复核与跨系统口径漂移。',
+                quick_start_lead: '先用最短路径跑通一次计算，再根据目标进入使用指南、项目概览或贡献文档。',
                 s1_title: '1. 添加依赖', s2_title: '2. 基本使用', s3_title: '3. 使用函数',
-                view_docs: '查看完整文档',
-                e1_title: '使用 FormulaData 结构', e2_title: '自定义函数', e3_title: '一次性加载 Formula.js 库',
-                fc1_title: '统计函数', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等',
-                fc2_title: '数学函数', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等',
-                fc3_title: '文本函数', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等',
-                fc4_title: '日期函数', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等',
-                fc5_title: '逻辑函数', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等',
-                fc6_title: '财务函数', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等',
-                fc7_title: '工程函数', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等',
-                fc8_title: '分布函数', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等',
-                view_func_list: '查看完整函数列表',
-                d1_title: '使用文档', d1_desc: '详细的使用指南和示例代码，帮助您快速上手。',
-                d2_title: '快速开始', d2_desc: '5分钟快速上手，包含基本使用和常见场景。',
-                d3_title: '常见问题', d3_desc: 'FAQ 和故障排除指南，解决常见使用问题。',
-                d4_title: '贡献指南', d4_desc: '欢迎贡献代码！查看贡献指南了解如何参与。',
-                view_guide: '查看文档', start_use: '开始使用', get_help: '获取帮助', contribute: '参与贡献',
+                view_docs: '查看文档导航',
+                docs_lead: '先快速接入，再根据目标进入使用指南、项目概览、更新日志或贡献文档。',
+                docs_usage_title: '使用指南', docs_usage_desc: '面向接入与公式使用，适合首次上手和排查字段映射问题。',
+                docs_overview_title: '项目概览', docs_overview_desc: '了解项目定位、适用场景和当前推荐使用方式。',
+                docs_changelog_title: '更新日志', docs_changelog_desc: '查看版本演进、能力补充和最近的文档调整。',
+                docs_contrib_title: '参与贡献', docs_contrib_desc: '了解贡献流程、规范与协作方式，适合准备提交 PR 的维护者。',
+                view_guide: '查看文档', view_overview: '查看概览', view_changelog: '查看更新', contribute: '参与贡献',
+                capabilities_lead: '保留核心能力说明，但不再把首页做成完整函数目录。',
+                capability_1_title: '字段映射执行', capability_1_desc: '支持 `${field}`、`[field]` 与 `FormulaData` 场景，便于前端展示字段与后端真实字段解耦。',
+                capability_2_title: '自定义函数扩展', capability_2_desc: '支持 Java Lambda、自定义逻辑扩展和现有公式入口复用。',
+                capability_3_title: 'Formula.js 风格兼容', capability_3_desc: '适合承接前端已有表达式，减少前后端重写公式的迁移成本。',
+                capability_4_title: '结果复算与校验', capability_4_desc: '可用于提交前后结果比对、批量复核和规则一致性校验。',
+                faq_lead: '先回答适用边界，再决定是直接接入还是继续查看详细文档。',
+                faq_q1: '它适合替代前端公式执行吗？', faq_a1: '更适合作为后端校验、复算和规则统一层，而不是单纯面向页面展示的前端计算工具。',
+                faq_q2: '适合哪些输入数据形式？', faq_a2: '适合 `JSONObject`、字段映射后的 `FormulaData`，以及需要按展示字段转真实字段的场景。',
+                faq_q3: '第一次接入应该先看哪份文档？', faq_a3: '先看快速开始跑通样例，再按需求进入使用指南、项目概览或贡献指南。',
                 contact_desc: '如有问题或建议，欢迎通过以下方式联系：',
                 license_desc: '项目采用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 许可证',
                 license_note: '非生产使用免费 | 生产使用需商业许可 | 2029-01-01 后转为 Apache 2.0',
@@ -1126,37 +1078,43 @@ Object result = FormulaCalculator.calculate(formula, data);
             },
             'zh-TW': {
                 lang: '語言', theme: '主題',
-                subtitle: 'Java公式計算引擎，支援Formula.js語法，用於後端驗證前端計算結果',
-                badge_java: 'Java 8-25', badge_func: '249+ 函數', badge_formula: 'Formula.js 相容',
-                quick_start: '快速開始', docs: '文檔',
-                nav_features: '功能特性', nav_start: '快速開始', nav_examples: '使用範例',
-                nav_functions: '函數列表', nav_docs: '文檔', nav_contact: '聯絡方式',
-                stat_func: '支援函數', stat_compat: 'Formula.js 相容', stat_java: '支援版本', stat_license: '授權',
-                h2_features: '功能特性', h2_start: '快速開始', h2_examples: '使用範例',
-                h2_functions: '函數分類', h2_docs: '文檔資源', h2_contact: '聯絡方式',
-                f1_title: '249+ 函數支援', f1_desc: '支援統計、數學、文字、日期、財務、工程等各類函數，完全相容 Formula.js 庫。',
-                f2_title: '自訂函數擴展', f2_desc: '支援 Java Lambda、JavaScript 字串和檔案三種方式註冊自訂函數，靈活擴展。',
-                f3_title: 'Formula.js 相容', f3_desc: '完全相容 Formula.js 語法，可以直接使用前端相同的公式，確保計算結果一致。',
-                f4_title: '欄位映射', f4_desc: '支援 menuId 到 enCode 的欄位映射，完美適配前端資料結構。',
-                f5_title: '結果驗證', f5_desc: '提供前端計算結果驗證功能，支援自訂誤差範圍。',
-                f6_title: '高效能', f6_desc: '經過優化，可以高效處理大量計算，支援複雜巢狀函數。',
+                hero_eyebrow: 'Open Source Java Formula Engine',
+                hero_title: '讓前後端公式口徑保持一致，而不是靠人工兜底',
+                hero_subtitle: '相容 Formula.js 風格表達式，適合報價、規則校驗、指標計算與複雜表單結果複算。',
+                hero_description: '為 Java 後端提供統一公式執行入口，在接收前端表達式後完成複算、驗證與欄位映射，降低業務口徑漂移。',
+                hero_primary_cta: '3 分鐘開始接入', hero_secondary_cta: '查看文檔入口',
+                hero_panel_title: '為什麼團隊會把它放在後端', hero_links_title: '下一步看哪裡',
+                hero_point_1: '複算前端提交結果，減少報價、審批、指標口徑不一致。',
+                hero_point_2: '透過欄位映射承接動態表單與低代碼場景中的展示欄位。',
+                hero_point_3: '保留 Formula.js 風格表達式，降低前後端遷移成本。',
+                hero_link_start: '先看最短接入路徑', hero_link_docs: '依目標進入文檔導航', hero_link_faq: '先確認適用邊界',
+                badge_java: 'Java 8-25', badge_func: '249+ 函數', badge_formula: 'Formula.js 相容', badge_validation: '後端校驗場景',
+                nav_scenarios: '適用場景', nav_start: '快速開始', nav_docs: '文檔導航',
+                nav_capabilities: '能力概覽', nav_faq: '常見問題', nav_contact: '聯絡方式',
+                stat_func: '支援函數', stat_compat: '表達式相容', stat_java: '支援版本', stat_validation: '複算與校驗', stat_validation_value: 'Backend',
+                h2_scenarios: '典型使用場景', h2_start: '快速開始', h2_docs: '文檔導航', h2_capabilities: '能力概覽', h2_faq: '常見問題', h2_contact: '聯絡方式',
+                scenarios_lead: '它更適合做後端統一執行層，而不是只在頁面展示一個公式結果。',
+                scenario_pricing_title: '報價與計費計算', scenario_pricing_desc: '把前端配置的價格公式放到後端複算，減少訂單、報價、折扣規則的結果偏差。',
+                scenario_validation_title: '表單與規則校驗', scenario_validation_desc: '對動態表單、審批條件、分值規則做統一複算，作為後端驗證與提交兜底。',
+                scenario_metrics_title: '指標聚合與結果複核', scenario_metrics_desc: '在匯入、對帳、統計前後執行統一公式，減少人工複核與跨系統口徑漂移。',
+                quick_start_lead: '先用最短路徑跑通一次計算，再依目標進入使用指南、專案概覽或貢獻文檔。',
                 s1_title: '1. 新增依賴', s2_title: '2. 基本使用', s3_title: '3. 使用函數',
-                view_docs: '查看完整文檔',
-                e1_title: '使用 FormulaData 結構', e2_title: '自訂函數', e3_title: '一次性載入 Formula.js 庫',
-                fc1_title: '統計函數', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE 等',
-                fc2_title: '數學函數', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI 等',
-                fc3_title: '文字函數', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE 等',
-                fc4_title: '日期函數', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM 等',
-                fc5_title: '邏輯函數', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER 等',
-                fc6_title: '財務函數', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR 等',
-                fc7_title: '工程函數', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS 等',
-                fc8_title: '分布函數', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST 等',
-                view_func_list: '查看完整函數列表',
-                d1_title: '使用文檔', d1_desc: '詳細的使用指南和範例程式碼，幫助您快速上手。',
-                d2_title: '快速開始', d2_desc: '5分鐘快速上手，包含基本使用和常見場景。',
-                d3_title: '常見問題', d3_desc: 'FAQ 和故障排除指南，解決常見使用問題。',
-                d4_title: '貢獻指南', d4_desc: '歡迎貢獻程式碼！查看貢獻指南了解如何參與。',
-                view_guide: '查看文檔', start_use: '開始使用', get_help: '獲取幫助', contribute: '參與貢獻',
+                view_docs: '查看文檔導航',
+                docs_lead: '先快速接入，再依目標進入使用指南、專案概覽、更新日誌或貢獻文檔。',
+                docs_usage_title: '使用指南', docs_usage_desc: '面向接入與公式使用，適合首次上手與排查欄位映射問題。',
+                docs_overview_title: '專案概覽', docs_overview_desc: '了解專案定位、適用場景與目前推薦使用方式。',
+                docs_changelog_title: '更新日誌', docs_changelog_desc: '查看版本演進、能力補充與最近的文檔調整。',
+                docs_contrib_title: '參與貢獻', docs_contrib_desc: '了解貢獻流程、規範與協作方式，適合準備提交 PR 的維護者。',
+                view_guide: '查看文檔', view_overview: '查看概覽', view_changelog: '查看更新', contribute: '參與貢獻',
+                capabilities_lead: '保留核心能力說明，但不再把首頁做成完整函數目錄。',
+                capability_1_title: '欄位映射執行', capability_1_desc: '支援 `${field}`、`[field]` 與 `FormulaData` 場景，便於前端展示欄位與後端真實欄位解耦。',
+                capability_2_title: '自訂函數擴展', capability_2_desc: '支援 Java Lambda、自訂邏輯擴展與現有公式入口複用。',
+                capability_3_title: 'Formula.js 風格相容', capability_3_desc: '適合承接前端既有表達式，減少前後端重寫公式的遷移成本。',
+                capability_4_title: '結果複算與校驗', capability_4_desc: '可用於提交前後結果比對、批量複核與規則一致性校驗。',
+                faq_lead: '先回答適用邊界，再決定是直接接入還是繼續查看詳細文檔。',
+                faq_q1: '它適合取代前端公式執行嗎？', faq_a1: '更適合作為後端校驗、複算與規則統一層，而不是單純面向頁面展示的前端計算工具。',
+                faq_q2: '適合哪些輸入資料形式？', faq_a2: '適合 `JSONObject`、欄位映射後的 `FormulaData`，以及需要按展示欄位轉成真實欄位的場景。',
+                faq_q3: '第一次接入應該先看哪份文檔？', faq_a3: '先看快速開始跑通樣例，再依需求進入使用指南、專案概覽或貢獻指南。',
                 contact_desc: '如有問題或建議，歡迎透過以下方式聯繫：',
                 license_desc: '專案採用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 授權',
                 license_note: '非生產使用免費 | 生產使用需商業授權 | 2029-01-01 後轉為 Apache 2.0',
@@ -1167,37 +1125,43 @@ Object result = FormulaCalculator.calculate(formula, data);
             },
             'en': {
                 lang: 'Language', theme: 'Theme',
-                subtitle: 'Java Formula Calculation Engine with Formula.js compatibility for backend validation',
-                badge_java: 'Java 8-25', badge_func: '249+ Functions', badge_formula: 'Formula.js Compatible',
-                quick_start: 'Quick Start', docs: 'Docs',
-                nav_features: 'Features', nav_start: 'Quick Start', nav_examples: 'Examples',
-                nav_functions: 'Functions', nav_docs: 'Docs', nav_contact: 'Contact',
-                stat_func: 'Supported Functions', stat_compat: 'Formula.js Compatible', stat_java: 'Java Versions', stat_license: 'License',
-                h2_features: 'Features', h2_start: 'Quick Start', h2_examples: 'Examples',
-                h2_functions: 'Function Categories', h2_docs: 'Documentation', h2_contact: 'Contact',
-                f1_title: '249+ Function Support', f1_desc: 'Statistical, mathematical, text, date, financial, engineering functions and more. Fully compatible with Formula.js library.',
-                f2_title: 'Custom Function Extension', f2_desc: 'Register custom functions via Java Lambda, JavaScript strings, or files. Flexible and extensible.',
-                f3_title: 'Formula.js Compatible', f3_desc: 'Fully compatible with Formula.js syntax. Use the same formulas as frontend to ensure consistent results.',
-                f4_title: 'Field Mapping', f4_desc: 'Supports menuId to enCode field mapping, perfectly adapted to frontend data structures.',
-                f5_title: 'Result Validation', f5_desc: 'Frontend calculation result validation with customizable tolerance range support.',
-                f6_title: 'High Performance', f6_desc: 'Optimized for handling large volumes of calculations efficiently. Supports complex nested functions.',
-                s1_title: '1. Add Dependency', s2_title: '2. Basic Usage', s3_title: '3. Using Functions',
-                view_docs: 'View Full Documentation',
-                e1_title: 'Using FormulaData Structure', e2_title: 'Custom Functions', e3_title: 'Load Formula.js Library',
-                fc1_title: 'Statistical', fc1_desc: 'SUM, AVERAGE, MAX, MIN, COUNT, COUNTIF, SUMIF, STDEV, VAR, MEDIAN, MODE, and more',
-                fc2_title: 'Mathematical', fc2_desc: 'ABS, ROUND, CEILING, FLOOR, SQRT, POWER, EXP, LN, SIN, COS, TAN, PI, and more',
-                fc3_title: 'Text', fc3_desc: 'CONCATENATE, UPPER, LOWER, LEN, LEFT, RIGHT, MID, FIND, REPLACE, and more',
-                fc4_title: 'Date & Time', fc4_desc: 'TODAY, NOW, DATE, YEAR, MONTH, DAY, DATEDIF, DAYS, WEEKNUM, and more',
-                fc5_title: 'Logical', fc5_desc: 'IF, IFS, AND, OR, NOT, IFERROR, ISERROR, ISBLANK, ISNUMBER, and more',
-                fc6_title: 'Financial', fc6_desc: 'PMT, FV, PV, RATE, NPER, NPV, IRR, MIRR, and more',
-                fc7_title: 'Engineering', fc7_desc: 'BIN2DEC, DEC2BIN, HEX2DEC, COMPLEX, IMABS, and more',
-                fc8_title: 'Distribution', fc8_desc: 'NORM.DIST, NORM.INV, T.DIST, T.INV, CHISQ.DIST, and more',
-                view_func_list: 'View Full Function List',
-                d1_title: 'User Guide', d1_desc: 'Detailed usage guide and example code to help you get started quickly.',
-                d2_title: 'Quick Start', d2_desc: 'Get started in 5 minutes with basic usage and common scenarios.',
-                d3_title: 'FAQ', d3_desc: 'FAQ and troubleshooting guide to solve common issues.',
-                d4_title: 'Contributing', d4_desc: 'Welcome to contribute! Check the contributing guide to learn how to participate.',
-                view_guide: 'View Guide', start_use: 'Get Started', get_help: 'Get Help', contribute: 'Contribute',
+                hero_eyebrow: 'Open Source Java Formula Engine',
+                hero_title: 'Keep frontend and backend formulas aligned instead of reconciling by hand',
+                hero_subtitle: 'Compatible with Formula.js-style expressions for pricing, rule validation, metrics, and complex form recalculation.',
+                hero_description: 'Provide a unified execution entry for Java services to recalculate submitted expressions, validate results, and resolve field mappings consistently.',
+                hero_primary_cta: 'Start in 3 Minutes', hero_secondary_cta: 'Browse Docs',
+                hero_panel_title: 'Why teams run it on the backend', hero_links_title: 'Where to go next',
+                hero_point_1: 'Recalculate submitted results to reduce pricing, approval, and metric mismatches.',
+                hero_point_2: 'Handle dynamic forms and low-code fields through explicit field mapping.',
+                hero_point_3: 'Keep Formula.js-style expressions to lower migration cost across layers.',
+                hero_link_start: 'Start with the shortest setup path', hero_link_docs: 'Jump to the right document', hero_link_faq: 'Check fit and limits first',
+                badge_java: 'Java 8-25', badge_func: '249+ Functions', badge_formula: 'Formula.js Compatible', badge_validation: 'Backend Validation',
+                nav_scenarios: 'Scenarios', nav_start: 'Quick Start', nav_docs: 'Docs Hub',
+                nav_capabilities: 'Capabilities', nav_faq: 'FAQ', nav_contact: 'Contact',
+                stat_func: 'Supported Functions', stat_compat: 'Expression Compatibility', stat_java: 'Java Versions', stat_validation: 'Recalculation & Validation', stat_validation_value: 'Backend',
+                h2_scenarios: 'Typical Scenarios', h2_start: 'Quick Start', h2_docs: 'Docs Hub', h2_capabilities: 'Capabilities', h2_faq: 'FAQ', h2_contact: 'Contact',
+                scenarios_lead: 'It fits best as a backend execution layer, not just a browser-side formula widget.',
+                scenario_pricing_title: 'Pricing and Billing', scenario_pricing_desc: 'Recalculate frontend pricing formulas on the backend to reduce drift in orders, quotes, and discount rules.',
+                scenario_validation_title: 'Forms and Rule Validation', scenario_validation_desc: 'Re-run dynamic forms, approval rules, and scoring logic as a backend validation layer.',
+                scenario_metrics_title: 'Metrics and Result Review', scenario_metrics_desc: 'Run the same formulas before and after imports, reconciliation, or statistics workflows.',
+                quick_start_lead: 'Run one formula end-to-end first, then move into the guide, overview, or contribution docs based on your goal.',
+                s1_title: '1. Add Dependency', s2_title: '2. Basic Usage', s3_title: '3. Use Functions',
+                view_docs: 'Open Docs Hub',
+                docs_lead: 'Start with setup, then jump into the user guide, project overview, changelog, or contribution docs.',
+                docs_usage_title: 'User Guide', docs_usage_desc: 'Best for first-time integration and troubleshooting formula or field-mapping usage.',
+                docs_overview_title: 'Project Overview', docs_overview_desc: 'Understand project positioning, recommended usage, and supported scenarios.',
+                docs_changelog_title: 'Changelog', docs_changelog_desc: 'Review version history, capability updates, and recent documentation changes.',
+                docs_contrib_title: 'Contributing', docs_contrib_desc: 'Read the workflow and collaboration rules before opening a pull request.',
+                view_guide: 'View Guide', view_overview: 'View Overview', view_changelog: 'View Changelog', contribute: 'Contribute',
+                capabilities_lead: 'Keep the core capabilities visible without turning the homepage into a full function catalog.',
+                capability_1_title: 'Field Mapping Execution', capability_1_desc: 'Support `${field}`, `[field]`, and `FormulaData` flows so display labels can map cleanly to backend keys.',
+                capability_2_title: 'Custom Function Extension', capability_2_desc: 'Extend logic with Java lambdas and reuse the existing formula execution entry points.',
+                capability_3_title: 'Formula.js-style Compatibility', capability_3_desc: 'Adopt existing frontend expressions without rewriting formula logic for the backend.',
+                capability_4_title: 'Result Recalculation and Validation', capability_4_desc: 'Compare submitted values, batch-review outputs, and enforce rule consistency.',
+                faq_lead: 'Answer fit and boundary questions first, then decide whether to integrate now or keep reading.',
+                faq_q1: 'Is it meant to replace frontend formula execution?', faq_a1: 'It is better suited as a backend validation, recalculation, and rule-consistency layer than as a UI-only calculator.',
+                faq_q2: 'What input formats fit best?', faq_a2: 'It works well with `JSONObject`, mapped `FormulaData`, and scenarios where display fields must resolve to backend keys.',
+                faq_q3: 'What should I read first for a new integration?', faq_a3: 'Run the quick start first, then continue with the user guide, project overview, or contribution guide as needed.',
                 contact_desc: 'For questions or suggestions, feel free to reach out:',
                 license_desc: 'Licensed under <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span>',
                 license_note: 'Free for non-production use | Commercial license for production | Apache 2.0 after 2029-01-01',
@@ -1209,12 +1173,11 @@ Object result = FormulaCalculator.calculate(formula, data);
         };
 
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
-        let currentTheme = localStorage.getItem('theme') || 'system';
+        let currentTheme = localStorage.getItem('theme') || 'light';
         const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
         function resolveSystemTheme() {
-            const hour = new Date().getHours();
-            return (hour >= 18 || hour < 7) ? 'dark' : 'light';
+            return systemThemeMedia.matches ? 'dark' : 'light';
         }
 
         function getResolvedTheme(theme) {
@@ -1301,7 +1264,7 @@ Object result = FormulaCalculator.calculate(formula, data);
         }
 
         function handleStoredThemeChange() {
-            const storedTheme = localStorage.getItem('theme') || 'system';
+            const storedTheme = localStorage.getItem('theme') || 'light';
             if (storedTheme !== currentTheme) {
                 currentTheme = storedTheme;
             }
@@ -1343,7 +1306,8 @@ Object result = FormulaCalculator.calculate(formula, data);
         updateLangUI();
         applyTheme(currentTheme);
         updateThemeUI();
-        enhanceStaticCodeBlocks();
+        // 代码高亮和复制由 assets/site.js 统一处理。
     </script>
+    <script src="assets/site.js"></script>
 </body>
 </html>

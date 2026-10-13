@@ -7,13 +7,13 @@
     <script>
         (function () {
             try {
-                var savedTheme = localStorage.getItem('theme') || 'system';
+                var savedTheme = localStorage.getItem('theme') || 'light';
                 var resolvedTheme = savedTheme === 'system'
                     ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                     : savedTheme;
                 document.documentElement.setAttribute('data-theme', resolvedTheme);
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
     </script>
@@ -22,27 +22,30 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563EB;
-            --primary-hover: #3B82F6;
-            --cta: #F97316;
-            --bg: #0F172A;
-            --bg-elevated: #1E293B;
-            --bg-card: #1E293B;
-            --surface-subtle: rgba(15, 23, 42, 0.72);
-            --text: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --text-muted: #64748B;
-            --border: #334155;
-            --success: #10B981;
-            --code-bg: #020617;
-            --code-surface: #0F172A;
-            --code-border: #1E293B;
-            --code-text: #E2E8F0;
-            --inline-code-bg: rgba(37, 99, 235, 0.14);
-            --inline-code-border: rgba(59, 130, 246, 0.22);
-            --inline-code-text: #BFDBFE;
-            --blockquote-bg: rgba(37, 99, 235, 0.08);
-            --table-stripe: rgba(148, 163, 184, 0.06);
+            --primary: #5eead4;
+            --primary-hover: #67e8f9;
+            --accent: #38bdf8;
+            --cta: #22d3ee;
+            --bg: #06101f;
+            --bg-elevated: rgba(12, 26, 46, 0.82);
+            --bg-card: rgba(9, 18, 35, 0.72);
+            --surface-subtle: rgba(15, 23, 42, 0.62);
+            --surface-strong: rgba(15, 23, 42, 0.82);
+            --text: #ecfeff;
+            --text-secondary: #b6c7e3;
+            --text-muted: #6b85a8;
+            --border: rgba(125, 211, 252, 0.18);
+            --success: #34d399;
+            --code-bg: rgba(2, 6, 23, 0.94);
+            --code-surface: rgba(8, 15, 31, 0.98);
+            --code-border: rgba(103, 232, 249, 0.14);
+            --code-text: #dbeafe;
+            --inline-code-bg: rgba(34, 211, 238, 0.12);
+            --inline-code-border: rgba(103, 232, 249, 0.22);
+            --inline-code-text: #a5f3fc;
+            --blockquote-bg: rgba(14, 116, 144, 0.12);
+            --table-stripe: rgba(34, 211, 238, 0.04);
+            --space-1: 0.25rem;
             --space-2: 0.5rem;
             --space-3: 0.75rem;
             --space-4: 1rem;
@@ -50,48 +53,91 @@
             --space-8: 2rem;
             --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-            --radius-sm: 12px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.14);
-            --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.22);
+            --radius-sm: 14px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --shadow-sm: 0 18px 40px rgba(2, 6, 23, 0.26);
+            --shadow-md: 0 28px 80px rgba(2, 6, 23, 0.34);
+            --glow: 0 0 0 1px rgba(103, 232, 249, 0.1), 0 0 36px rgba(34, 211, 238, 0.12);
         }
 
         [data-theme="light"] {
-            --bg: #FFFFFF;
-            --bg-elevated: #F8FAFC;
-            --bg-card: #FFFFFF;
-            --surface-subtle: rgba(148, 163, 184, 0.12);
-            --text: #1E293B;
-            --text-secondary: #475569;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --code-bg: #EFF6FF;
-            --code-surface: #F8FAFC;
-            --code-border: #BFDBFE;
-            --code-text: #0F172A;
-            --inline-code-bg: #DBEAFE;
-            --inline-code-border: #BFDBFE;
-            --inline-code-text: #1D4ED8;
-            --blockquote-bg: #EFF6FF;
-            --table-stripe: #F8FAFC;
+            --primary: #0891b2;
+            --primary-hover: #0ea5e9;
+            --accent: #2563eb;
+            --cta: #0284c7;
+            --bg: #eff6ff;
+            --bg-elevated: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.72);
+            --surface-subtle: rgba(148, 163, 184, 0.1);
+            --surface-strong: rgba(255, 255, 255, 0.92);
+            --text: #082f49;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border: rgba(14, 165, 233, 0.16);
+            --code-bg: rgba(239, 246, 255, 0.94);
+            --code-surface: rgba(255, 255, 255, 0.98);
+            --code-border: rgba(14, 165, 233, 0.16);
+            --code-text: #0f172a;
+            --inline-code-bg: rgba(14, 165, 233, 0.08);
+            --inline-code-border: rgba(14, 165, 233, 0.18);
+            --inline-code-text: #0c4a6e;
+            --blockquote-bg: rgba(59, 130, 246, 0.08);
+            --table-stripe: rgba(59, 130, 246, 0.04);
+            --shadow-sm: 0 20px 45px rgba(148, 163, 184, 0.2);
+            --shadow-md: 0 30px 80px rgba(148, 163, 184, 0.24);
+            --glow: 0 0 0 1px rgba(14, 165, 233, 0.08), 0 0 28px rgba(14, 165, 233, 0.1);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: var(--font-sans);
-            background-color: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 28%),
+                radial-gradient(circle at 82% 10%, rgba(59, 130, 246, 0.18), transparent 24%),
+                linear-gradient(180deg, rgba(8, 15, 31, 0.96) 0%, rgba(6, 16, 31, 1) 100%);
             color: var(--text);
             line-height: 1.7;
             font-size: 16px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            transition: background-color 0.35s ease, color 0.35s ease, background 0.35s ease;
         }
 
         a { color: var(--primary-hover); text-decoration: none; transition: color 0.2s; }
         a:hover { color: var(--cta); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: auto auto 12% -8%;
+            width: 22rem;
+            height: 22rem;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.16) 0%, transparent 70%);
+            filter: blur(18px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 8% -8% auto auto;
+            width: 20rem;
+            height: 20rem;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 72%);
+            filter: blur(24px);
+            pointer-events: none;
+            z-index: 0;
+        }
 
         .doc-shell {
             max-width: 900px;
@@ -122,12 +168,13 @@
             display: flex;
             gap: var(--space-2);
             z-index: 1000;
-            background: color-mix(in srgb, var(--bg-card) 86%, transparent);
-            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 92%, transparent);
             border-radius: 999px;
             padding: var(--space-1);
-            box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-sm), var(--glow);
+            backdrop-filter: blur(22px) saturate(140%);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
         }
 
         .control-btn {
@@ -368,8 +415,40 @@
             .back-btn, .btn { width: calc(100% - 7rem); justify-content: center; }
         }
     </style>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/site.css">
 </head>
-<body>
+<body class="doc-page">
+    <a class="skip-link" href="#main-content" data-site-i18n="skip">跳到正文</a>
+    <div class="site-topbar" role="banner">
+        <div class="site-topbar-inner">
+            <a class="site-brand" href="../index.html" aria-label="Formula4j-Plus 首页"><span class="site-brand-mark" aria-hidden="true">f(x)</span>Formula4j-Plus</a>
+            <div class="site-links" id="site-navigation" role="navigation" aria-label="主导航">
+                <a href="../docs/使用指南.html" data-site-i18n="guide">使用指南</a>
+                <a href="../markdown-viewer.html?file=Project-Overview.md" data-site-i18n="overview">项目概览</a>
+                <a href="../markdown-viewer.html?file=CHANGELOG.md" data-site-i18n="changes">更新日志</a>
+                <a href="https://github.com/Formula4j-plus/Formula4j-Plus" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+            <div class="site-controls-slot"></div>
+            <button class="mobile-menu-toggle" aria-label="打开导航" aria-expanded="false" aria-controls="site-navigation">☰</button>
+        </div>
+    </div>
+    <button class="doc-mobile-toggle" aria-expanded="false" aria-controls="doc-sidebar"><span aria-hidden="true">☷</span><span data-site-i18n="contents">文档目录</span></button>
+    <aside class="doc-sidebar" id="doc-sidebar" aria-label="文档导航">
+        <input type="search" placeholder="筛选本页章节…" aria-label="筛选本页章节">
+        <span class="doc-sidebar-label" data-site-i18n="docs">开发文档</span>
+        <div class="doc-pages">
+            <a href="../docs/使用指南.html" data-site-i18n="guide">使用指南</a>
+            <a href="../markdown-viewer.html?file=Project-Overview.md" data-site-i18n="overview">项目概览</a>
+            <a href="../markdown-viewer.html?file=docs/wiki/README.md">Wiki</a>
+            <a href="../markdown-viewer.html?file=CHANGELOG.md" data-site-i18n="changes">更新日志</a>
+            <a href="../CONTRIBUTING.html" data-site-i18n="contribute">参与贡献</a>
+        </div>
+        <hr>
+        <span class="doc-sidebar-label" data-site-i18n="onPage">本页内容</span>
+        <div class="toc"></div>
+        <p class="toc-empty" hidden data-site-i18n="empty">没有匹配的章节</p>
+    </aside>
     <div class="control-bar">
         <div class="dropdown">
             <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
@@ -411,7 +490,7 @@
     </div>
 
     <div class="container">
-        <div class="doc-shell">
+        <main class="doc-shell" id="main-content" tabindex="-1">
             <div class="doc-header">
                 <a href="../index.html" class="back-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -425,30 +504,27 @@
                 <p class="doc-lead" data-i18n="lead">围绕公式接入、字段映射、结果校验与常见问题，提供一套适合后端接入的完整参考。</p>
             </div>
 
-        <h2 data-i18n="h2_quick">快速开始：一次性加载Formula.js库</h2>
-        <p data-i18n="p1_desc">如果你需要一次性加载整个Formula.js库，然后直接使用所有函数，可以使用以下方式：</p>
+        <h2 data-i18n="h2_quick">快速开始：直接执行 Java 公式</h2>
+        <p data-i18n="p1_desc">基础计算不需要加载 JavaScript 库。引入依赖后即可执行：</p>
 
         <div class="code-block">
             <pre><code><span class="ch-keyword">import</span> com.alibaba.fastjson.JSONObject;
 <span class="ch-keyword">import</span> com.formula.calculator.FormulaCalculator;
 
-<span class="ch-comment">// 一次性加载 Formula.js 库</span>
-FormulaCalculator.loadFormulaJsLibrary(<span class="ch-string">"file:///D:/formula.js"</span>);
-
-<span class="ch-comment">// 加载后，所有函数都可以直接使用</span>
+<span class="ch-comment">// 基础函数直接由 Java 执行</span>
 JSONObject data = <span class="ch-keyword">new</span> JSONObject();
 String formula = <span class="ch-string">"SUM(1, 2, 3) + ABS(-5) + SQRT(16)"</span>;
 Object result = FormulaCalculator.calculate(formula, data);
-<span class="ch-comment">// 输出: 15.0</span></code></pre>
+<span class="ch-comment">// 输出: 15 (Long)</span></code></pre>
         </div>
 
         <div class="tip">
             <strong data-i18n="tip_title">说明：</strong>
             <ul>
-                <li data-i18n="tip1">一次加载后，所有 Formula.js 函数都可以直接使用</li>
-                <li data-i18n="tip2">支持多个函数一起使用并相加</li>
-                <li data-i18n="tip3">自动识别未在 Java 中实现的函数</li>
-                <li data-i18n="tip4">与 Java 实现的函数无缝混合使用</li>
+                <li data-i18n="tip1">基础函数由 Java 实现，无需额外脚本引擎</li>
+                <li data-i18n="tip2">字段支持 ${field}、[field] 和展示名称映射</li>
+                <li data-i18n="tip3">整数结果返回 Long，小数结果返回 Double</li>
+                <li data-i18n="tip4">详细行为与脚本限制见引擎行为契约</li>
             </ul>
         </div>
 
@@ -486,7 +562,7 @@ data.put(<span class="ch-string">"field2"</span>, <span class="ch-number">20</sp
 
 <span class="ch-comment">// 计算公式</span>
 Object result = FormulaCalculator.calculate(formulaData, data);
-<span class="ch-comment">// 输出: 30.0</span></code></pre>
+<span class="ch-comment">// 输出: 30 (Long)</span></code></pre>
         </div>
 
         <h3 data-i18n="h3_2">2. 验证前端计算结果</h3>
@@ -499,6 +575,13 @@ Object result = FormulaCalculator.calculate(formulaData, data);
     System.out.println(<span class="ch-string">"计算结果一致"</span>);
 }</code></pre>
         </div>
+
+        <h2 data-i18n="h2_detailed">详细结果校验</h2>
+        <p data-i18n="detailed_desc">旧 verify 保持数字比较。新增 verifyDetailed 区分结果不一致、执行失败和比较参数错误，并支持文本精确比较。</p>
+        <div class="code-block"><pre><code>VerificationResult report = FormulaUtils.verifyDetailed("${price} * 2", data, frontendResult);
+boolean match = report.isMatch();
+VerificationResult.Status status = report.getStatus();</code></pre></div>
+        <p><a href="../markdown-viewer.html?file=docs/engine-contract.md" data-i18n="contract_link">查看引擎行为与兼容性契约 →</a></p>
 
         <h2 data-i18n="h2_field">字段映射说明</h2>
         <ul>
@@ -527,7 +610,7 @@ Object result = FormulaCalculator.calculate(formulaData, data);
         <h2 data-i18n="h2_faq">常见问题</h2>
 
         <h3 data-i18n="q1">Q: 如果字段值为 null 怎么办？</h3>
-        <p data-i18n="a1">A: 字段值为 null 时，会自动使用 0 替代，并记录警告日志。</p>
+        <p data-i18n="a1">A: 算术字段值为 null 时按 0 处理；当前实现不输出警告日志。</p>
 
         <h3 data-i18n="q2">Q: 如何支持自定义函数？</h3>
         <div class="code-block">
@@ -544,42 +627,20 @@ Object result = FormulaCalculator.calculate(formulaData, data);
 <span class="ch-comment">// 自定义误差范围</span>
 <span class="ch-keyword">boolean</span> verified = FormulaUtils.verify(formulaData, data, result, <span class="ch-number">0.01</span>);</code></pre>
         </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        function enhanceStaticCodeBlocks(root = document) {
-            root.querySelectorAll('pre code').forEach((codeEl) => {
-                if (codeEl.dataset.highlighted === 'true') {
-                    return;
-                }
-                if (codeEl.querySelector('span')) {
-                    codeEl.dataset.highlighted = 'true';
-                    return;
-                }
-                const rawText = codeEl.textContent || '';
-                const html = rawText
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/(\/\/.*$)/gm, '<span class="ch-comment">$1</span>')
-                    .replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, '<span class="ch-string">$1</span>')
-                    .replace(/\b(import|package|public|private|protected|class|interface|enum|static|final|void|new|return|if|else|for|while|switch|case|break|continue|try|catch|finally|throw|throws|extends|implements|boolean|int|long|double|float|char|byte|short|null|true|false)\b/g, '<span class="ch-keyword">$1</span>')
-                    .replace(/\b([A-Za-z_][\w]*)\s*(?=\()/g, '<span class="ch-function">$1</span>')
-                    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="ch-number">$1</span>');
-                codeEl.innerHTML = html;
-                codeEl.dataset.highlighted = 'true';
-            });
-        }
 
         const translations = {
             'zh-CN': {
+                h2_detailed: '详细结果校验', detailed_desc: '旧 verify 保持数字比较。新增 verifyDetailed 区分结果不一致、执行失败和比较参数错误，并支持文本精确比较。', contract_link: '查看引擎行为与兼容性契约 →',
                 lang: '语言', theme: '主题', back: '返回首页', title: '使用指南',
-                h2_quick: '快速开始：一次性加载Formula.js库',
-                p1_desc: '如果你需要一次性加载整个Formula.js库，然后直接使用所有函数，可以使用以下方式：',
-                tip_title: '说明：', tip1: '一次加载后，所有 Formula.js 函数都可以直接使用',
-                tip2: '支持多个函数一起使用并相加', tip3: '自动识别未在 Java 中实现的函数',
-                tip4: '与 Java 实现的函数无缝混合使用',
+                h2_quick: '快速开始：直接执行 Java 公式',
+                p1_desc: '基础计算不需要加载 JavaScript 库。引入依赖后即可执行：',
+                tip_title: '说明：', tip1: '基础函数由 Java 实现，无需额外脚本引擎',
+                tip2: '字段支持 ${field}、[field] 和展示名称映射', tip3: '整数结果返回 Long，小数结果返回 Double',
+                tip4: '详细行为与脚本限制见引擎行为契约',
                 h2_data: '前端数据结构', p2_desc: '前端传来的数据结构格式：',
                 h2_backend: '后端使用示例', h3_1: '1. 接收前端数据并计算', h3_2: '2. 验证前端计算结果',
                 lead: '围绕公式接入、字段映射、结果校验与常见问题，提供一套适合后端接入的完整参考。',
@@ -590,17 +651,18 @@ Object result = FormulaCalculator.calculate(formulaData, data);
                 support_title: '延伸阅读：', support_desc: '如果你还需要了解函数扩展、许可证与变更记录，可继续查看仓库首页、README 与更新日志。',
                 support_home: '查看文档入口', support_readme: '查看 README',
                 h2_faq: '常见问题', q1: 'Q: 如果字段值为 null 怎么办？',
-                a1: 'A: 字段值为 null 时，会自动使用 0 替代，并记录警告日志。',
+                a1: 'A: 算术字段值为 null 时按 0 处理；当前实现不输出警告日志。',
                 q2: 'Q: 如何支持自定义函数？', q3: 'Q: 如何验证计算结果精度？',
                 light: '日间模式', dark: '夜间模式', system: '跟随系统'
             },
             'zh-TW': {
+                h2_detailed: '詳細結果校驗', detailed_desc: '舊 verify 保持數字比較。新增 verifyDetailed 區分結果不一致、執行失敗和比較參數錯誤，並支援文字精確比較。', contract_link: '查看引擎行為與相容性契約 →',
                 lang: '語言', theme: '主題', back: '返回首頁', title: '使用指南',
-                h2_quick: '快速開始：一次性載入Formula.js庫',
-                p1_desc: '如果你需要一次性載入整個Formula.js庫，可以使用以下方式：',
-                tip_title: '說明：', tip1: '一次載入後，所有函數都可以直接使用',
-                tip2: '支援多個函數一起使用', tip3: '自動識別未實現的函數',
-                tip4: '與 Java 函數無縫混合',
+                h2_quick: '快速開始：直接執行 Java 公式',
+                p1_desc: '基礎計算不需要載入 JavaScript 庫。引入依賴後即可執行：',
+                tip_title: '說明：', tip1: '基礎函數由 Java 實作，無需額外腳本引擎',
+                tip2: '欄位支援 ${field}、[field] 與展示名稱映射', tip3: '整數結果回傳 Long，小數結果回傳 Double',
+                tip4: '詳細行為與腳本限制見引擎行為契約',
                 h2_data: '前端資料結構', p2_desc: '前端傳來的資料結構格式：',
                 h2_backend: '後端使用範例', h3_1: '1. 接收資料並計算', h3_2: '2. 驗證計算結果',
                 lead: '圍繞公式接入、欄位映射、結果校驗與常見問題，提供一套適合後端接入的完整參考。',
@@ -611,17 +673,18 @@ Object result = FormulaCalculator.calculate(formulaData, data);
                 support_title: '延伸閱讀：', support_desc: '如果你還需要了解函數擴展、授權與變更記錄，可繼續查看倉庫首頁、README 與更新日誌。',
                 support_home: '查看文檔入口', support_readme: '查看 README',
                 h2_faq: '常見問題', q1: 'Q: 如果欄位值為 null 怎麼辦？',
-                a1: 'A: 會自動使用 0 替代。',
+                a1: 'A: 算術欄位值為 null 時按 0 處理；目前實作不輸出警告日誌。',
                 q2: 'Q: 如何支援自訂函數？', q3: 'Q: 如何驗證精度？',
                 light: '日間模式', dark: '夜間模式', system: '跟隨系統'
             },
             'en': {
+                h2_detailed: 'Detailed validation', detailed_desc: 'The original verify keeps numeric comparison. verifyDetailed distinguishes mismatches, evaluation errors, and invalid comparisons, and supports exact text comparison.', contract_link: 'Read the engine behavior contract →',
                 lang: 'Language', theme: 'Theme', back: 'Back to Home', title: 'User Guide',
-                h2_quick: 'Quick Start: Load Formula.js Library',
-                p1_desc: 'To load the entire Formula.js library at once and use all functions:',
-                tip_title: 'Notes:', tip1: 'After loading, all Formula.js functions can be used directly',
-                tip2: 'Supports multiple functions used together', tip3: 'Auto-identifies unimplemented functions',
-                tip4: 'Seamlessly mixed with Java-implemented functions',
+                h2_quick: 'Quick start: calculate in Java',
+                p1_desc: 'Basic calculations do not require a JavaScript library. Add the dependency and calculate:',
+                tip_title: 'Notes:', tip1: 'Core functions run in Java without a script engine',
+                tip2: 'Use ${field}, [field], or mapped display names', tip3: 'Integer results return Long; fractional results return Double',
+                tip4: 'See the engine contract for behavior and script limitations',
                 h2_data: 'Frontend Data Structure', p2_desc: 'Frontend data structure format:',
                 h2_backend: 'Backend Usage Examples', h3_1: '1. Receive and Calculate', h3_2: '2. Verify Result',
                 lead: 'A compact reference for backend integration, covering formula setup, field mapping, result verification, and common troubleshooting.',
@@ -632,19 +695,18 @@ Object result = FormulaCalculator.calculate(formulaData, data);
                 support_title: 'More Resources:', support_desc: 'If you also need function extension details, license notes, or change history, continue with the homepage, README, and changelog.',
                 support_home: 'Open docs hub', support_readme: 'Open README',
                 h2_faq: 'FAQ', q1: 'Q: What if field value is null?',
-                a1: 'A: It will automatically use 0 and log a warning.',
+                a1: 'A: Null arithmetic fields become 0. The current implementation does not emit a warning log.',
                 q2: 'Q: How to support custom functions?', q3: 'Q: How to verify accuracy?',
                 light: 'Light Mode', dark: 'Dark Mode', system: 'System'
             }
         };
 
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
-        let currentTheme = localStorage.getItem('theme') || 'system';
+        let currentTheme = localStorage.getItem('theme') || 'light';
         const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
         function resolveSystemTheme() {
-            const hour = new Date().getHours();
-            return (hour >= 18 || hour < 7) ? 'dark' : 'light';
+            return systemThemeMedia.matches ? 'dark' : 'light';
         }
 
         function getResolvedTheme(theme) {
@@ -725,7 +787,7 @@ Object result = FormulaCalculator.calculate(formulaData, data);
         }
 
         function handleStoredThemeChange() {
-            const storedTheme = localStorage.getItem('theme') || 'system';
+            const storedTheme = localStorage.getItem('theme') || 'light';
             if (storedTheme !== currentTheme) {
                 currentTheme = storedTheme;
             }
@@ -756,7 +818,8 @@ Object result = FormulaCalculator.calculate(formulaData, data);
         updateLangUI();
         applyTheme(currentTheme);
         updateThemeUI();
-        enhanceStaticCodeBlocks();
+        // 代码高亮和复制由 assets/site.js 统一处理。
     </script>
+    <script src="../assets/site.js"></script>
 </body>
 </html>

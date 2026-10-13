@@ -2,15 +2,37 @@ package com.formula.calculator;
 
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
+import org.junit.After;
+import org.junit.Assume;
+import javax.script.ScriptEngineManager;
 import static org.junit.Assert.*;
 
 /**
  * 自定义脚本函数测试
  */
 public class CustomScriptFunctionTest {
+
+    /** 纯 Java 验证不要求脚本引擎；脚本能力另在有引擎的环境验证。 */
+    private void requireScriptEngine() {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        boolean available = manager.getEngineByName("nashorn") != null
+                || manager.getEngineByName("graal.js") != null
+                || manager.getEngineByName("javascript") != null
+                || manager.getEngineByName("js") != null
+                || manager.getEngineByName("ECMAScript") != null;
+        Assume.assumeTrue("此运行环境未安装 JavaScript 引擎", available);
+    }
+
+    @After
+    public void cleanup() {
+        for (String name : new String[]{"MYJSSUM", "MULTIPLY", "DOUBLE", "WRAPTEXT", "BOOLTEXT"}) {
+            FormulaCalculator.unregisterCustomFunction(name);
+        }
+    }
     
     @Test
     public void testJavaScriptFunction() {
+        requireScriptEngine();
         // 注册JavaScript自定义函数
         String jsScript = "var parts = params.split(',');" +
                          "var sum = 0;" +
@@ -26,6 +48,7 @@ public class CustomScriptFunctionTest {
         JSONObject data = new JSONObject();
         
         Object result = FormulaCalculator.calculate(formula, data, null);
+        assertEquals(60.0, ((Number) result).doubleValue(), 0.0001);
         System.out.println("✓ JavaScript自定义函数测试通过: " + result);
         
         // 清理
@@ -34,6 +57,7 @@ public class CustomScriptFunctionTest {
     
     @Test
     public void testJavaScriptWithData() {
+        requireScriptEngine();
         // 注册JavaScript函数，使用JSONObject数据
         String jsScript = "var field1 = data.get('field1');" +
                          "var field2 = data.get('field2');" +
@@ -77,6 +101,7 @@ public class CustomScriptFunctionTest {
 
     @Test
     public void testJavaScriptFunctionWithSingleQuotedLiteral() {
+        requireScriptEngine();
         FormulaCalculator.registerCustomFunction("WRAPTEXT", "js", "function(text) { return '[' + text + ']'; }");
 
         JSONObject data = new JSONObject();
@@ -89,6 +114,7 @@ public class CustomScriptFunctionTest {
 
     @Test
     public void testJavaScriptFunctionWithBooleanLiteral() {
+        requireScriptEngine();
         FormulaCalculator.registerCustomFunction("BOOLTEXT", "js", "function(flag) { return flag ? 'Y' : 'N'; }");
 
         JSONObject data = new JSONObject();

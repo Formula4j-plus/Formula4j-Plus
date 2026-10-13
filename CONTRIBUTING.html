@@ -7,13 +7,13 @@
     <script>
         (function () {
             try {
-                var savedTheme = localStorage.getItem('theme') || 'system';
+                var savedTheme = localStorage.getItem('theme') || 'light';
                 var resolvedTheme = savedTheme === 'system'
                     ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                     : savedTheme;
                 document.documentElement.setAttribute('data-theme', resolvedTheme);
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
     </script>
@@ -22,27 +22,30 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563EB;
-            --primary-hover: #3B82F6;
-            --cta: #F97316;
-            --bg: #0F172A;
-            --bg-elevated: #1E293B;
-            --bg-card: #1E293B;
-            --surface-subtle: rgba(15, 23, 42, 0.72);
-            --text: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --text-muted: #64748B;
-            --border: #334155;
-            --success: #10B981;
-            --code-bg: #020617;
-            --code-surface: #0F172A;
-            --code-border: #1E293B;
-            --code-text: #E2E8F0;
-            --inline-code-bg: rgba(37, 99, 235, 0.14);
-            --inline-code-border: rgba(59, 130, 246, 0.22);
-            --inline-code-text: #BFDBFE;
-            --blockquote-bg: rgba(37, 99, 235, 0.08);
-            --table-stripe: rgba(148, 163, 184, 0.06);
+            --primary: #5eead4;
+            --primary-hover: #67e8f9;
+            --accent: #38bdf8;
+            --cta: #22d3ee;
+            --bg: #06101f;
+            --bg-elevated: rgba(12, 26, 46, 0.82);
+            --bg-card: rgba(9, 18, 35, 0.72);
+            --surface-subtle: rgba(15, 23, 42, 0.62);
+            --surface-strong: rgba(15, 23, 42, 0.82);
+            --text: #ecfeff;
+            --text-secondary: #b6c7e3;
+            --text-muted: #6b85a8;
+            --border: rgba(125, 211, 252, 0.18);
+            --success: #34d399;
+            --code-bg: rgba(2, 6, 23, 0.94);
+            --code-surface: rgba(8, 15, 31, 0.98);
+            --code-border: rgba(103, 232, 249, 0.14);
+            --code-text: #dbeafe;
+            --inline-code-bg: rgba(34, 211, 238, 0.12);
+            --inline-code-border: rgba(103, 232, 249, 0.22);
+            --inline-code-text: #a5f3fc;
+            --blockquote-bg: rgba(14, 116, 144, 0.12);
+            --table-stripe: rgba(34, 211, 238, 0.04);
+            --space-1: 0.25rem;
             --space-2: 0.5rem;
             --space-3: 0.75rem;
             --space-4: 1rem;
@@ -50,48 +53,91 @@
             --space-8: 2rem;
             --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-            --radius-sm: 12px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.14);
-            --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.22);
+            --radius-sm: 14px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --shadow-sm: 0 18px 40px rgba(2, 6, 23, 0.26);
+            --shadow-md: 0 28px 80px rgba(2, 6, 23, 0.34);
+            --glow: 0 0 0 1px rgba(103, 232, 249, 0.1), 0 0 36px rgba(34, 211, 238, 0.12);
         }
 
         [data-theme="light"] {
-            --bg: #FFFFFF;
-            --bg-elevated: #F8FAFC;
-            --bg-card: #FFFFFF;
-            --surface-subtle: rgba(148, 163, 184, 0.12);
-            --text: #1E293B;
-            --text-secondary: #475569;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --code-bg: #EFF6FF;
-            --code-surface: #F8FAFC;
-            --code-border: #BFDBFE;
-            --code-text: #0F172A;
-            --inline-code-bg: #DBEAFE;
-            --inline-code-border: #BFDBFE;
-            --inline-code-text: #1D4ED8;
-            --blockquote-bg: #EFF6FF;
-            --table-stripe: #F8FAFC;
+            --primary: #0891b2;
+            --primary-hover: #0ea5e9;
+            --accent: #2563eb;
+            --cta: #0284c7;
+            --bg: #eff6ff;
+            --bg-elevated: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.72);
+            --surface-subtle: rgba(148, 163, 184, 0.1);
+            --surface-strong: rgba(255, 255, 255, 0.92);
+            --text: #082f49;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border: rgba(14, 165, 233, 0.16);
+            --code-bg: rgba(239, 246, 255, 0.94);
+            --code-surface: rgba(255, 255, 255, 0.98);
+            --code-border: rgba(14, 165, 233, 0.16);
+            --code-text: #0f172a;
+            --inline-code-bg: rgba(14, 165, 233, 0.08);
+            --inline-code-border: rgba(14, 165, 233, 0.18);
+            --inline-code-text: #0c4a6e;
+            --blockquote-bg: rgba(59, 130, 246, 0.08);
+            --table-stripe: rgba(59, 130, 246, 0.04);
+            --shadow-sm: 0 20px 45px rgba(148, 163, 184, 0.2);
+            --shadow-md: 0 30px 80px rgba(148, 163, 184, 0.24);
+            --glow: 0 0 0 1px rgba(14, 165, 233, 0.08), 0 0 28px rgba(14, 165, 233, 0.1);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: var(--font-sans);
-            background-color: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 28%),
+                radial-gradient(circle at 82% 10%, rgba(59, 130, 246, 0.18), transparent 24%),
+                linear-gradient(180deg, rgba(8, 15, 31, 0.96) 0%, rgba(6, 16, 31, 1) 100%);
             color: var(--text);
             line-height: 1.7;
             font-size: 16px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            transition: background-color 0.35s ease, color 0.35s ease, background 0.35s ease;
         }
 
         a { color: var(--primary-hover); text-decoration: none; transition: color 0.2s; }
         a:hover { color: var(--cta); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: auto auto 12% -8%;
+            width: 22rem;
+            height: 22rem;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.16) 0%, transparent 70%);
+            filter: blur(18px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 8% -8% auto auto;
+            width: 20rem;
+            height: 20rem;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 72%);
+            filter: blur(24px);
+            pointer-events: none;
+            z-index: 0;
+        }
 
         .doc-shell {
             max-width: 900px;
@@ -121,12 +167,13 @@
             display: flex;
             gap: var(--space-2);
             z-index: 1000;
-            background: color-mix(in srgb, var(--bg-card) 86%, transparent);
-            border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 92%, transparent);
             border-radius: 999px;
             padding: var(--space-1);
-            box-shadow: var(--shadow-sm);
-            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-sm), var(--glow);
+            backdrop-filter: blur(22px) saturate(140%);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
         }
 
         .control-btn {
@@ -319,8 +366,40 @@
             .back-btn, .btn { width: calc(100% - 7rem); justify-content: center; }
         }
     </style>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body class="doc-page">
+    <a class="skip-link" href="#main-content" data-site-i18n="skip">跳到正文</a>
+    <div class="site-topbar" role="banner">
+        <div class="site-topbar-inner">
+            <a class="site-brand" href="index.html" aria-label="Formula4j-Plus 首页"><span class="site-brand-mark" aria-hidden="true">f(x)</span>Formula4j-Plus</a>
+            <div class="site-links" id="site-navigation" role="navigation" aria-label="主导航">
+                <a href="docs/使用指南.html" data-site-i18n="guide">使用指南</a>
+                <a href="markdown-viewer.html?file=Project-Overview.md" data-site-i18n="overview">项目概览</a>
+                <a href="markdown-viewer.html?file=CHANGELOG.md" data-site-i18n="changes">更新日志</a>
+                <a href="https://github.com/Formula4j-plus/Formula4j-Plus" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+            <div class="site-controls-slot"></div>
+            <button class="mobile-menu-toggle" aria-label="打开导航" aria-expanded="false" aria-controls="site-navigation">☰</button>
+        </div>
+    </div>
+    <button class="doc-mobile-toggle" aria-expanded="false" aria-controls="doc-sidebar"><span aria-hidden="true">☷</span><span data-site-i18n="contents">文档目录</span></button>
+    <aside class="doc-sidebar" id="doc-sidebar" aria-label="文档导航">
+        <input type="search" placeholder="筛选本页章节…" aria-label="筛选本页章节">
+        <span class="doc-sidebar-label" data-site-i18n="docs">开发文档</span>
+        <div class="doc-pages">
+            <a href="docs/使用指南.html" data-site-i18n="guide">使用指南</a>
+            <a href="markdown-viewer.html?file=Project-Overview.md" data-site-i18n="overview">项目概览</a>
+            <a href="markdown-viewer.html?file=docs/wiki/README.md">Wiki</a>
+            <a href="markdown-viewer.html?file=CHANGELOG.md" data-site-i18n="changes">更新日志</a>
+            <a href="CONTRIBUTING.html" data-site-i18n="contribute">参与贡献</a>
+        </div>
+        <hr>
+        <span class="doc-sidebar-label" data-site-i18n="onPage">本页内容</span>
+        <div class="toc"></div>
+        <p class="toc-empty" hidden data-site-i18n="empty">没有匹配的章节</p>
+    </aside>
     <div class="control-bar">
         <div class="dropdown">
             <button class="control-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
@@ -362,7 +441,7 @@
     </div>
 
     <div class="container">
-        <div class="doc-shell">
+        <main class="doc-shell" id="main-content" tabindex="-1">
             <div class="doc-header">
                 <a href="index.html" class="back-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -424,7 +503,7 @@
         <h3 data-i18n="h3_function">添加新函数</h3>
         <ol>
             <li data-i18n="func1">在 FunctionName 枚举中添加函数名</li>
-            <li data-i18n="func2">在 FormulaCalculator 中实现函数逻辑</li>
+            <li data-i18n="func2">数学函数在 MathFunctions 注册，其他类别按兼容求值流程扩展</li>
             <li data-i18n="func3">添加单元测试</li>
             <li data-i18n="func4">更新 Project-Overview.md 中的函数列表</li>
         </ol>
@@ -445,7 +524,7 @@
                 <a href="markdown-viewer.html?file=CHANGELOG.md" class="btn" data-i18n="support_changelog">查看更新日志</a>
             </div>
         </div>
-        </div>
+        </main>
     </div>
 
     <script>
@@ -460,7 +539,7 @@
                 report2: 'Bug 报告请包含：问题描述、复现步骤、预期行为、实际行为、环境信息',
                 h3_code: '提交代码', code1: 'Fork 项目', code2: '创建分支',
                 code3: '编写代码并添加单元测试', code4: '提交更改', code5: '推送分支并创建 Pull Request',
-                h3_style: '代码规范', style1: 'Java 代码风格：遵循 Google Java Style Guide',
+                h3_style: '代码规范', style1: 'Java 代码风格：4 空格缩进，UTF-8 无 BOM，公共 API 添加 JavaDoc',
                 style2: '命名规范：类名大驼峰，方法名小驼峰、常量全大写下划线分隔',
                 style3: '注释：公共 API 必须添加 JavaDoc', style4: '测试：新功能必须包含单元测试',
                 h3_commit: 'Commit 信息规范', commit_desc: '我们使用 Conventional Commits 规范：',
@@ -469,7 +548,7 @@
                 h3_env: '开发环境设置', env1: '克隆项目', env2: '构建项目',
                 env3: '运行测试', env4: '打包项目',
                 h3_function: '添加新函数', func1: '在 FunctionName 枚举中添加函数名',
-                func2: '在 FormulaCalculator 中实现函数逻辑', func3: '添加单元测试',
+                func2: '数学函数在 MathFunctions 注册，其他类别按兼容求值流程扩展', func3: '添加单元测试',
                 func4: '更新 Project-Overview.md 中的函数列表',
                 h2_rules: '行为准则', rule1: '尊重所有贡献者', rule2: '接受建设性批评',
                 rule3: '专注于对项目最有利的事情', rule4: '对其他社区成员表示同理心',
@@ -495,7 +574,7 @@
                 h3_env: '開發環境設定', env1: '複製專案', env2: '建置專案',
                 env3: '執行測試', env4: '打包專案',
                 h3_function: '新增函數', func1: '在 FunctionName 枚舉中新增函數名',
-                func2: '在 FormulaCalculator 中實作函數邏輯', func3: '新增單元測試',
+                func2: '數學函數在 MathFunctions 註冊，其他類別依相容求值流程擴展', func3: '新增單元測試',
                 func4: '更新函數列表',
                 h2_rules: '行為準則', rule1: '尊重所有貢獻者', rule2: '接受建設性批評',
                 rule3: '專注於對專案最有利的事情', rule4: '對其他社群成員表示同理心',
@@ -513,7 +592,7 @@
                 report1: 'Create a new issue on GitHub Issues page', report2: 'Bug reports should include: description, steps, expected vs actual behavior',
                 h3_code: 'Submit Code', code1: 'Fork the project', code2: 'Create a branch',
                 code3: 'Write code and add unit tests', code4: 'Commit changes', code5: 'Push and create Pull Request',
-                h3_style: 'Code Standards', style1: 'Java code style: Follow Google Java Style Guide',
+                h3_style: 'Code Standards', style1: 'Java style: 4-space indentation, UTF-8 without BOM, JavaDoc for public APIs',
                 style2: 'Naming: PascalCase for classes, camelCase for methods',
                 style3: 'Comments: Add JavaDoc for public APIs', style4: 'Tests: New features must include unit tests',
                 h3_commit: 'Commit Message Convention', commit_desc: 'We use Conventional Commits:',
@@ -522,7 +601,7 @@
                 h3_env: 'Development Environment', env1: 'Clone project', env2: 'Build project',
                 env3: 'Run tests', env4: 'Package project',
                 h3_function: 'Add New Functions', func1: 'Add function name to FunctionName enum',
-                func2: 'Implement function logic in FormulaCalculator', func3: 'Add unit tests',
+                func2: 'Register mathematical implementations in MathFunctions; extend other categories in the compatibility evaluator', func3: 'Add unit tests',
                 func4: 'Update function list in Project-Overview.md',
                 h2_rules: 'Code of Conduct', rule1: 'Respect all contributors', rule2: 'Accept constructive criticism',
                 rule3: 'Focus on what is best for the project', rule4: 'Show empathy to other community members',
@@ -534,12 +613,11 @@
         };
 
         let currentLang = localStorage.getItem('lang') || 'zh-CN';
-        let currentTheme = localStorage.getItem('theme') || 'system';
+        let currentTheme = localStorage.getItem('theme') || 'light';
         const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
         function resolveSystemTheme() {
-            const hour = new Date().getHours();
-            return (hour >= 18 || hour < 7) ? 'dark' : 'light';
+            return systemThemeMedia.matches ? 'dark' : 'light';
         }
 
         function getResolvedTheme(theme) {
@@ -620,7 +698,7 @@
         }
 
         function handleStoredThemeChange() {
-            const storedTheme = localStorage.getItem('theme') || 'system';
+            const storedTheme = localStorage.getItem('theme') || 'light';
             if (storedTheme !== currentTheme) {
                 currentTheme = storedTheme;
             }
@@ -652,5 +730,6 @@
         applyTheme(currentTheme);
         updateThemeUI();
     </script>
+    <script src="assets/site.js"></script>
 </body>
 </html>

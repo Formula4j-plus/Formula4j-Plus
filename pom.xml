@@ -136,20 +136,7 @@
                 </executions>
             </plugin>
             
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
 
         </plugins>
     </build>
@@ -179,6 +166,14 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals><goal>sign</goal></goals>
+                            </execution>
+                        </executions>
                         <configuration>
                             <keyname>${gpg.keyname}</keyname>
                             <executable>${gpg.executable}</executable>
@@ -266,6 +261,10 @@
                                 <option>-keep public class com.formula.calculator.FormulaCalculator { public static *; }</option>
                                 <option>-keep public class com.formula.calculator.FormulaException { public *; }</option>
                                 <option>-keep public class com.formula.calculator.FormulaUtils { public static *; }</option>
+                                <option>-keep public class com.formula.calculator.api.** { public *; }</option>
+                                <option>-keep public class com.formula.calculator.core.runtime.DefaultFormulaEngine { public *; }</option>
+                                <option>-keep public class com.formula.calculator.registry.CustomFunctionRegistry { public *; }</option>
+                                <option>-keep public class com.formula.calculator.core.script.ScriptFunctionSupport { public *; }</option>
                                 <option>-keep class com.formula.calculator.model.** { *; }</option>
                                 <option>-keep interface com.formula.calculator.** { *; }</option>
                                 <option>-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }</option>
