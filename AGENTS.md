@@ -11,6 +11,9 @@
 
 - 主项目路径：`D:\A---XgRy_Project\4399\Formula4j-Plus`。
 - Java 核心位于 `src/main/java/com/formula/calculator/`，当前是独立 Maven 计算库，没有独立的 HTTP 后端服务或管理后台。
+- 静态 `FormulaCalculator` 与 `DefaultFormulaEngine` 保留兼容语义；`core/strict/StrictFormulaEngine` 是显式启用的严格入口，使用 BigDecimal、不可变编译对象与结构化错误。不能自动切换旧入口或在严格失败后静默回退。
+- 严格接入与边界维护于 `docs/strict-engine.md`；Formula.js 4.6.1 差分语料位于 `src/test/resources/compatibility/`，矩阵和函数目录由真实 Java/JS 结果生成。更新期望值前先审核行为，不能只为通过测试改契约。
+- `tools/compatibility` 与 `tools/benchmark` 仅用于开发验证；Node/Formula.js 和 JMH 不属于主计算库新增的运行时依赖。基准使用独立本地版本别名，不覆盖或发布主库版本。
 - 展示网页位于当前项目：`index.html`（首页）、`docs/使用指南.html`（使用指南）、`markdown-viewer.html`（Markdown 阅读页）、`CONTRIBUTING.html`（贡献页）；由 `.github/workflows/pages.yml` 发布 GitHub Pages。
 - 配套 Wiki 实际路径为 `D:\A---XgRy_Project\4399\formula-wiki`，也可从主项目通过 `../formula-wiki` 定位。注意不是 `D:\A---XgRy\_Project\4399\formula-wiki`。
 - `formula-wiki` 当前为 Markdown 文档及历史模板目录，没有独立前端应用，也没有 `.git`；不要将其中的历史工作流、许可证或模板自动覆盖到主项目。

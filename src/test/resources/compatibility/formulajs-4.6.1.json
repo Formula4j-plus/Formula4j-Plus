@@ -1,0 +1,2097 @@
+{
+  "formulajsVersion": "4.6.1",
+  "cases": [
+    {
+      "id": "decimal-add",
+      "formula": "0.1+0.2",
+      "reference": {
+        "operator": "+",
+        "args": [
+          0.1,
+          0.2
+        ]
+      },
+      "tolerance": "0.000000000001",
+      "note": "浮点参考与十进制计算；允许 1e-12 绝对误差",
+      "referenceExpected": {
+        "type": "number",
+        "value": "0.30000000000000004"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0.30000000000000004"
+        },
+        "strict": {
+          "type": "number",
+          "value": "0.3"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "large-integer",
+      "formula": "9007199254740993+1",
+      "reference": {
+        "operator": "+",
+        "args": [
+          9007199254740993,
+          1
+        ]
+      },
+      "tolerance": "0",
+      "note": "JS Number 已将输入压缩；严格入口保留精确整数，因此明确标记差异",
+      "referenceExpected": {
+        "type": "number",
+        "value": "9007199254740992"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "9007199254740992"
+        },
+        "strict": {
+          "type": "number",
+          "value": "9007199254740994"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "difference"
+      }
+    },
+    {
+      "id": "precedence",
+      "formula": "2+3*4",
+      "reference": {
+        "operator": "+",
+        "args": [
+          2,
+          {
+            "operator": "*",
+            "args": [
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "14"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "14"
+        },
+        "strict": {
+          "type": "number",
+          "value": "14"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "divide",
+      "formula": "5/2",
+      "reference": {
+        "operator": "/",
+        "args": [
+          5,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "2.5"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "2.5"
+        },
+        "strict": {
+          "type": "number",
+          "value": "2.5"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "divide-zero",
+      "formula": "1/0",
+      "reference": {
+        "operator": "/",
+        "args": [
+          1,
+          0
+        ]
+      },
+      "tolerance": "0",
+      "note": "严格入口显式除零错误",
+      "referenceExpected": {
+        "type": "error",
+        "code": "NON_FINITE"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "error",
+          "code": "LEGACY_ERROR"
+        },
+        "strict": {
+          "type": "error",
+          "code": "DIVISION_BY_ZERO"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "nested-number",
+      "formula": "SUM(1,POWER(2,3),MAX(2,6))",
+      "reference": {
+        "function": "SUM",
+        "args": [
+          1,
+          {
+            "function": "POWER",
+            "args": [
+              2,
+              3
+            ]
+          },
+          {
+            "function": "MAX",
+            "args": [
+              2,
+              6
+            ]
+          }
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容正则无法正确解析该嵌套调用；严格语法树结果一致",
+      "referenceExpected": {
+        "type": "number",
+        "value": "15"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "error",
+          "code": "LEGACY_ERROR"
+        },
+        "strict": {
+          "type": "number",
+          "value": "15"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "error",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-sum",
+      "formula": "SUM(1,2,3)",
+      "reference": {
+        "function": "SUM",
+        "args": [
+          1,
+          2,
+          3
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "6"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "6"
+        },
+        "strict": {
+          "type": "number",
+          "value": "6"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-average",
+      "formula": "AVERAGE(2,4,6)",
+      "reference": {
+        "function": "AVERAGE",
+        "args": [
+          2,
+          4,
+          6
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "4"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "4"
+        },
+        "strict": {
+          "type": "number",
+          "value": "4"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-min",
+      "formula": "MIN(3,-1,2)",
+      "reference": {
+        "function": "MIN",
+        "args": [
+          3,
+          -1,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "-1"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "-1"
+        },
+        "strict": {
+          "type": "number",
+          "value": "-1"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-max",
+      "formula": "MAX(3,-1,2)",
+      "reference": {
+        "function": "MAX",
+        "args": [
+          3,
+          -1,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "3"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "3"
+        },
+        "strict": {
+          "type": "number",
+          "value": "3"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-abs",
+      "formula": "ABS(-12)",
+      "reference": {
+        "function": "ABS",
+        "args": [
+          -12
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "12"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "12"
+        },
+        "strict": {
+          "type": "number",
+          "value": "12"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-sqrt",
+      "formula": "SQRT(16)",
+      "reference": {
+        "function": "SQRT",
+        "args": [
+          16
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "4"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "4"
+        },
+        "strict": {
+          "type": "number",
+          "value": "4"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-power",
+      "formula": "POWER(2,3)",
+      "reference": {
+        "function": "POWER",
+        "args": [
+          2,
+          3
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "8"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "8"
+        },
+        "strict": {
+          "type": "number",
+          "value": "8"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-round",
+      "formula": "ROUND(1.235,2)",
+      "reference": {
+        "function": "ROUND",
+        "args": [
+          1.235,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1.24"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1.24"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1.24"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-roundup",
+      "formula": "ROUNDUP(1.231,2)",
+      "reference": {
+        "function": "ROUNDUP",
+        "args": [
+          1.231,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1.24"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1.24"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1.24"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-rounddown",
+      "formula": "ROUNDDOWN(1.239,2)",
+      "reference": {
+        "function": "ROUNDDOWN",
+        "args": [
+          1.239,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1.23"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1.23"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1.23"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-mod",
+      "formula": "MOD(-3,5)",
+      "reference": {
+        "function": "MOD",
+        "args": [
+          -3,
+          5
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口使用 Java 余数符号；严格入口与本例 Formula.js 一致",
+      "referenceExpected": {
+        "type": "number",
+        "value": "2"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "-3"
+        },
+        "strict": {
+          "type": "number",
+          "value": "2"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-concatenate",
+      "formula": "CONCATENATE(\"Hello\",123,\"World\")",
+      "reference": {
+        "function": "CONCATENATE",
+        "args": [
+          "Hello",
+          123,
+          "World"
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "Hello123World"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "Hello123World"
+        },
+        "strict": {
+          "type": "string",
+          "value": "Hello123World"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-len",
+      "formula": "LEN(\"abcd\")",
+      "reference": {
+        "function": "LEN",
+        "args": [
+          "abcd"
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "4"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "4"
+        },
+        "strict": {
+          "type": "number",
+          "value": "4"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-left",
+      "formula": "LEFT(\"abcd\",2)",
+      "reference": {
+        "function": "LEFT",
+        "args": [
+          "abcd",
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "ab"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "ab"
+        },
+        "strict": {
+          "type": "string",
+          "value": "ab"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-right",
+      "formula": "RIGHT(\"abcd\",2)",
+      "reference": {
+        "function": "RIGHT",
+        "args": [
+          "abcd",
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "cd"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "cd"
+        },
+        "strict": {
+          "type": "string",
+          "value": "cd"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-mid",
+      "formula": "MID(\"abcd\",2,2)",
+      "reference": {
+        "function": "MID",
+        "args": [
+          "abcd",
+          2,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "bc"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "bc"
+        },
+        "strict": {
+          "type": "string",
+          "value": "bc"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-upper",
+      "formula": "UPPER(\"aBc\")",
+      "reference": {
+        "function": "UPPER",
+        "args": [
+          "aBc"
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "ABC"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "ABC"
+        },
+        "strict": {
+          "type": "string",
+          "value": "ABC"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-lower",
+      "formula": "LOWER(\"AbC\")",
+      "reference": {
+        "function": "LOWER",
+        "args": [
+          "AbC"
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "abc"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "abc"
+        },
+        "strict": {
+          "type": "string",
+          "value": "abc"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-trim",
+      "formula": "TRIM(\"  a   b  \")",
+      "reference": {
+        "function": "TRIM",
+        "args": [
+          "  a   b  "
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "string",
+        "value": "a b"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "a b"
+        },
+        "strict": {
+          "type": "string",
+          "value": "a b"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-isnumber",
+      "formula": "ISNUMBER(3)",
+      "reference": {
+        "function": "ISNUMBER",
+        "args": [
+          3
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口返回数字 1，严格入口与 Formula.js 返回布尔 true",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": true
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-istext",
+      "formula": "ISTEXT(\"x\")",
+      "reference": {
+        "function": "ISTEXT",
+        "args": [
+          "x"
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口返回数字 1，严格入口与 Formula.js 返回布尔 true",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": true
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-isblank",
+      "formula": "ISBLANK(NULL)",
+      "reference": {
+        "function": "ISBLANK",
+        "args": [
+          null
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口未将 NULL 识别为空值；严格入口与 Formula.js 返回布尔 true",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": true
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-value",
+      "formula": "VALUE(\"12.5\")",
+      "reference": {
+        "function": "VALUE",
+        "args": [
+          "12.5"
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "12.5"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "12.5"
+        },
+        "strict": {
+          "type": "number",
+          "value": "12.5"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-not",
+      "formula": "NOT(TRUE)",
+      "reference": {
+        "function": "NOT",
+        "args": [
+          true
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口未正确解释 TRUE；严格入口与 Formula.js 返回布尔 false",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": false
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": false
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-and",
+      "formula": "AND(TRUE,FALSE)",
+      "reference": {
+        "function": "AND",
+        "args": [
+          true,
+          false
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口返回数字 0；严格入口与 Formula.js 返回布尔 false",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": false
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": false
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-or",
+      "formula": "OR(FALSE,TRUE)",
+      "reference": {
+        "function": "OR",
+        "args": [
+          false,
+          true
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口未正确解释布尔常量；严格入口与 Formula.js 返回布尔 true",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": true
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-if",
+      "formula": "IF(TRUE,7,9)",
+      "reference": {
+        "function": "IF",
+        "args": [
+          true,
+          7,
+          9
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "7"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "7"
+        },
+        "strict": {
+          "type": "number",
+          "value": "7"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "fn-iferror",
+      "formula": "IFERROR(3,9)",
+      "reference": {
+        "function": "IFERROR",
+        "args": [
+          3,
+          9
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "3"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "3"
+        },
+        "strict": {
+          "type": "number",
+          "value": "3"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "sum-negative",
+      "formula": "SUM(-2,1.5,3)",
+      "reference": {
+        "function": "SUM",
+        "args": [
+          -2,
+          1.5,
+          3
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "2.5"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "2.5"
+        },
+        "strict": {
+          "type": "number",
+          "value": "2.5"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "sum-text",
+      "formula": "SUM(1,\"2\")",
+      "reference": {
+        "function": "SUM",
+        "args": [
+          1,
+          "2"
+        ]
+      },
+      "tolerance": "0",
+      "note": "Formula.js 将文本 2 转数字；兼容入口忽略文本；严格入口要求显式 VALUE",
+      "referenceExpected": {
+        "type": "number",
+        "value": "3"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "error",
+          "code": "TYPE_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "sum-boolean",
+      "formula": "SUM(1,TRUE)",
+      "reference": {
+        "function": "SUM",
+        "args": [
+          1,
+          true
+        ]
+      },
+      "tolerance": "0",
+      "note": "Formula.js 与兼容入口忽略布尔参数；严格入口拒绝非数字参数",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "error",
+          "code": "TYPE_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "average-zero",
+      "formula": "AVERAGE(0,0)",
+      "reference": {
+        "function": "AVERAGE",
+        "args": [
+          0,
+          0
+        ]
+      },
+      "tolerance": "0",
+      "note": "基础标量输入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "0"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "number",
+          "value": "0"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "sqrt-fraction",
+      "formula": "SQRT(2)",
+      "reference": {
+        "function": "SQRT",
+        "args": [
+          2
+        ]
+      },
+      "tolerance": "0.000000000001",
+      "note": "十进制平方根与 JS 浮点参考，误差 1e-12",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1.4142135623730951"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1.4142135623730951"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1.414213562373095048801688724209698"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "sqrt-negative",
+      "formula": "SQRT(-1)",
+      "reference": {
+        "function": "SQRT",
+        "args": [
+          -1
+        ]
+      },
+      "tolerance": "0",
+      "note": "负数平方根的错误表示",
+      "referenceExpected": {
+        "type": "error",
+        "code": "#NUM!"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "error",
+          "code": "LEGACY_ERROR"
+        },
+        "strict": {
+          "type": "error",
+          "code": "NUMERIC_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "power-fraction",
+      "formula": "POWER(4,0.5)",
+      "reference": {
+        "function": "POWER",
+        "args": [
+          4,
+          0.5
+        ]
+      },
+      "tolerance": "0",
+      "note": "严格模式暂只支持整数幂",
+      "referenceExpected": {
+        "type": "number",
+        "value": "2"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "2"
+        },
+        "strict": {
+          "type": "error",
+          "code": "NUMERIC_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "round-negative-tie",
+      "formula": "ROUND(-1.005,2)",
+      "reference": {
+        "function": "ROUND",
+        "args": [
+          -1.005,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "本例实测三者均为 -1.01；不外推所有舍入输入均一致",
+      "referenceExpected": {
+        "type": "number",
+        "value": "-1.01"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "-1.01"
+        },
+        "strict": {
+          "type": "number",
+          "value": "-1.01"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "round-positive-tie",
+      "formula": "ROUND(1.005,2)",
+      "reference": {
+        "function": "ROUND",
+        "args": [
+          1.005,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "十进制半值舍入",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1.01"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1.01"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1.01"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "mod-negative-divisor",
+      "formula": "MOD(3,-5)",
+      "reference": {
+        "function": "MOD",
+        "args": [
+          3,
+          -5
+        ]
+      },
+      "tolerance": "0",
+      "note": "Formula.js 4.6.1 实测 -3，兼容入口 3；严格入口按除数符号规则返回 -2",
+      "referenceExpected": {
+        "type": "number",
+        "value": "-3"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "3"
+        },
+        "strict": {
+          "type": "number",
+          "value": "-2"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "difference"
+      }
+    },
+    {
+      "id": "mod-zero",
+      "formula": "MOD(3,0)",
+      "reference": {
+        "function": "MOD",
+        "args": [
+          3,
+          0
+        ]
+      },
+      "tolerance": "0",
+      "note": "除数为零的错误表示",
+      "referenceExpected": {
+        "type": "error",
+        "code": "#DIV/0!"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "error",
+          "code": "LEGACY_ERROR"
+        },
+        "strict": {
+          "type": "error",
+          "code": "DIVISION_BY_ZERO"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "concat-literal",
+      "formula": "CONCATENATE(\"a,(b)\",\"$tail\")",
+      "reference": {
+        "function": "CONCATENATE",
+        "args": [
+          "a,(b)",
+          "$tail"
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容正则破坏字符串内括号、逗号；严格入口按字面量处理",
+      "referenceExpected": {
+        "type": "string",
+        "value": "a,(b)$tail"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "\"\"a,(b\"\",\"$tail\")"
+        },
+        "strict": {
+          "type": "string",
+          "value": "a,(b)$tail"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "nested-text",
+      "formula": "CONCATENATE(LEFT(\"abcd\",2),UPPER(\"x\"))",
+      "reference": {
+        "function": "CONCATENATE",
+        "args": [
+          {
+            "function": "LEFT",
+            "args": [
+              "abcd",
+              2
+            ]
+          },
+          {
+            "function": "UPPER",
+            "args": [
+              "x"
+            ]
+          }
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容正则破坏嵌套文本调用；严格入口结果一致",
+      "referenceExpected": {
+        "type": "string",
+        "value": "abX"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "\"a"
+        },
+        "strict": {
+          "type": "string",
+          "value": "abX"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "left-default",
+      "formula": "LEFT(\"abcd\")",
+      "reference": {
+        "function": "LEFT",
+        "args": [
+          "abcd"
+        ]
+      },
+      "tolerance": "0",
+      "note": "默认长度",
+      "referenceExpected": {
+        "type": "string",
+        "value": "a"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "a"
+        },
+        "strict": {
+          "type": "string",
+          "value": "a"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "right-default",
+      "formula": "RIGHT(\"abcd\")",
+      "reference": {
+        "function": "RIGHT",
+        "args": [
+          "abcd"
+        ]
+      },
+      "tolerance": "0",
+      "note": "默认长度",
+      "referenceExpected": {
+        "type": "string",
+        "value": "d"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": "d"
+        },
+        "strict": {
+          "type": "string",
+          "value": "d"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "mid-outside",
+      "formula": "MID(\"abcd\",9,2)",
+      "reference": {
+        "function": "MID",
+        "args": [
+          "abcd",
+          9,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "起始位置超过文本长度",
+      "referenceExpected": {
+        "type": "string",
+        "value": ""
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": ""
+        },
+        "strict": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "left-negative",
+      "formula": "LEFT(\"abcd\",-1)",
+      "reference": {
+        "function": "LEFT",
+        "args": [
+          "abcd",
+          -1
+        ]
+      },
+      "tolerance": "0",
+      "note": "Formula.js 和兼容入口返回空文本；严格入口明确报非法长度",
+      "referenceExpected": {
+        "type": "string",
+        "value": ""
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "string",
+          "value": ""
+        },
+        "strict": {
+          "type": "error",
+          "code": "NUMERIC_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "value-invalid",
+      "formula": "VALUE(\"abc\")",
+      "reference": {
+        "function": "VALUE",
+        "args": [
+          "abc"
+        ]
+      },
+      "tolerance": "0",
+      "note": "Formula.js 和兼容入口返回 0；严格入口明确报非法数字文本",
+      "referenceExpected": {
+        "type": "number",
+        "value": "0"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "error",
+          "code": "NUMERIC_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "isnumber-text",
+      "formula": "ISNUMBER(\"3\")",
+      "reference": {
+        "function": "ISNUMBER",
+        "args": [
+          "3"
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口返回数字 0；严格入口与 Formula.js 返回布尔 false",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": false
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "0"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": false
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "isblank-empty-text",
+      "formula": "ISBLANK(\"\")",
+      "reference": {
+        "function": "ISBLANK",
+        "args": [
+          ""
+        ]
+      },
+      "tolerance": "0",
+      "note": "兼容入口将空文本认作空值；严格入口与 Formula.js 保持 null 区别",
+      "referenceExpected": {
+        "type": "boolean",
+        "value": false
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "boolean",
+          "value": false
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "if-false",
+      "formula": "IF(FALSE,7,9)",
+      "reference": {
+        "function": "IF",
+        "args": [
+          false,
+          7,
+          9
+        ]
+      },
+      "tolerance": "0",
+      "note": "逻辑常量与分支",
+      "referenceExpected": {
+        "type": "number",
+        "value": "9"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "9"
+        },
+        "strict": {
+          "type": "number",
+          "value": "9"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "if-comparison",
+      "formula": "IF(2>1,1,0)",
+      "reference": {
+        "function": "IF",
+        "args": [
+          true,
+          1,
+          0
+        ]
+      },
+      "tolerance": "0",
+      "note": "比较条件",
+      "referenceExpected": {
+        "type": "number",
+        "value": "1"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "number",
+          "value": "1"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "if-lazy-error",
+      "formula": "IF(TRUE,7,1/0)",
+      "reference": {
+        "function": "IF",
+        "args": [
+          true,
+          7,
+          0
+        ]
+      },
+      "tolerance": "0",
+      "note": "参考端直接取正确分支结果；Java 惰性行为由独立严格模式测试验证",
+      "referenceExpected": {
+        "type": "number",
+        "value": "7"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "7"
+        },
+        "strict": {
+          "type": "number",
+          "value": "7"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "if-lazy-missing",
+      "formula": "IF(FALSE,${missing},9)",
+      "reference": {
+        "function": "IF",
+        "args": [
+          false,
+          0,
+          9
+        ]
+      },
+      "tolerance": "0",
+      "note": "参考端显式传入占位值；Java 未选分支不读取字段由独立测试验证",
+      "referenceExpected": {
+        "type": "number",
+        "value": "9"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "9"
+        },
+        "strict": {
+          "type": "number",
+          "value": "9"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "field-number",
+      "formula": "${price}*2",
+      "reference": {
+        "operator": "*",
+        "args": [
+          12.5,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "数字字段",
+      "data": {
+        "price": 12.5
+      },
+      "referenceExpected": {
+        "type": "number",
+        "value": "25"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "25"
+        },
+        "strict": {
+          "type": "number",
+          "value": "25"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "field-numeric-text",
+      "formula": "${price}*2",
+      "reference": {
+        "operator": "*",
+        "args": [
+          "12.5",
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "严格入口要求 VALUE 显式转换数字文本",
+      "data": {
+        "price": "12.5"
+      },
+      "referenceExpected": {
+        "type": "number",
+        "value": "25"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "25"
+        },
+        "strict": {
+          "type": "error",
+          "code": "TYPE_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "field-explicit-value",
+      "formula": "VALUE(${price})*2",
+      "reference": {
+        "operator": "*",
+        "args": [
+          {
+            "function": "VALUE",
+            "args": [
+              "12.5"
+            ]
+          },
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "显式数字转换",
+      "data": {
+        "price": "12.5"
+      },
+      "referenceExpected": {
+        "type": "number",
+        "value": "25"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "25"
+        },
+        "strict": {
+          "type": "number",
+          "value": "25"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "match"
+      }
+    },
+    {
+      "id": "field-missing",
+      "formula": "${missing}+1",
+      "reference": {
+        "operator": "+",
+        "args": [
+          0,
+          1
+        ]
+      },
+      "tolerance": "0",
+      "note": "参考端显式使用旧缺失字段默认值；严格模式报错",
+      "data": {},
+      "referenceExpected": {
+        "type": "number",
+        "value": "1"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "error",
+          "code": "MISSING_FIELD"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "field-null",
+      "formula": "${price}+1",
+      "reference": {
+        "operator": "+",
+        "args": [
+          0,
+          1
+        ]
+      },
+      "tolerance": "0",
+      "note": "参考端显式使用旧 null 默认值；严格模式保留 null",
+      "data": {
+        "price": null
+      },
+      "referenceExpected": {
+        "type": "number",
+        "value": "1"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "1"
+        },
+        "strict": {
+          "type": "error",
+          "code": "TYPE_ERROR"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "match",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "date-basic",
+      "formula": "DATE(2024,1,2)",
+      "reference": {
+        "function": "DATE",
+        "args": [
+          2024,
+          1,
+          2
+        ]
+      },
+      "tolerance": "0",
+      "note": "UTC；Date 与历史数值表示不同，严格日期暂未支持",
+      "referenceExpected": {
+        "type": "date",
+        "value": "2024-01-02T00:00:00.000Z"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "45291"
+        },
+        "strict": {
+          "type": "error",
+          "code": "UNKNOWN_FUNCTION"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "unsupported"
+      }
+    },
+    {
+      "id": "date-leap",
+      "formula": "DATE(2024,2,29)",
+      "reference": {
+        "function": "DATE",
+        "args": [
+          2024,
+          2,
+          29
+        ]
+      },
+      "tolerance": "0",
+      "note": "UTC；闰年日期",
+      "referenceExpected": {
+        "type": "date",
+        "value": "2024-02-29T00:00:00.000Z"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "45349"
+        },
+        "strict": {
+          "type": "error",
+          "code": "UNKNOWN_FUNCTION"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "unsupported"
+      }
+    },
+    {
+      "id": "date-overflow",
+      "formula": "DATE(2024,13,1)",
+      "reference": {
+        "function": "DATE",
+        "args": [
+          2024,
+          13,
+          1
+        ]
+      },
+      "tolerance": "0",
+      "note": "UTC；跨年月份",
+      "referenceExpected": {
+        "type": "date",
+        "value": "2025-01-01T00:00:00.000Z"
+      },
+      "javaExpected": {
+        "legacy": {
+          "type": "number",
+          "value": "45656"
+        },
+        "strict": {
+          "type": "error",
+          "code": "UNKNOWN_FUNCTION"
+        }
+      },
+      "expectedStatus": {
+        "legacy": "difference",
+        "strict": "unsupported"
+      }
+    }
+  ]
+}

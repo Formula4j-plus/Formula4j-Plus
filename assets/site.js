@@ -12,7 +12,13 @@
             caption: '静态示例 · 在 Java 项目中执行', java: 'Java 8 编译目标', version: 'v3.0.0',
             mapTitle: '字段映射', mapDesc: '连接表单里的字段名称与业务数据，让公式更贴近业务。',
             fnTitle: '函数扩展', fnDesc: '复用内置函数，通过 Java Lambda 扩展自己的计算逻辑。',
-            verifyTitle: '结果校验', verifyDesc: '后端复算提交的数据，按指定误差核对数值结果。'
+            verifyTitle: '结果校验', verifyDesc: '后端复算提交的数据，按指定误差核对数值结果。',
+            strictTitle: '严格模式 · 当前源码', strictIntro: '显式启用十进制计算、惰性 IF 与错误定位。新增能力尚未发布，旧入口继续使用兼容语义。',
+            strictGuide: '严格模式接入与边界', compatibilityMatrix: 'Formula.js 4.6.1 实测矩阵',
+            functionTitle: '严格函数目录', functionIntro: '28 个首批函数。按名称筛选，查看参数与结果类型；完整边界见严格模式文档。',
+            functionSearch: '筛选函数名称…', functionResults: '匹配函数', functionParameters: '参数',
+            functionReturns: '返回', functionLazy: '惰性求值', yes: '是', no: '否',
+            functionLoadError: '目录加载失败，请打开严格模式文档查看完整列表。'
         },
         'zh-TW': {
             skip: '跳到正文', guide: '使用指南', overview: '專案概覽', changes: '更新日誌', contribute: '參與貢獻',
@@ -24,7 +30,13 @@
             caption: '靜態示例 · 在 Java 專案中執行', java: 'Java 8 編譯目標', version: 'v3.0.0',
             mapTitle: '欄位映射', mapDesc: '連接表單裡的欄位名稱與業務資料，讓公式更貼近業務。',
             fnTitle: '函數擴展', fnDesc: '複用內建函數，透過 Java Lambda 擴展自己的計算邏輯。',
-            verifyTitle: '結果校驗', verifyDesc: '後端複算提交的資料，依指定誤差核對數值結果。'
+            verifyTitle: '結果校驗', verifyDesc: '後端複算提交的資料，依指定誤差核對數值結果。',
+            strictTitle: '嚴格模式 · 目前原始碼', strictIntro: '明確啟用十進位計算、惰性 IF 與錯誤定位。新增能力尚未發布，舊入口繼續使用相容語義。',
+            strictGuide: '嚴格模式接入與邊界', compatibilityMatrix: 'Formula.js 4.6.1 實測矩陣',
+            functionTitle: '嚴格函數目錄', functionIntro: '28 個首批函數。依名稱篩選，查看參數與結果類型；完整邊界見嚴格模式文檔。',
+            functionSearch: '篩選函數名稱…', functionResults: '符合函數', functionParameters: '參數',
+            functionReturns: '返回', functionLazy: '惰性求值', yes: '是', no: '否',
+            functionLoadError: '目錄載入失敗，請開啟嚴格模式文檔查看完整列表。'
         },
         en: {
             skip: 'Skip to content', guide: 'User guide', overview: 'Overview', changes: 'Changelog', contribute: 'Contribute',
@@ -36,7 +48,13 @@
             caption: 'Static example · Execute in your Java project', java: 'Java 8 compile target', version: 'v3.0.0',
             mapTitle: 'Field mapping', mapDesc: 'Connect form labels to business data. Keep formulas close to the way your team works.',
             fnTitle: 'Custom functions', fnDesc: 'Use built-in functions and extend calculation logic with Java lambdas.',
-            verifyTitle: 'Result validation', verifyDesc: 'Recalculate submitted data and compare numeric results within a chosen tolerance.'
+            verifyTitle: 'Result validation', verifyDesc: 'Recalculate submitted data and compare numeric results within a chosen tolerance.',
+            strictTitle: 'Strict mode · Current source', strictIntro: 'Opt into decimal arithmetic, lazy IF and error locations. These additions are unreleased; existing entry points retain compatibility semantics.',
+            strictGuide: 'Strict mode guide and limits', compatibilityMatrix: 'Formula.js 4.6.1 comparison matrix',
+            functionTitle: 'Strict function catalog', functionIntro: '28 initial functions. Filter by name and inspect parameter and result types. See the strict mode guide for limits.',
+            functionSearch: 'Filter function names…', functionResults: 'Matching functions', functionParameters: 'Parameters',
+            functionReturns: 'Returns', functionLazy: 'Lazy evaluation', yes: 'Yes', no: 'No',
+            functionLoadError: 'Catalog could not load. Open the strict mode guide for the full list.'
         }
     };
     const language = () => words[document.documentElement.lang] || words['zh-CN'];
@@ -48,6 +66,36 @@
     const sidebarButton = document.querySelector('.doc-mobile-toggle');
     const toc = document.querySelector('.toc');
     const search = document.querySelector('.doc-sidebar input');
+    const functionSearch = document.getElementById('function-filter');
+    const functionList = document.getElementById('function-list');
+    const functionStatus = document.getElementById('function-status');
+    let functions = [];
+    let functionLoadFailed = false;
+
+    function renderFunctions() {
+        if (!functionList) return;
+        const text = language();
+        const query = functionSearch.value.trim().toUpperCase();
+        const selected = functions.filter(fn => fn.name.includes(query));
+        functionSearch.placeholder = text.functionSearch;
+        functionSearch.setAttribute('aria-label', text.functionSearch);
+        functionList.replaceChildren();
+        selected.forEach(fn => {
+            const card = document.createElement('article');
+            card.className = 'function-card';
+            const heading = document.createElement('h3');
+            heading.textContent = fn.name;
+            const parameters = document.createElement('p');
+            const max = fn.maxArguments === 2147483647 ? '…' : fn.maxArguments;
+            parameters.textContent = `${text.functionParameters}: ${fn.minArguments}–${max} · ${fn.parameterTypes}`;
+            const returns = document.createElement('p');
+            returns.textContent = `${text.functionReturns}: ${fn.resultType} · ${text.functionLazy}: ${fn.lazy ? text.yes : text.no}`;
+            card.append(heading, parameters, returns);
+            functionList.appendChild(card);
+        });
+        functionStatus.textContent = functionLoadFailed ? text.functionLoadError
+            : `${text.functionResults}: ${selected.length} / ${functions.length}`;
+    }
 
     function enhanceCode() {
         document.querySelectorAll('pre').forEach(pre => {
@@ -178,6 +226,7 @@
             search.setAttribute('aria-label', text.search);
         }
         refreshToc();
+        renderFunctions();
     }
     document.querySelectorAll('.site-links a, .doc-pages a').forEach(link => {
         const url = new URL(link.href);
@@ -186,6 +235,19 @@
         }
     });
     if (search) search.addEventListener('input', filterSections);
+    if (functionSearch) {
+        functionSearch.addEventListener('input', renderFunctions);
+        fetch(functionList.dataset.source).then(response => {
+            if (!response.ok) throw new Error('Catalog request failed');
+            return response.json();
+        }).then(catalog => {
+            functions = catalog;
+            renderFunctions();
+        }).catch(() => {
+            functionLoadFailed = true;
+            renderFunctions();
+        });
+    }
     // Markdown 异步载入后通知目录更新；不观察目录本身，避免重复渲染循环。
     document.addEventListener('formula:document-loaded', () => { refreshToc(); enhanceCode(); });
     new MutationObserver(translate).observe(document.documentElement, {attributes: true, attributeFilter: ['lang']});

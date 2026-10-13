@@ -583,6 +583,28 @@ boolean match = report.isMatch();
 VerificationResult.Status status = report.getStatus();</code></pre></div>
         <p><a href="../markdown-viewer.html?file=docs/engine-contract.md" data-i18n="contract_link">查看引擎行为与兼容性契约 →</a></p>
 
+        <h2 id="strict-mode" data-site-i18n="strictTitle">严格模式 · 当前源码</h2>
+        <p data-site-i18n="strictIntro">显式启用十进制计算、惰性 IF 与错误定位。新增能力尚未发布，旧入口继续使用兼容语义。</p>
+        <div class="code-block"><pre><code>import com.formula.calculator.core.strict.StrictFormulaEngine;
+import java.math.BigDecimal;
+import java.util.Collections;
+
+StrictFormulaEngine engine = new StrictFormulaEngine();
+Object result = engine.compile("ROUND(${price}*2,2)")
+    .evaluate(Collections.singletonMap("price", new BigDecimal("12.35")));
+// BigDecimal 24.70</code></pre></div>
+        <div class="doc-actions">
+            <a href="../markdown-viewer.html?file=docs/strict-engine.md" data-site-i18n="strictGuide">严格模式接入与边界</a>
+            <a href="../markdown-viewer.html?file=docs/formulajs-compatibility.md" data-site-i18n="compatibilityMatrix">Formula.js 4.6.1 实测矩阵</a>
+        </div>
+
+        <h2 id="strict-functions" data-site-i18n="functionTitle">严格函数目录</h2>
+        <p data-site-i18n="functionIntro">28 个首批函数。按名称筛选，查看参数与结果类型；完整边界见严格模式文档。</p>
+        <input class="function-search" id="function-filter" type="search" aria-label="筛选函数名称" placeholder="筛选函数名称…">
+        <p id="function-status" role="status" aria-live="polite"></p>
+        <div class="function-list" id="function-list" data-source="strict-functions.json"></div>
+        <noscript><p><a href="../markdown-viewer.html?file=docs/strict-engine.md">完整严格函数列表 / Full strict function list</a></p></noscript>
+
         <h2 data-i18n="h2_field">字段映射说明</h2>
         <ul>
             <li><strong>menuId</strong>: <span data-i18n="menuId_desc">公式中使用的字段显示名称（如"单价"）</span></li>
@@ -610,7 +632,7 @@ VerificationResult.Status status = report.getStatus();</code></pre></div>
         <h2 data-i18n="h2_faq">常见问题</h2>
 
         <h3 data-i18n="q1">Q: 如果字段值为 null 怎么办？</h3>
-        <p data-i18n="a1">A: 算术字段值为 null 时按 0 处理；当前实现不输出警告日志。</p>
+        <p data-i18n="a1">A: 兼容入口的算术 null 字段按 0 处理；严格入口保留 null，参与算术会报 TYPE_ERROR。</p>
 
         <h3 data-i18n="q2">Q: 如何支持自定义函数？</h3>
         <div class="code-block">
@@ -651,7 +673,7 @@ VerificationResult.Status status = report.getStatus();</code></pre></div>
                 support_title: '延伸阅读：', support_desc: '如果你还需要了解函数扩展、许可证与变更记录，可继续查看仓库首页、README 与更新日志。',
                 support_home: '查看文档入口', support_readme: '查看 README',
                 h2_faq: '常见问题', q1: 'Q: 如果字段值为 null 怎么办？',
-                a1: 'A: 算术字段值为 null 时按 0 处理；当前实现不输出警告日志。',
+                a1: 'A: 兼容入口的算术 null 字段按 0 处理；严格入口保留 null，参与算术会报 TYPE_ERROR。',
                 q2: 'Q: 如何支持自定义函数？', q3: 'Q: 如何验证计算结果精度？',
                 light: '日间模式', dark: '夜间模式', system: '跟随系统'
             },
@@ -673,7 +695,7 @@ VerificationResult.Status status = report.getStatus();</code></pre></div>
                 support_title: '延伸閱讀：', support_desc: '如果你還需要了解函數擴展、授權與變更記錄，可繼續查看倉庫首頁、README 與更新日誌。',
                 support_home: '查看文檔入口', support_readme: '查看 README',
                 h2_faq: '常見問題', q1: 'Q: 如果欄位值為 null 怎麼辦？',
-                a1: 'A: 算術欄位值為 null 時按 0 處理；目前實作不輸出警告日誌。',
+                a1: 'A: 相容入口的算術 null 欄位依 0 處理；嚴格入口保留 null，參與算術會報 TYPE_ERROR。',
                 q2: 'Q: 如何支援自訂函數？', q3: 'Q: 如何驗證精度？',
                 light: '日間模式', dark: '夜間模式', system: '跟隨系統'
             },
@@ -695,7 +717,7 @@ VerificationResult.Status status = report.getStatus();</code></pre></div>
                 support_title: 'More Resources:', support_desc: 'If you also need function extension details, license notes, or change history, continue with the homepage, README, and changelog.',
                 support_home: 'Open docs hub', support_readme: 'Open README',
                 h2_faq: 'FAQ', q1: 'Q: What if field value is null?',
-                a1: 'A: Null arithmetic fields become 0. The current implementation does not emit a warning log.',
+                a1: 'A: Compatibility mode converts null arithmetic fields to 0. Strict mode preserves null and reports TYPE_ERROR in arithmetic.',
                 q2: 'Q: How to support custom functions?', q3: 'Q: How to verify accuracy?',
                 light: 'Light Mode', dark: 'Dark Mode', system: 'System'
             }

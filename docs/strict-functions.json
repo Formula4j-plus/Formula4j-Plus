@@ -1,0 +1,254 @@
+[
+  {
+    "lazy": true,
+    "maxArguments": 3,
+    "minArguments": 3,
+    "name": "IF",
+    "parameterTypes": "condition, any, any",
+    "pure": true,
+    "resultType": "any"
+  },
+  {
+    "lazy": true,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "IFERROR",
+    "parameterTypes": "any, any",
+    "pure": true,
+    "resultType": "any"
+  },
+  {
+    "lazy": true,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "AND",
+    "parameterTypes": "condition...",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": true,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "OR",
+    "parameterTypes": "condition...",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "NOT",
+    "parameterTypes": "condition",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "SUM",
+    "parameterTypes": "number...",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "AVERAGE",
+    "parameterTypes": "number...",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "MIN",
+    "parameterTypes": "number...",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "MAX",
+    "parameterTypes": "number...",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "ABS",
+    "parameterTypes": "number",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "SQRT",
+    "parameterTypes": "number",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "ROUND",
+    "parameterTypes": "number, integer[-1000,1000]",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "ROUNDUP",
+    "parameterTypes": "number, integer[-1000,1000]",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "ROUNDDOWN",
+    "parameterTypes": "number, integer[-1000,1000]",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "POWER",
+    "parameterTypes": "number, integer[-1000,1000]",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 2,
+    "name": "MOD",
+    "parameterTypes": "number, number",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2147483647,
+    "minArguments": 1,
+    "name": "CONCATENATE",
+    "parameterTypes": "scalar...",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "UPPER",
+    "parameterTypes": "string",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "LOWER",
+    "parameterTypes": "string",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "TRIM",
+    "parameterTypes": "string",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "LEN",
+    "parameterTypes": "string",
+    "pure": true,
+    "resultType": "number"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 1,
+    "name": "LEFT",
+    "parameterTypes": "string, optional integer[0,16384]",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 2,
+    "minArguments": 1,
+    "name": "RIGHT",
+    "parameterTypes": "string, optional integer[0,16384]",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 3,
+    "minArguments": 3,
+    "name": "MID",
+    "parameterTypes": "string, integer[1,16384], integer[0,16384]",
+    "pure": true,
+    "resultType": "string"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "ISNUMBER",
+    "parameterTypes": "any",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "ISTEXT",
+    "parameterTypes": "any",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "ISBLANK",
+    "parameterTypes": "any",
+    "pure": true,
+    "resultType": "boolean"
+  },
+  {
+    "lazy": false,
+    "maxArguments": 1,
+    "minArguments": 1,
+    "name": "VALUE",
+    "parameterTypes": "number or decimal string",
+    "pure": true,
+    "resultType": "number"
+  }
+]

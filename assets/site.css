@@ -170,6 +170,14 @@ body .ch-number, body .ch-function { color: var(--primary); }
     .doc-sidebar { width: 225px; }
     body.doc-page .doc-shell { padding: 0 20px; }
 }
+.function-search { width: 100%; max-width: 460px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font: inherit; }
+.function-search:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.function-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 18px 0 28px; }
+.function-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--surface-subtle); min-width: 0; }
+.function-card h3 { margin: 0 0 10px; font-size: 16px; }
+.function-card p { font-size: 13px; color: var(--text-secondary); overflow-wrap: anywhere; margin: 8px 0 0; }
+.doc-actions { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+
 @media (max-width: 760px) {
     .site-topbar { height: 64px; }
     .site-topbar-inner { padding: 0 18px; gap: 10px; }

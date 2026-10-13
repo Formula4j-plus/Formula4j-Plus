@@ -1,0 +1,12 @@
+{
+  "name": "formula4j-compatibility-contract",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned Formula.js oracle for the Java compatibility corpus",
+  "scripts": {
+    "compare": "node compare.cjs"
+  },
+  "dependencies": {
+    "@formulajs/formulajs": "4.6.1"
+  }
+}

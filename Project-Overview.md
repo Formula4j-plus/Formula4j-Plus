@@ -186,3 +186,9 @@ This project is licensed under the Business Source License 1.1 (BUSL-1.1). See [
 - 变更日期：2029-01-01 后自动转换为 Apache License 2.0
 
 Copyright 2025 WanShen
+
+## 当前源码的严格计算能力
+
+本轮新增独立严格入口，支持 Map、十进制运算、28 个函数、惰性条件、结构化错误和不可变编译对象。
+参见[严格模式](docs/strict-engine.md)及[Formula.js 4.6.1 差分矩阵](docs/formulajs-compatibility.md)。
+该能力尚未发布，不能据此宣称已发布版本或全部 Excel/Formula.js 语义完全兼容。

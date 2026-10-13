@@ -19,7 +19,8 @@ def main():
         text = source.read_text(encoding='utf-8')
         text = text.replace('(README.md)', '(../README.md)')
         text = text.replace('(../../', '(../../Formula4j-Plus/')
-        text = text.replace('(../engine-contract.md)', '(../../Formula4j-Plus/docs/engine-contract.md)')
+        for document in ('engine-contract.md', 'strict-engine.md', 'formulajs-compatibility.md', 'benchmark-baseline.md'):
+            text = text.replace(f'(../{document})', f'(../../Formula4j-Plus/docs/{document})')
         target = destination / 'wiki' / source.name
         existing = target.read_text(encoding='utf-8-sig') if target.exists() else None
         if existing != text:

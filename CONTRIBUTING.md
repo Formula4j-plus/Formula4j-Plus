@@ -60,3 +60,22 @@ mvn test
 感谢你的贡献。
 
 网站视觉维护 `assets/site.css` 与 `assets/site.js`；Wiki 章节维护 `docs/wiki/`。提交前运行 `python scripts/check_docs.py`，关联本地 Wiki 使用 `python scripts/sync_wiki.py` 同步。
+
+## 严格模式和差分契约
+
+严格函数在 `core/strict/StrictFunctions` 中实现并描述元数据，类型化解析位于 `ExpressionParser`。
+增加函数或调整语义时同步更新严格测试、接入文档及 `src/test/resources/compatibility/formulajs-4.6.1.json`。
+语料同时保存 Formula.js 和 Java 两端的已审核结果与一致/差异/报错/未支持分类。
+不要仅为了通过测试而改写期望值；先确认业务语义，说明变化理由，再更新契约。
+
+```sh
+mvn -B -Dtest=FormulaJsDifferentialTest -Duser.timezone=UTC -Dformula.differential.output=java-report.json test
+npm --prefix tools/compatibility ci --ignore-scripts
+node tools/compatibility/compare.cjs java-report.json --report docs/formulajs-compatibility.md --catalog docs/strict-functions.json
+```
+
+生成的矩阵与函数目录纳入 Git；CI 检查它们是否与实际执行一致。
+Node/Formula.js 仅用于开发验证，不是 Java 计算库的新运行时依赖。
+[严格模式说明](docs/strict-engine.md)与[差分矩阵](docs/formulajs-compatibility.md)记录适用范围。
+
+性能修改使用独立[JMH 开发基准](tools/benchmark/README.md)，先检查同一输入的结果，再比较时间、误差与分配量。

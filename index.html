@@ -934,6 +934,18 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
         </div>
     </section>
 
+    <section id="strict-docs">
+        <div class="container">
+            <h2 data-site-i18n="strictTitle">严格模式 · 当前源码</h2>
+            <p class="section-lead" data-site-i18n="strictIntro">显式启用十进制计算、惰性 IF 与错误定位。新增能力尚未发布，旧入口继续使用兼容语义。</p>
+            <div class="doc-actions">
+                <a class="btn btn-secondary" href="markdown-viewer.html?file=docs/strict-engine.md" data-site-i18n="strictGuide">严格模式接入与边界</a>
+                <a class="btn btn-secondary" href="markdown-viewer.html?file=docs/formulajs-compatibility.md" data-site-i18n="compatibilityMatrix">Formula.js 4.6.1 实测矩阵</a>
+                <a class="btn btn-secondary" href="docs/使用指南.html#strict-functions" data-site-i18n="functionTitle">严格函数目录</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Capabilities -->
     <section id="capabilities">
         <div class="container">
@@ -972,7 +984,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 </div>
                 <div class="feature-card">
                     <h3 data-i18n="faq_q2">适合哪些输入数据形式？</h3>
-                    <p data-i18n="faq_a2">适合 `JSONObject`、字段映射后的 `FormulaData`，以及需要按展示字段转真实字段的场景。</p>
+                    <p data-i18n="faq_a2">兼容入口支持 JSONObject、FormulaData；严格入口直接支持 Map，并保留展示字段映射。</p>
                 </div>
                 <div class="feature-card">
                     <h3 data-i18n="faq_q3">第一次接入应该先看哪份文档？</h3>
@@ -1041,7 +1053,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 hero_point_2: '通过字段映射承接动态表单与低代码场景中的展示字段。',
                 hero_point_3: '保留 Formula.js 风格表达式，降低前后端迁移成本。',
                 hero_link_start: '先看最短接入路径', hero_link_docs: '按目标进入文档导航', hero_link_faq: '先确认适用边界',
-                badge_java: 'Java 8-25', badge_func: '249+ 函数', badge_formula: 'Formula.js 兼容', badge_validation: '后端校验场景',
+                badge_java: 'Java 8 compile target', badge_func: '249+ 函数', badge_formula: 'Formula.js 风格', badge_validation: '后端校验场景',
                 nav_scenarios: '适用场景', nav_start: '快速开始', nav_docs: '文档导航',
                 nav_capabilities: '能力概览', nav_faq: '常见问题', nav_contact: '联系方式',
                 stat_func: '支持函数', stat_compat: '表达式兼容', stat_java: '支持版本', stat_validation: '复算与校验', stat_validation_value: 'Backend',
@@ -1066,7 +1078,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 capability_4_title: '结果复算与校验', capability_4_desc: '可用于提交前后结果比对、批量复核和规则一致性校验。',
                 faq_lead: '先回答适用边界，再决定是直接接入还是继续查看详细文档。',
                 faq_q1: '它适合替代前端公式执行吗？', faq_a1: '更适合作为后端校验、复算和规则统一层，而不是单纯面向页面展示的前端计算工具。',
-                faq_q2: '适合哪些输入数据形式？', faq_a2: '适合 `JSONObject`、字段映射后的 `FormulaData`，以及需要按展示字段转真实字段的场景。',
+                faq_q2: '适合哪些输入数据形式？', faq_a2: '兼容入口支持 JSONObject、FormulaData；严格入口直接支持 Map，并保留展示字段映射。',
                 faq_q3: '第一次接入应该先看哪份文档？', faq_a3: '先看快速开始跑通样例，再按需求进入使用指南、项目概览或贡献指南。',
                 contact_desc: '如有问题或建议，欢迎通过以下方式联系：',
                 license_desc: '项目采用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 许可证',
@@ -1088,7 +1100,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 hero_point_2: '透過欄位映射承接動態表單與低代碼場景中的展示欄位。',
                 hero_point_3: '保留 Formula.js 風格表達式，降低前後端遷移成本。',
                 hero_link_start: '先看最短接入路徑', hero_link_docs: '依目標進入文檔導航', hero_link_faq: '先確認適用邊界',
-                badge_java: 'Java 8-25', badge_func: '249+ 函數', badge_formula: 'Formula.js 相容', badge_validation: '後端校驗場景',
+                badge_java: 'Java 8 compile target', badge_func: '249+ 函數', badge_formula: 'Formula.js 風格', badge_validation: '後端校驗場景',
                 nav_scenarios: '適用場景', nav_start: '快速開始', nav_docs: '文檔導航',
                 nav_capabilities: '能力概覽', nav_faq: '常見問題', nav_contact: '聯絡方式',
                 stat_func: '支援函數', stat_compat: '表達式相容', stat_java: '支援版本', stat_validation: '複算與校驗', stat_validation_value: 'Backend',
@@ -1113,7 +1125,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 capability_4_title: '結果複算與校驗', capability_4_desc: '可用於提交前後結果比對、批量複核與規則一致性校驗。',
                 faq_lead: '先回答適用邊界，再決定是直接接入還是繼續查看詳細文檔。',
                 faq_q1: '它適合取代前端公式執行嗎？', faq_a1: '更適合作為後端校驗、複算與規則統一層，而不是單純面向頁面展示的前端計算工具。',
-                faq_q2: '適合哪些輸入資料形式？', faq_a2: '適合 `JSONObject`、欄位映射後的 `FormulaData`，以及需要按展示欄位轉成真實欄位的場景。',
+                faq_q2: '適合哪些輸入資料形式？', faq_a2: '相容入口支援 JSONObject、FormulaData；嚴格入口直接支援 Map，並保留展示欄位映射。',
                 faq_q3: '第一次接入應該先看哪份文檔？', faq_a3: '先看快速開始跑通樣例，再依需求進入使用指南、專案概覽或貢獻指南。',
                 contact_desc: '如有問題或建議，歡迎透過以下方式聯繫：',
                 license_desc: '專案採用 <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span> 授權',
@@ -1135,7 +1147,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 hero_point_2: 'Handle dynamic forms and low-code fields through explicit field mapping.',
                 hero_point_3: 'Keep Formula.js-style expressions to lower migration cost across layers.',
                 hero_link_start: 'Start with the shortest setup path', hero_link_docs: 'Jump to the right document', hero_link_faq: 'Check fit and limits first',
-                badge_java: 'Java 8-25', badge_func: '249+ Functions', badge_formula: 'Formula.js Compatible', badge_validation: 'Backend Validation',
+                badge_java: 'Java 8 compile target', badge_func: '249+ Functions', badge_formula: 'Formula.js style', badge_validation: 'Backend Validation',
                 nav_scenarios: 'Scenarios', nav_start: 'Quick Start', nav_docs: 'Docs Hub',
                 nav_capabilities: 'Capabilities', nav_faq: 'FAQ', nav_contact: 'Contact',
                 stat_func: 'Supported Functions', stat_compat: 'Expression Compatibility', stat_java: 'Java Versions', stat_validation: 'Recalculation & Validation', stat_validation_value: 'Backend',
@@ -1160,7 +1172,7 @@ Object ifResult = FormulaCalculator.calculate(ifFormula, data);
                 capability_4_title: 'Result Recalculation and Validation', capability_4_desc: 'Compare submitted values, batch-review outputs, and enforce rule consistency.',
                 faq_lead: 'Answer fit and boundary questions first, then decide whether to integrate now or keep reading.',
                 faq_q1: 'Is it meant to replace frontend formula execution?', faq_a1: 'It is better suited as a backend validation, recalculation, and rule-consistency layer than as a UI-only calculator.',
-                faq_q2: 'What input formats fit best?', faq_a2: 'It works well with `JSONObject`, mapped `FormulaData`, and scenarios where display fields must resolve to backend keys.',
+                faq_q2: 'What input formats fit best?', faq_a2: 'Compatibility mode accepts JSONObject and FormulaData. Strict mode accepts Map with display-field mapping.',
                 faq_q3: 'What should I read first for a new integration?', faq_a3: 'Run the quick start first, then continue with the user guide, project overview, or contribution guide as needed.',
                 contact_desc: 'For questions or suggestions, feel free to reach out:',
                 license_desc: 'Licensed under <span class="highlight">Business Source License 1.1 (BUSL-1.1)</span>',

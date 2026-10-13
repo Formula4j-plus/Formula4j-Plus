@@ -31,6 +31,65 @@ jobs:
         with:
           name: test-results-java-${{ matrix.java }}
           path: target/surefire-reports
+  compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/compatibility/package-lock.json
+      - name: Export reviewed Java cases
+        run: >-
+          mvn -B -Dtest=FormulaJsDifferentialTest -Duser.timezone=UTC
+          -Dformula.differential.output=java-report.json test
+      - name: Install pinned Formula.js oracle
+        run: npm --prefix tools/compatibility ci --ignore-scripts --no-audit --no-fund
+      - name: Compare both engines and check published matrix
+        run: |
+          node tools/compatibility/compare.cjs java-report.json --report docs/formulajs-compatibility.md --catalog docs/strict-functions.json
+          git diff --exit-code -- docs/formulajs-compatibility.md docs/strict-functions.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: formula-compatibility-report
+          path: |
+            java-report.json
+            docs/formulajs-compatibility.md
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Package core for the local benchmark alias
+        run: mvn -B -DskipTests -Dmaven.javadoc.skip=true package
+      - name: Prepare and install local core alias
+        run: |
+          python scripts/prepare_benchmark_pom.py pom.xml benchmark-core.pom
+          mvn -B org.apache.maven.plugins:maven-install-plugin:2.4:install-file -Dfile=target/formula4j-plus-3.0.0.jar -DpomFile=benchmark-core.pom
+      - name: Build JMH module and verify benchmark setup
+        run: |
+          mvn -B -f tools/benchmark/pom.xml package
+          java -jar tools/benchmark/target/benchmarks.jar -f 1 -wi 0 -i 1 -r 100ms -foe true -rf json -rff benchmark-smoke.json
+      # 短运行只检查基准可执行和结果正确，不作为性能门槛。
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-smoke
+          path: benchmark-smoke.json
   docs:
     runs-on: ubuntu-latest
     steps:

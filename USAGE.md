@@ -4,6 +4,9 @@
 
 本文补充 README 中没有展开的几种用法，内容以当前项目代码为准。
 
+当前源码新增[严格模式](docs/strict-engine.md)：支持 Map、BigDecimal、编译复用、惰性 IF 和原公式错误位置。
+这是未发布的新入口；旧静态 API 保持历史语义。跨语言行为见[Formula.js 4.6.1 实测矩阵](docs/formulajs-compatibility.md)。
+
 ## 1. 基本计算
 
 ```java

@@ -14,14 +14,17 @@ class Links(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         for key, value in attrs:
-            if key in ('href', 'src') and value:
+            if key in ('href', 'src', 'data-source') and value:
                 self.links.append(value)
 
 
 def main():
     files = [ROOT / name for name in ['index.html', 'CONTRIBUTING.html', 'markdown-viewer.html', 'docs/使用指南.html']]
     files += list((ROOT / 'docs/wiki').glob('*.md'))
-    files += [ROOT / 'docs/engine-contract.md']
+    files += [ROOT / 'docs' / name for name in ('engine-contract.md', 'strict-engine.md',
+                                              'formulajs-compatibility.md', 'benchmark-baseline.md')]
+    files += [ROOT / 'assets/site.css', ROOT / 'assets/site.js', ROOT / 'docs/strict-functions.json']
+    files += [ROOT / 'tools/benchmark/README.md']
     errors = []
     for file in files:
         raw = file.read_bytes()

@@ -46,3 +46,7 @@ Thumbs.db
 
 # Local worktrees
 .worktrees/
+
+# Formula.js differential tools (development only)
+tools/compatibility/node_modules/
+java-report.json
